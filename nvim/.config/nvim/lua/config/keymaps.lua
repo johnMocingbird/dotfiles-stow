@@ -7,6 +7,18 @@ vim.g.mapleader = " "
 
 map("n", "<leader>gd", ":DiffviewOpen origin/master... --imply-local<CR>", { noremap = true, desc = "Git Diff Master" })
 
+map("n", "<leader>oo", ":ObsidianSearch<CR>", { noremap = true, desc = "ObsidianSearch" })
+map("n", "<leader>op", ":ObsidianPasteImg<CR>", { noremap = true, desc = "ObsidianPasteImg" })
+map("n", "<leader>on", ":ObsidianNew", { noremap = true, desc = "ObsidianNew [Title]" })
+map("n", "<leader>ob", ":ObsidianBackLinks", { noremap = true, desc = "ObsidianBackLinks" })
+map("n", "<leader>ol", ":ObsidianLinks<CR>", { noremap = true, desc = "ObsidianLinks" })
+map("n", "<leader>on", ":ObsidianLinkNew<CR>", { noremap = true, desc = "ObsidianLinkNew [Title]" })
+map("n", "<leader>otd", ":ObsidianToday<CR>", { noremap = true, desc = "Today" })
+map("n", "<leader>otm", ":ObsidianTomorrow<CR>", { noremap = true, desc = "ObsidianTomorrow" })
+map("n", "<leader>oy", ":ObsidianYesterday<CR>", { noremap = true, desc = "ObsidianYesterday" })
+map("n", "<leader>ofl", ":ObsidianFollowLink<CR>", { noremap = true, desc = "FollowLink [v|hsplit]" })
+map("n", "<leader>o<CR>", ":ObsidianQuickSwitch<CR>", { noremap = true, desc = "QuickSwitch" })
+
 require("ror").setup({
 	test = {
 		file = "Testing File...",

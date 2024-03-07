@@ -1,4 +1,3 @@
 return {
-  "Eandrju/cellular-automaton.nvim",
-  lazy = true,
+	"Eandrju/cellular-automaton.nvim",
 }
