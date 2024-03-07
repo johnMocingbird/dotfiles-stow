@@ -1,4 +1,4 @@
 return {
-	"weizheheng/ror.nvim",
+	"esthing64/ror.nvim",
 	lazy = true,
 }
