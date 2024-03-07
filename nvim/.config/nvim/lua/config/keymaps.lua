@@ -57,6 +57,26 @@ map(
 	{ noremap = true, silent = true, desc = "Worktrees" }
 )
 
+map(
+	"n",
+	"<leader>gn",
+	":lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>",
+	{ noremap = true, silent = true, desc = "Worktrees" }
+)
+map(
+	"n",
+	"<leader>gC",
+	":lua CreateGitWorktreeWithInput()<CR>",
+	{ noremap = true, silent = true, desc = "Create Git worktree with user inputs" }
+)
+
+function CreateGitWorktreeWithInput()
+	local branch_name = vim.fn.input("Branch name: ")
+	local start_point = vim.fn.input("Start point (e.g., master): ")
+	local upstream = vim.fn.input("Upstream (e.g., origin): ")
+	require("git-worktree").create_worktree(branch_name, start_point, upstream)
+end
+
 map("t", "<C-t>", "<C-\\><C-n>", { noremap = true })
 
 -------------------------------------------------------------------------------------------------------------
