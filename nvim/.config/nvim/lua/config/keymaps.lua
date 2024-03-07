@@ -180,6 +180,7 @@ map("n", "<leader>ub", function() Util.toggle("background", false, {"light", "da
 
 -- lazygit
 map("n", "<leader>gg", function() Util.terminal({ "lazygit" }, { cwd = Util.root(), esc_esc = false, ctrl_hjkl = false }) end, { desc = "Lazygit (root dir)" })
+map("n", "<leader>dd", function() Util.terminal({ "dooit" }, { cwd = Util.root(), esc_esc = false, ctrl_hjkl = false }) end, { desc = "Dooit" })
 map("n", "<leader>gG", function() Util.terminal({ "lazygit" }, {esc_esc = false, ctrl_hjkl = false}) end, { desc = "Lazygit (cwd)" })
 
 -- quit
