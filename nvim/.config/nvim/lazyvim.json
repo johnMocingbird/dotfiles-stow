@@ -1,8 +1,13 @@
 {
   "extras": [
+    "lazyvim.plugins.extras.dap.nlua",
     "lazyvim.plugins.extras.lang.json",
     "lazyvim.plugins.extras.lang.ruby",
     "lazyvim.plugins.extras.lang.typescript",
+    "lazyvim.plugins.extras.linting.eslint",
+    "lazyvim.plugins.extras.lsp.none-ls",
+    "lazyvim.plugins.extras.test.core",
+    "lazyvim.plugins.extras.ui.edgy",
     "lazyvim.plugins.extras.vscode"
   ],
   "news": {
