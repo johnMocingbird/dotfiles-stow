@@ -77,7 +77,12 @@ function CreateGitWorktreeWithInput()
 	require("git-worktree").create_worktree(branch_name, start_point, upstream)
 end
 
+-- terminal bindings
 map("t", "<C-t>", "<C-\\><C-n>", { noremap = true })
+map("t", "<C-h>", "<C-s><b>", { noremap = true })
+
+map("n", "<leader>tb", ":!tmux set-option status<CR>", { noremap = true })
+map("n", "<leader>tR", ":!tmux rename-window ", { noremap = true })
 
 -------------------------------------------------------------------------------------------------------------
 -----------------------------------DEFAULT KEY BINDINGS------------------------------------------------------
