@@ -81,6 +81,47 @@ map("t", "<C-t>", "<C-\\><C-n>", { noremap = true })
 -------------------------------------------------------------------------------------------------------------
 -----------------------------------DEFAULT KEY BINDINGS------------------------------------------------------
 -- ----------------------------------------------------------------------------------------------------------
+
+-- tree sitter
+--
+-- map("n", "<leader>fe", function()
+-- 	require("neo-tree.command").execute({ toggle = true, dir = Util.root() })
+-- end, { desc = "Toggle auto format (global)" })
+--
+-- keys = {
+--       {
+--         "<leader>fe",
+--         function()
+--           require("neo-tree.command").execute({ toggle = true, dir = Util.root() })
+--         end,
+--         desc = "Explorer NeoTree (root dir)",
+--       },
+--       {
+--         "<leader>fE",
+--         function()
+--           require("neo-tree.command").execute({ toggle = true, dir = vim.loop.cwd() })
+--         end,
+--         desc = "Explorer NeoTree (cwd)",
+--       },
+--       { "<leader>e", "<leader>fe", desc = "Explorer NeoTree (root dir)", remap = true },
+--       { "<leader>E", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+--       {
+--         "<leader>ge",
+--         function()
+--           require("neo-tree.command").execute({ source = "git_status", toggle = true })
+--         end,
+--         desc = "Git explorer",
+--       },
+--       {
+--         "<leader>be",
+--         function()
+--           require("neo-tree.command").execute({ source = "buffers", toggle = true })
+--         end,
+--         desc = "Buffer explorer",
+--       },
+--     }
+--
+
 -- better up/down
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
@@ -246,3 +287,148 @@ map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
 map("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+
+-- telescope
+--
+--       { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
+--       { "<leader>sd", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document diagnostics" },
+--       { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics" },
+--       { "<leader>sg", Util.telescope("live_grep"), desc = "Grep (root dir)" },
+--       { "<leader>sG", Util.telescope("live_grep", { cwd = false }), desc = "Grep (cwd)" },
+--       { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Help Pages" },
+--       { "<leader>sH", "<cmd>Telescope highlights<cr>", desc = "Search Highlight Groups" },
+--       { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "Key Maps" },
+--       { "<leader>sM", "<cmd>Telescope man_pages<cr>", desc = "Man Pages" },
+--       { "<leader>sm", "<cmd>Telescope marks<cr>", desc = "Jump to Mark" },
+--       { "<leader>so", "<cmd>Telescope vim_options<cr>", desc = "Options" },
+--       { "<leader>sR", "<cmd>Telescope resume<cr>", desc = "Resume" },
+--       { "<leader>sw", Util.telescope("grep_string", { word_match = "-w" }), desc = "Word (root dir)" },
+--       { "<leader>sW", Util.telescope("grep_string", { cwd = false, word_match = "-w" }), desc = "Word (cwd)" },
+--       { "<leader>sw", Util.telescope("grep_string"), mode = "v", desc = "Selection (root dir)" },
+--       { "<leader>sW", Util.telescope("grep_string", { cwd = false }), mode = "v", desc = "Selection (cwd)" },
+--       { "<leader>uC", Util.telescope("colorscheme", { enable_preview = true }), desc = "Colorscheme with preview" },
+--       {
+--         "<leader>ss",
+--         function()
+--           require("telescope.builtin").lsp_document_symbols({
+--             symbols = require("lazyvim.config").get_kind_filter(),
+--           })
+--         end,
+--         desc = "Goto Symbol",
+--       },
+--       {
+--         "<leader>sS",
+--         function()
+--           require("telescope.builtin").lsp_dynamic_workspace_symbols({
+--             symbols = require("lazyvim.config").get_kind_filter(),
+--           })
+--         end,
+--         desc = "Goto Symbol (Workspace)",
+--       },
+--     }d)" },
+--       { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Find Files (git-files)" },
+--       { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
+--       { "<leader>fR", Util.telescope("oldfiles", { cwd = vim.loop.cwd() }), desc = "Recent (cwd)" },
+--       -- git
+--       { "<leader>gc", "<cmd>Telescope git_commits<CR>", desc = "commits" },
+--       { "<leader>gs", "<cmd>Telescope git_status<CR>", desc = "status" },
+--       -- search
+--       { '<leader>s"', "<cmd>Telescope registers<cr>", desc = "Registers" },
+--       { "<leader>sa", "<cmd>Telescope autocommands<cr>", desc = "Auto Commands" },
+--       { "<leader>sb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Buffer" },
+--       { "<leader>sc", "<cmd>Telescope command_history<cr>", desc = "Comm
+--       {
+--         "<leader>,",
+--         "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>",
+--         desc = "Switch Buffer",
+--       },
+--       { "<leader>/", Util.telescope("live_grep"), desc = "Grep (root dir)" },
+--       { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "Command History" },
+--       { "<leader><space>", Util.telescope("files"), desc = "Find Files (root dir)" },
+--       -- find
+--       { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
+--       { "<leader>fc", Util.telescope.config_files(), desc = "Find Config File" },
+--       { "<leader>ff", Util.telescope("files"), desc = "Find Files (root dir)" },
+--       { "<leader>fF", Util.telescope("files", { cwd = false }), desc = "Find Files (cw
+--
+--tree sitter
+-- -- keys = {
+--       { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+--       { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+--       { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+--       { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+--       { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+--     }
+--     L
+--     keys = {
+--   { "]]", desc = "Next Reference" },
+--   { "[[", desc = "Prev Reference" },
+-- }
+--
+-- keys = {
+--       {
+--         "<leader>bd",
+--         function()
+--           local bd = require("mini.bufremove").delete
+--           if vim.bo.modified then
+--             local choice = vim.fn.confirm(("Save changes to %q?"):format(vim.fn.bufname()), "&Yes\n&No\n&Cancel")
+--             if choice == 1 then -- Yes
+--               vim.cmd.write()
+--               bd(0)
+--             elseif choice == 2 then -- No
+--               bd(0, true)
+--             end
+--           else
+--             bd(0)
+--           end
+--         end,
+--         desc = "Delete Buffer",
+--       },
+--       -- stylua: ignore
+--       { "<leader>bD", function() require("mini.bufremove").delete(0, true) end, desc = "Delete Buffer (Force)" },
+--     }
+--
+-- keys = {
+--       { "]t", function() require("todo-comments").jump_next() end, desc = "Next todo comment" },
+--       { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous todo comment" },
+--       { "<leader>xt", "<cmd>TodoTrouble<cr>", desc = "Todo (Trouble)" },
+--       { "<leader>xT", "<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme (Trouble)" },
+--       { "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
+--       { "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
+--     }
+--
+--
+--keys = {
+--     { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },
+--     { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
+--     { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
+--   }
+-- },
+--     { "<c-k>", vim.lsp.buf.signature_help, mode = "i", desc = "Signature Help", has = "signatureHelp" },
+--     { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
+--     { "<leader>cc", vim.lsp.codelens.run, desc = "Run Codelens", mode = { "n", "v" }, has = "codeLens" },
+--     { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh & Display Codelens", mode = { "n" }, has = "codeLens" },
+--     {
+--       "<leader>cA",
+--       function()
+--         vim.lsp.buf.code_action({
+--           context = {
+--             only = {
+--               "source",
+--             },
+--             diagnostics = {},
+--           },
+--         })
+--       end,
+--       desc = "Source Action",
+--       has = "codeAction",
+--     }
+-- {
+--     { "<leader>cl", "<cmd>LspInfo<cr>", desc = "Lsp Info" },
+--     { "gd", function() require("telescope.builtin").lsp_definitions({ reuse_win = true }) end, desc = "Goto Definition", has = "definition" },
+--     { "gr", "<cmd>Telescope lsp_references<cr>", desc = "References" },
+--     { "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
+--     { "gI", function() require("telescope.builtin").lsp_implementations({ reuse_win = true }) end, desc = "Goto Implementation" },
+--     { "gy", function() require("telescope.builtin").lsp_type_definitions({ reuse_win = true }) end, desc = "Goto T[y]pe Definition" },
+--     { "K", vim.lsp.buf.hover, desc = "Hover" },
+--     { "gK", vim.lsp.buf.signature_help, desc = "Signature Help", has = "signatureHelp" }
