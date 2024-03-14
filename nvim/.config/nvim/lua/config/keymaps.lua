@@ -4,7 +4,6 @@ local map = vim.keymap.set
 vim.g.mapleader = " "
 -- map("n", "<C-n>", ":Neotree filesystem reveal left<CR>", {})
 -- map("n", "<leader>bf", ":Neotree buffers reveal float<CR>", {})
-
 map("n", "<leader>gd", ":DiffviewOpen origin/master... --imply-local<CR>", { noremap = true, desc = "Git Diff Master" })
 
 if vim.loop.os_uname().sysname == "Darwin" then
@@ -220,7 +219,7 @@ map("n", "<leader>L", function() Util.news.changelog() end, { desc = "LazyVim Ch
 local lazyterm = function() Util.terminal(nil, { cwd = Util.root() }) end
 map("n", "<leader>ft", lazyterm, { desc = "Terminal (root dir)" })
 map("n", "<leader>fT", function() Util.terminal() end, { desc = "Terminal (cwd)" })
-map("n", "<c-/>", lazyterm, { desc = "Terminal (root dir)" })
+-- map("n", "<c-/>", lazyterm, { desc = "Terminal (root dir)" })
 map("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
 
 -- Terminal Mappings
@@ -229,7 +228,7 @@ map("t", "<C-h>", "<cmd>wincmd h<cr>", { desc = "Go to left window" })
 map("t", "<C-j>", "<cmd>wincmd j<cr>", { desc = "Go to lower window" })
 map("t", "<C-k>", "<cmd>wincmd k<cr>", { desc = "Go to upper window" })
 map("t", "<C-l>", "<cmd>wincmd l<cr>", { desc = "Go to right window" })
-map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+-- map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 -- windows
