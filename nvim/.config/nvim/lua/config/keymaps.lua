@@ -41,7 +41,7 @@ map(
 	{ noremap = true, silent = true, desc = "Rspec: Test File" }
 )
 
-map("n", "<leader>t", ":TestNearest<CR>", { desc = "Rspec: Test Nearest", noremap = true, silent = true })
+map("n", "<leader>tt", ":TestNearest<CR>", { desc = "Rspec: Test Nearest", noremap = true, silent = true })
 
 map(
 	"n",
