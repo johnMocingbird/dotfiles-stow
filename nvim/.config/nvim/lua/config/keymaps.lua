@@ -21,6 +21,26 @@ if vim.loop.os_uname().sysname == "Darwin" then
 	map("n", "<leader>o<CR>", ":ObsidianQuickSwitch<CR>", { noremap = true, desc = "QuickSwitch" })
 end
 
+local harpoon = require("harpoon")
+
+harpoon.setup()
+
+map("n", "<C-S-P>", function()
+	harpoon:list():prev()
+end)
+
+map("n", "<C-S-N>", function()
+	harpoon:list():next()
+end)
+
+map("n", "<leader><CR>", function()
+	harpoon.ui:toggle_quick_menu(harpoon:list())
+end)
+
+map("n", "<leader>hm", function()
+	harpoon:list():add()
+end)
+
 require("ror").setup({
 	test = {
 		file = "Testing File...",

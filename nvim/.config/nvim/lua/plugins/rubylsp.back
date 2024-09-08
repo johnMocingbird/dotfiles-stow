@@ -1,1 +1,0 @@
-return { "Shopify/ruby-lsp" }
