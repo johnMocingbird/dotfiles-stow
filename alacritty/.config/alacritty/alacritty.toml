@@ -1,0 +1,158 @@
+working_directory = "None"
+[colors.vi_mode_cursor]
+text = "CellBackground"
+cursor = "#9D7CD8"  # Tokyo Night Purple
+
+# [selection]
+# save_to_clipboard= true
+
+[cursor]
+vi_mode_style = "Block"
+
+[cursor.style]
+blinking = "On"
+shape = "Block"
+
+[font]
+size = 19.0
+
+[font.bold]
+family = "Liga SFMono Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "Liga SFMono Nerd Font"
+style = "Bold Italic"
+
+[font.normal]
+family = "Liga SFMono Nerd Font"
+
+[[keyboard.bindings]]
+action = "Quit"
+key = "Q"
+mods = "Command"
+
+[[keyboard.bindings]]
+action = "Quit"
+key = "W"
+mods = "Command"
+
+[[keyboard.bindings]]
+action = "CreateNewWindow"
+key = "N"
+mods = "Command"
+
+[[keyboard.bindings]]
+action = "ScrollHalfPageDown"
+key = "D"
+mods = "Command"
+
+
+[[keyboard.bindings]]
+action = "ScrollHalfPageUp"
+key = "U"
+mods = "Command"
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[mouse]
+hide_when_typing = true 
+
+[window]
+decorations = "buttonless"
+dynamic_title = true
+opacity = 0.98
+title = "Alacritty"
+
+# Tokyo Night
+[colors.bright]
+black = "#444b6a"
+blue = "#7da6ff"
+cyan = "#0db9d7"
+green = "#b9f27c"
+magenta = "#bb9af7"
+red = "#ff7a93"
+white = "#acb0d0"
+yellow = "#ff9e64"
+
+[colors.normal]
+black = "#32344a"
+blue = "#7aa2f7"
+cyan = "#449dab"
+green = "#9ece6a"
+magenta = "#ad8ee6"
+red = "#f7768e"
+white = "#787c99"
+yellow = "#e0af68"
+
+[colors.primary]
+background = "#1a1b26"
+foreground = "#a9b1d6"
+#Tokyo nght end
+
+[window.padding]
+x = 3
+y = 4
+
+# [colors.bright]
+# black = "#708CA9"
+# blue = "#AA99FF"
+# cyan = "#99FFEE"
+# green = "#A2FF99"
+# magenta = "#FF99CC"
+# red = "#FFAA99"
+# white = "#FFFFFF"
+# yellow = "#FFFF99"
+#
+[colors.cursor]
+cursor = "CellForeground"
+text = "CellBackground"
+
+[colors.footer_bar]
+background = "#0B0D0F"
+foreground = "#F8F8F2"
+
+[colors.hints.end]
+background = "#0B0D0F"
+foreground = "#FFFF80"
+
+[colors.hints.start]
+background = "#FFFF80"
+foreground = "#0B0D0F"
+
+[colors.line_indicator]
+background = "None"
+foreground = "None"
+
+# [colors.normal]
+# black = "#708CA9"
+# blue = "#9580FF"
+# cyan = "#80FFEA"
+# green = "#8AFF80"
+# magenta = "#FF80BF"
+# red = "#FF9580"
+# white = "#F8F8F2"
+# yellow = "#FFFF80"
+
+# [colors.primary]
+# background = "#0B0D0F"
+# bright_foreground = "#FFFFFF"
+# foreground = "#F8F8F2"
+
+[colors.search.focused_match]
+background = "#FFCA80"
+foreground = "#414D58"
+
+[colors.search.matches]
+background = "#8AFF80"
+foreground = "#414D58"
+
+[colors.selection]
+background = "#414D58"
+text = "CellForeground"
+
+# [colors.vi_mode_cursor]
+# cursor = "CellForeground"
+# text = "CellBackground"
