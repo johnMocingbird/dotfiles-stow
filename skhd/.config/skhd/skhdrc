@@ -1,0 +1,222 @@
+# Declare modes 
+
+:: window_management : ~/.config/sketchybar/items/skhd_mode.sh window-management-mode
+:: applcation_launcher : ~/.config/sketchybar/items/skhd_mode.sh applcation_launcher
+:: resize : ~/.config/sketchybar/items/skhd_mode.sh resize
+:: move @ : ~/.config/sketchybar/items/skhd_mode.sh move
+:: safari : ~/.config/sketchybar/items/skhd_mode.sh safari
+:: code : ~/.config/sketchybar/items/skhd_mode.sh code
+:: default : ~/.config/sketchybar/items/skhd_mode.sh default
+:: leader : ~/.config/sketchybar/items/skhd_mode.sh leader
+:: system_settings : ~/.config/sketchybar/items/skhd_mode.sh system_settings
+#============================================================================================================
+## keybinding to inter modes 
+lalt - space; leader
+
+#============================================================================================================
+#===============================IMPORTANT! CREATE AN ESCAPE FOR EACH NEW MODE================================
+resize, applcation_launcher, system_settings, safari, code, leader, window_management < escape ; default  # use this to escpae from each mode
+# use this to allow for esc from mode with double bress
+#============================================================================================================
+#============================================================================================================
+#=====================================Switch Back to default if double pressed===============================
+
+
+system_settings, applcation_launcher, leader, safari, default, move, code, window_management < cmd + alt + ctrl - x ; default # if you want to exist mode with double press add mode here
+leader < lalt - space : skhd -k "cmd + alt + ctrl - x" 
+#============================================================================================================
+#================================LEADER=(switch to different layers here)====================================
+#============================================================================================================
+
+
+leader < p ; system_settings
+leader < w ; window_management
+# app applcation_launcher
+leader < a : osascript -e 'tell application "System Events" to keystroke "i" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x" 
+# mocingbird
+leader < m : osascript -e 'tell application "System Events" to keystroke "s" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x"
+# leader < d : ~/open_ala_dir_selector.sh ; skhd -k "cmd + alt + ctrl - x"
+# shorcut
+leader < s : osascript -e 'tell application "System Events" to keystroke "o" using {command down, option down, control down }' ;  skhd -k "cmd + alt + ctrl - x"
+# smartHome
+leader < h : osascript -e 'tell application "System Events" to keystroke "h" using {command down, option down, control down }' ;  skhd -k "cmd + alt + ctrl - x"
+ # open homerow
+leader < return: osascript -e 'tell application "System Events" to keystroke " " using {option down, command down}' ; skhd -k "cmd + alt + ctrl - x"
+
+leader < space : osascript -e "tell application \"iTerm\" to activate" ; skhd -k "cmd + alt + ctrl - x"
+# leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"
+leader < g : osascript -e 'tell application "System Events" to keystroke "g" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x"
+leader < c : osascript -e 'tell application "System Events" to open location "raycast://extensions/frouo/google-chrome-profiles/index"' ; skhd -k "cmd + alt + ctrl - x"
+
+# leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"
+#Keyboard shorcut to enter a layer
+cmd + alt + ctrl - w ; move 
+cmd + alt + ctrl - a ; applcation_launcher 
+cmd + alt + ctrl - r ; resize 
+cmd + alt + ctrl - i : osascript -e "tell application \"iTerm\" to activate" : skhd -k "cmd + alt + ctrl - x"
+#==========================================================================================================
+#===============Switching to modes while in other modes====================================================
+window_management < cmd + alt + ctrl - w ; move
+window_management, move < r ; resize
+window_management, resize < m ; move
+applcation_launcher < cmd + alt + ctrl - a ; default
+
+
+applcation_launcher, leader < cmd + alt + ctrl - w ; window_management
+window_management, applcation_launcher < cmd + alt + ctrl - l ; leader
+window_management, move, resize, leader < cmd + alt + ctrl - a ; applcation_launcher
+#=============================Import other layers here=======================================================
+
+
+#.load "applications_skhdrc"
+#============================================================================================================
+#============================================================================================================
+#============================================================================================================
+#=========================Felix=Yabai=Config=================================================================
+#============================================================================================================
+#============================================================================================================
+
+ 
+## Navigation (lalt - ...)
+# Space Navigation (four spaces per display): lalt - {1, 2, 3, 4}
+lalt - 1 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[1] ]] && yabai -m space --focus $SPACES[1]
+lalt - 2 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[2] ]] && yabai -m space --focus $SPACES[2]
+lalt - 3 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[3] ]] && yabai -m space --focus $SPACES[3]
+lalt - 4 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[4] ]] && yabai -m space --focus $SPACES[4]
+
+# Window Navigation (through display borders): lalt - {j, k, l, ö}
+default, move, resize < lalt - h    : yabai -m window --focus west  || yabai -m display --focus west  || yabai -m display --focus 1
+default, move, resize < lalt - j    : yabai -m window --focus south || yabai -m display --focus south || yabai -m display --focus 3
+default, move, resize < lalt - k    : yabai -m window --focus north || yabai -m display --focus north
+default, move, resize < lalt - l : yabai -m window --focus east  || yabai -m display --focus east || yabai -m display --focus 2
+
+window_management, leader < h : yabai -m window --focus west  || yabai -m display --focus west
+# Extended Window Navigation: lalt - {h, ä}
+# lalt - n : yabai -m window --focus  last
+lalt - n : yabai -m window --focus "$(yabai -m query --windows | jq -re "sort_by(.display, .space, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" == true and .role != \"AXUnknown\")) | reverse | nth(index(map(select(.\"has-focus\" == true))) - 1).id")"
+lalt - p : yabai -m window --focus "$(yabai -m query --windows | jq -re "sort_by(.display, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" == true and .role != \"AXUnknown\")) | nth(index(map(select(.\"has-focus\" == true))) - 1).id")"
+# Float / Unfloat window: lalt - space
+# lalt - return : yabai -m window --toggle float; sketchybar --trigger window_focus
+
+# Make window zoom to fullscreen: shift + lalt - z
+shift + lalt - z : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
+
+# Make window zoom to parent node: lalt - f 
+lalt - z : yabai -m window --toggle zoom-parent; sketchybar --trigger window_focus
+
+## Window Movement (shift + lalt - ...)
+# Moving windows in spaces: shift + lalt - {j, k, l, ö}
+shift + lalt - h : yabai -m window --warp west || $(yabai -m window --display west && sketchybar --trigger windows_on_spaces && yabai -m display --focus west && yabai -m window --warp last) || yabai -m window --move rel:-10:0
+shift + lalt - j : yabai -m window --warp south || $(yabai -m window --display south && sketchybar --trigger windows_on_spaces && yabai -m display --focus south) || yabai -m window --move rel:0:10
+shift + lalt - k : yabai -m window --warp north || $(yabai -m window --display north && sketchybar --trigger windows_on_spaces && yabai -m display --focus north) || yabai -m window --move rel:0:-10
+shift + lalt - l : yabai -m window --warp east || $(yabai -m window --display east && sketchybar --trigger windows_on_spaces && yabai -m display --focus east && yabai -m window --warp first) || yabai -m window --move rel:10:0
+
+# Toggle split orientation of the selected windows node: shift + lalt - s
+# shift + lalt - s : yabai -m window --toggle split
+
+# Moving windows between spaces: shift + lalt - {1, 2, 3, 4, p, n } (Assumes 4 Spaces Max per Display)
+lalt - 1 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[1] ]] \
+                  && yabai -m window --space $SPACES[1] \
+                  && sketchybar --trigger windows_on_spaces
+
+ralt - 2 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[2] ]] \
+                  && yabai -m window --space $SPACES[2] \
+                  && sketchybar --trigger windows_on_spaces
+
+ralt - 3 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[3] ]] \
+                  && yabai -m window --space $SPACES[3] \
+                  && sketchybar --trigger windows_on_spaces
+
+ralt - 4 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[4] ]] \
+                  && yabai -m window --space $SPACES[4] \
+                  && sketchybar --trigger windows_on_spaces
+
+lalt - 0x21 : yabai -m space --focus prev # ALT + [
+lalt - 0x1E : yabai -m space --focus next # ALT + ]
+
+shift + lalt - p : yabai -m window --space prev && yabai -m space --focus prev && sketchybar --trigger windows_on_spaces
+shift + lalt - n : yabai -m window --space next && yabai -m space --focus next && sketchybar --trigger windows_on_spaces
+
+# Mirror Space on X and Y Axis: shift + lalt - {x, y}
+shift + lalt - x : yabai -m space --mirror x-axis
+shift + lalt - y : yabai -m space --mirror y-axis
+
+## Stacks (shift + ctrl - ...)
+# Add the active window to the window or stack to the {direction}: shift + ctrl - {j, k, l, ö}
+shift + ctrl - h    : yabai -m window  west --stack $(yabai -m query --windows --window | jq -r '.id') && sketchybar --trigger window_focus
+shift + ctrl - j    : yabai -m window south --stack $(yabai -m query --windows --window | jq -r '.id') && sketchybar --trigger window_focus
+shift + ctrl - k    : yabai -m window north --stack $(yabai -m query --windows --window | jq -r '.id') && sketchybar --trigger window_focus
+shift + ctrl - l : yabai -m window  east --stack $(yabai -m query --windows --window | jq -r '.id') && sketchybar --trigger window_focus
+
+# Stack Navigation: shift + ctrl - {n, p}
+shift + ctrl - n : yabai -m window --focus stack.next
+shift + ctrl - p : yabai -m window --focus stack.prev
+
+## Resize (ctrl + lalt - ...)
+# Resize windows: ctrl + lalt - {j, k, l, ö}
+ctrl + lalt - h     : yabai -m window --resize right:-100:0 || yabai -m window --resize left:-100:0
+ctrl + lalt - j    : yabai -m window --resize bottom:0:100 || yabai -m window --resize top:0:100
+ctrl + lalt - k    : yabai -m window --resize bottom:0:-100 || yabai -m window --resize top:0:-100
+ctrl + lalt - l : yabai -m window --resize right:100:0 || yabai -m window --resize left:100:0
+
+# Equalize size of windows: ctrl + lalt - e
+ctrl + lalt - e : yabai -m space --balance
+
+# Enable / Disable gaps in current workspace: ctrl + lalt - g
+ctrl + lalt - g : yabai -m space --toggle padding; yabai -m space --toggle gap
+
+# Enable / Disable gaps in current workspace: ctrl + lalt - g
+ctrl + lalt - b : yabai -m config window_border off 
+shift + ctrl + lalt - b : yabai -m config window_border on
+
+## Insertion (shift + ctrl + lalt - ...)
+# Set insertion point for focused container: shift + ctrl + lalt - {j, k, l, ö, s}
+shift + ctrl + lalt - h : yabai -m window --insert west
+shift + ctrl + lalt - j : yabai -m window --insert south
+shift + ctrl + lalt - k : yabai -m window --insert north
+shift + ctrl + lalt - l : yabai -m window --insert east
+shift + ctrl + lalt - s : yabai -m window --insert stack
+
+## Misc
+# lalt - t : osascript -e "tell application \"iTerm\" to activate" ; skhd -k "cmd + alt + ctrl - x"
+shift + lalt - w : open "/Applications/Safari.app"
+lalt - w : open "/Applications/Arc.app"
+lalt - i : open "/Applications/Simulator.app alias"
+# lalt - x : open "/Applications/xcode.app"
+lalt - c : open "/Applications/ChatGPT.app"
+lalt - s : open "/Applications/Slack.app"
+shift + lalt - s : open "/Users/john/Applications/Chrome Apps.localized/Mocingbird: Shortcut.app/"
+lalt - return : open "/Applications/Alacritty.app/"
+lalt - t : open "/Applications/kitty.app"
+# lalt - lshift - t: alacritty msg create-window
+# Open new Alacritty window
+# lalt - t : alacritty msg create-window
+
+# New window in hor./ vert. splits for all applications with yabai
+# lalt - s : yabai -m window --insert east;  skhd -k "cmd - n"
+lalt - v : yabai -m window --insert south; skhd -k "cmd - n"
+
+# Toggle sketchybar
+# shift + lalt - space : sketchybar --bar hidden=toggle
+#shift + lalt - r : sketchybar --remove '/.*/' && sh -c 'export CONFIG_DIR=$HOME/.config/sketchybar && $CONFIG_DIR/sketchybarrc'
+
+
+resize, move < escape : skhd -k "cmd + alt + ctrl - x"
+lalt - x : yabai -m window --toggle sticky
+
+
+#============================================================================================================
+#===================system_settings==========================================================================
+system_settings < b : osascript -e 'tell application "System Events" to open location "raycast://extensions/VladCuciureanu/toothpick/manage-bluetooth-connections"' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < w : osascript -e 'tell application "System Events" to open location "raycast://extensions/koinzhang/wi-fi/scan-wifi"' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < o : osascript -e 'tell application "System Events" to open location "raycast://extensions/benvp/audio-device/set-output-device"' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < i : osascript -e 'tell application "System Events" to open location "raycast://extensions/benvp/audio-device/set-input-device"' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < d : osascript -e 'tell application "System Events" to open location "raycast://extensions/Haojen/toggle-desktop-visibility/toggle-desktop-icons"' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < h : osascript -e 'tell application "System Events" to open location "raycast://extensions/raycast/system/toggle-hidden-files"' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < r : osascript -e 'tell application "System Events" to open location "raycast://script-commands/monitor-layout--obs--overhead"' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < m : osascript -e 'tell application "System Events" to open location "raycast://script-commands/monitor-layout-main"' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < t : osascript -e 'tell application "System Events" to open location "raycast://extensions/raycast/system/open-trash"' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < p : osascript -e 'tell application "System Events" to keystroke "p" using {command down, option down, control down}' ;  skhd -k "cmd + alt + ctrl - x"
+
+ .load "safari_skhdrc"
+

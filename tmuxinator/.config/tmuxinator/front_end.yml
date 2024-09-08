@@ -1,0 +1,12 @@
+# /Users/john/.config/tmuxinator/rails_console.yml
+
+name: front_end
+root: ~/development/mocingbird/front-end/
+
+windows:
+  - neovim:
+      - nvim .
+  - server:
+      - npm run start-local
+  - lazy_git:
+      - lazygit

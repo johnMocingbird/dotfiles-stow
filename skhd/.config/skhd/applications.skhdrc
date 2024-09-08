@@ -1,0 +1,81 @@
+#============================================================================================================
+#================================APP LAUNCHER================================================================
+#============================================================================================================
+
+applcation_launcher < a : osascript -e "tell application \"Slack\" to activate"
+applcation_launcher < shift - a : osascript -e "tell application \"ADP\" to activate"
+
+applcation_launcher < shift - b : osascript -e "tell application \"BetterDisplay\" to activate"
+applcation_launcher < b : osascript -e "tell application \"balenaEtcher\" to activate"
+
+#applcation_launcher < c : osascript -e "tell application \"XX\" to activate"
+applcation_launcher <  shift - c : osascript -e "tell application \"Calendar\" to activate"
+
+applcation_launcher < shift -  d : osascript -e "tell application \"Discord\" to activate"
+applcation_launcher < d : osascript -e "tell application \"Elgato Stream Deck\" to activate"
+
+#applcation_launcher < e : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift -  e : osascript -e "tell application \"XX\" to activate"
+
+applcation_launcher < f : osascript -e "tell application \"Firefox\" to activate"
+applcation_launcher < shift -  f : osascript -e "tell application \"Freeform\" to activate"
+
+applcation_launcher < g : osascript -e "tell application \"Google Chrome\" to activate"
+#applcation_launcher < shift -  g : osascript -e "tell application \"XX\" to activate"
+
+applcation_launcher < shift -  h : osascript -e "tell application \"Home Assistant\" to activate"
+applcation_launcher < h : osascript -e "tell application \"Home\" to activate"
+
+applcation_launcher < i : osascript -e "tell application \"iTerm\" to activate"
+applcation_launcher < shift -  i : osascript -e "tell application \"Insomnia\" to activate"
+
+applcation_launcher < j : osascript -e "tell application \"Jump\" to activate"
+#applcation_launcher < shift -  j : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < k : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift -  k : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < l : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift -  l : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < m : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift -  m : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < n : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift -  n : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < o : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift -  o : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < p : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - p : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < q : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - q : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < r : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - r : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < s : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - shift - s : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < t : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - t : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < u : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - u : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < v : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - v : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < w : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - w : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < x : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - x : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < y : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - y : osascript -e "tell application \"XX\" to activate"
+
+#applcation_launcher < z : osascript -e "tell application \"XX\" to activate"
+#applcation_launcher < shift - z : osascript -e "tell application \"XX\" to activate"

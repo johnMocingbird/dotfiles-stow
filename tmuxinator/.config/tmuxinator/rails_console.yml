@@ -1,0 +1,11 @@
+# /Users/john/.config/tmuxinator/rails_console.yml
+
+name: rails_console
+root: ~/MyMOC/
+
+windows:
+  - rails_console:
+      - ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75
+      - tmuxinator start rails_console
+      # - cd mymoc
+      # - rails c

@@ -1,0 +1,18 @@
+# /Users/john/.config/tmuxinator/mymoc.yml
+
+name: mymoc
+root: ~/mymoc
+
+windows:
+  - neovim:
+      - ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75
+      - tmuxinator start mymoc
+  - server:
+      - ssh -L 3000:localhost:3000 -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75
+      - tmuxinator start mymoc-server
+  - rails_console:
+      - ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75
+      - tmuxinator start rails_console
+  - lazy_git:
+      - ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75
+      - tmuxinator start lazy_git
