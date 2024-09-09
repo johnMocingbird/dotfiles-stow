@@ -1,0 +1,22 @@
+#!/bin/bash
+
+today=$(date +%m/%d/%Y)
+
+Production testflight v-1.111(2) uploaded for the iteration 3/12/2024 release is completed. 
+@Vedant Kalmegh
+ 
+@Shivani Katkar
+ 
+@Aditya
+echo "test" | pbcopy
+
+
+how can I set this up?
+
+Firsti need to build it.
+what is that command? for Production.
+
+
+
+
+./gradlew assembleProductionRelease

@@ -1,0 +1,68 @@
+#!/usr/bin/env sh
+
+apk_file_path="/Users/john/development/mobile_dev/mobilemoc-ios/android/app/build/outputs/apk/staging/release/"
+
+month_name=""
+day=$(date +%d)
+year=$(date +%Y)
+month_num=$(date +%m)
+
+case $month_num in
+01)
+	month_name="jan"
+	;;
+02)
+	month_name="feb"
+	;;
+03)
+	month_name="mar"
+	;;
+04)
+	month_name="apr"
+	;;
+05)
+	month_name="may"
+	;;
+06)
+	month_name="jun"
+	;;
+07)
+	month_name="jul"
+	;;
+08)
+	month_name="aug"
+	;;
+09)
+	month_name="sep"
+	;;
+10)
+	month_name="oct"
+	;;
+11)
+	month_name="nov"
+	;;
+12)
+	month_name="dec"
+	;;
+*)
+	echo "Unknown month"
+	exit 1
+	;;
+esac
+
+cd ~/development/mobile_dev/mobilemoc-ios/android/
+./gradlew assembleStagingRelease
+
+new_apk="mocingbird_stag_${day}_${month_name}_${year}.apk"
+new_apk_path="${apk_file_path}${new_apk}"
+
+mv "${apk_file_path}app-staging-release.apk" $new_apk_path
+
+osascript - "$new_apk_path" <<EOF
+on run args
+  set filePath to (first item of args)
+  tell application "Finder"
+    set the clipboard to filePath as POSIX file
+  end tell
+end run
+EOF
