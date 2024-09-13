@@ -70,7 +70,7 @@ title = "Alacritty"
 # TokyoNight Alacritty Colors
 # Default colors
 [colors.primary]
-background = '#1a1b26'
+background = '#16161e'
 foreground = '#c0caf5'
 
 #[colors.cursor]
