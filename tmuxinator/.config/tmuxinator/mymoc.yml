@@ -16,3 +16,6 @@ windows:
   - lazy_git:
       - ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75
       - tmuxinator start lazy_git
+  - side_kiq:
+      - ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75
+      - tmuxinator start side_kiq

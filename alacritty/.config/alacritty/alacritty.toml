@@ -6,6 +6,9 @@ cursor = "#9D7CD8"  # Tokyo Night Purple
 # [selection]
 # save_to_clipboard= true
 
+[env]
+term = "xterm-256color"
+
 [cursor]
 vi_mode_style = "Block"
 
