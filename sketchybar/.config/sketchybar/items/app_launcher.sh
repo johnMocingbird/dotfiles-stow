@@ -1,15 +1,10 @@
 #!/bin/bash
 
-safari=(
-	icon=$SAFARI
-	label="Safari || s"
-	label.drawing=on
-)
-
 github=(
 	icon=$GITHUB
-	label="g || Github Web"
+	label="g || Github Web                                                          "
 	label.drawing=on
+
 )
 
 system=(
@@ -20,7 +15,7 @@ system=(
 
 apps=(
 	icon=$APPS
-	label="a || App Launcher"
+	label="a || App Launcher                                                                   "
 	label.drawing=on
 )
 
@@ -50,22 +45,13 @@ cat=(
 
 stories=(
 	icon=$BRANCH
-	label="o || Shortcut Stories"
+	label="                   o ||                                   Shortcut Stories"
 	label.drawing=on
 
 )
 
-move=(
-	icon=$BRANCH
-	label="m || Window: Move"
-	label.drawing=on
-
-)
-
-sketchybar --add item app.menu center \
+sketchybar --add item app.menu left \
 	\
-	--add item safari popup.app.menu \
-	--set safari "${safari[@]}" \
 	--add item github popup.app.menu \
 	--set github "${github[@]}" \
 	--add item apps popup.app.menu \
@@ -82,7 +68,4 @@ sketchybar --add item app.menu center \
 	--set system "${system[@]}" \
 	\
 	--add item stories popup.app.menu \
-	--set stories "${stories[@]}" \
-	\
-	--add item move popup.app.menu \
-	--set move "${move[@]}"
+	--set stories "${stories[@]}"
