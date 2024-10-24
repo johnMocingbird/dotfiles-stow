@@ -14,8 +14,8 @@ default, move, resize < lalt - l : yabai -m window --focus east  || yabai -m dis
 window_management, leader < h : yabai -m window --focus west  || yabai -m display --focus west
 # Extended Window Navigation: lalt - {h, ä}
 # lalt - n : yabai -m window --focus  last
-lalt - n : yabai -m window --focus "$(yabai -m query --windows | jq -re "sort_by(.display, .space, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" == true and .role != \"AXUnknown\")) | reverse | nth(index(map(select(.\"has-focus\" == true))) - 1).id")"
-lalt - p : yabai -m window --focus "$(yabai -m query --windows | jq -re "sort_by(.display, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" == true and .role != \"AXUnknown\")) | nth(index(map(select(.\"has-focus\" == true))) - 1).id")"
+# lalt - n : yabai -m window --focus "$(yabai -m query --windows | jq -re "sort_by(.display, .space, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" == true and .role != \"AXUnknown\")) | reverse | nth(index(map(select(.\"has-focus\" == true))) - 1).id")"
+# lalt - p : yabai -m window --focus "$(yabai -m query --windows | jq -re "sort_by(.display, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" == true and .role != \"AXUnknown\")) | nth(index(map(select(.\"has-focus\" == true))) - 1).id")"
 # Float / Unfloat window: lalt - space
 # lalt - return : yabai -m window --toggle float; sketchybar --trigger window_focus
 

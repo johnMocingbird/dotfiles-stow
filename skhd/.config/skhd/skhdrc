@@ -15,14 +15,14 @@ lalt - space; leader
 
 #============================================================================================================
 #===============================IMPORTANT! CREATE AN ESCAPE FOR EACH NEW MODE================================
-resize, applcation_launcher, system_settings, safari, code, leader, window_management < escape ; default  # use this to escpae from each mode
+resize, applcation_launcher, system_settings, safari, leader, window_management < escape ; default  # use this to escpae from each mode
 # use this to allow for esc from mode with double bress
 #============================================================================================================
 #============================================================================================================
 #=====================================Switch Back to default if double pressed===============================
 
 
-system_settings, applcation_launcher, leader, safari, default, move, code, window_management < cmd + alt + ctrl - x ; default # if you want to exist mode with double press add mode here
+system_settings, applcation_launcher, leader, safari, default, move, window_management < cmd + alt + ctrl - x ; default # if you want to exist mode with double press add mode here
 leader < lalt - space : skhd -k "cmd + alt + ctrl - x" 
 #============================================================================================================
 #================================LEADER=(switch to different layers here)====================================
@@ -35,18 +35,18 @@ leader < w ; window_management
 leader < a : osascript -e 'tell application "System Events" to keystroke "i" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x" 
 # mocingbird
 leader < m : osascript -e 'tell application "System Events" to keystroke "s" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x"
-# leader < d : ~/open_ala_dir_selector.sh ; skhd -k "cmd + alt + ctrl - x"
 # shorcut
 leader < s : osascript -e 'tell application "System Events" to keystroke "o" using {command down, option down, control down }' ;  skhd -k "cmd + alt + ctrl - x"
 # smartHome
 leader < h : osascript -e 'tell application "System Events" to keystroke "h" using {command down, option down, control down }' ;  skhd -k "cmd + alt + ctrl - x"
  # open homerow
-leader < return: osascript -e 'tell application "System Events" to keystroke " " using {option down, command down}' ; skhd -k "cmd + alt + ctrl - x"
+leader < f : osascript -e 'tell application "System Events" to keystroke "f" using { option down }' ;  skhd -k "cmd + alt + ctrl - x"
+# leader < return: osascript -e 'tell application "System Events" to keystroke " " using {option down, command down}' ; skhd -k "cmd + alt + ctrl - x"
 
-leader < space : osascript -e "tell application \"iTerm\" to activate" ; skhd -k "cmd + alt + ctrl - x"
+leader < space : open "/Applications/kitty.app" ; skhd -k "cmd + alt + ctrl - x"
 # leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"
-leader < g : osascript -e 'tell application "System Events" to keystroke "g" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x"
-leader < c : osascript -e 'tell application "System Events" to open location "raycast://extensions/frouo/google-chrome-profiles/index"' ; skhd -k "cmd + alt + ctrl - x"
+# leader < g : osascript -e 'tell application "System Events" to keystroke "g" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x"
+# leader < c : osascript -e 'tell application "System Events" to open location "raycast://extensions/frouo/google-chrome-profiles/index"' ; skhd -k "cmd + alt + ctrl - x"
 
 # leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"
 #Keyboard shorcut to enter a layer
@@ -89,6 +89,9 @@ lalt - s : open "/Applications/Slack.app"
 shift + lalt - s : open "/Users/john/Applications/Chrome Apps.localized/Mocingbird: Shortcut.app/"
 lalt - return : open "/Applications/Alacritty.app/"
 lalt - t : open "/Applications/kitty.app"
+lalt - n : open "/Applications/Numbers.app"
+# lalt - p : open "/System/Volumes/Preboot/Cryptexes/App/System/Library/CoreServices/PasswordsSettingsExtension.appex"
+
 # lalt - lshift - t: alacritty msg create-window
 # Open new Alacritty window
 # lalt - t : alacritty msg create-window
