@@ -9,6 +9,7 @@ return {
 			require("luasnip.loaders.from_vscode").lazy_load({
 				paths = { "~/.config/nvim/lua/snippets/" },
 			})
+			require("luasnip.loaders.from_lua").load({ paths = { "~/.config/nvim/lua/luasnippets/" } })
 		end,
 		dependencies = {
 			{
@@ -51,6 +52,8 @@ return {
         expr = true, silent = true, mode = "i",
       },
       { "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
+      { "<M-Down>", function() require("luasnip").change_choice(1) end, mode = { "i", "s" } },
+      { "<M-Up>", function() require("luasnip").change_choice(-1) end, mode = { "i", "s" } },
       { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
     },
 	},

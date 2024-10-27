@@ -4,6 +4,8 @@ local map = vim.keymap.set
 vim.g.mapleader = " "
 -- map("n", "<C-n>", ":Neotree filesystem reveal left<CR>", {})
 -- map("n", "<leader>bf", ":Neotree buffers reveal float<CR>", {})
+--
+vim.keymap.del("n", "<C-Down>") -- Removes the resize keybinding in normal mode
 
 map("n", "<leader>gd", ":DiffviewOpen origin/master... --imply-local<CR>", { noremap = true, desc = "Git Diff Master" })
 
@@ -23,6 +25,13 @@ end
 
 local harpoon = require("harpoon")
 
+map(
+	"n",
+	"<leader>S",
+	"<cmd>source ~/.config/nvim/lua/luasnippets/luasnip.lua<CR>",
+	{ noremap = true, desc = "reload luasnippets" }
+)
+
 harpoon.setup()
 
 map("n", "<C-S-P>", function()
@@ -40,6 +49,19 @@ end)
 map("n", "<leader>hm", function()
 	harpoon:list():add()
 end)
+
+map(
+	"n",
+	"zi",
+	":lua vim.opt.foldmethod = 'indent'<CR>",
+	{ noremap = true, desc = "set foldmethod indent", silent = true }
+)
+map(
+	"n",
+	"zT",
+	":lua vim.opt.foldmethod = 'expr'<CR>",
+	{ noremap = true, desc = "foldmethod Treesitter", silent = true }
+)
 
 require("ror").setup({
 	test = {
@@ -272,3 +294,56 @@ map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
 map("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+
+
+local wk = require("which-key")
+wk.register({
+    g = {
+        name = "+Git",
+                p = {
+                name = "+Pull Request",
+                c = { "<cmd>GHClosePR<cr>", "Close" },
+                d = { "<cmd>GHPRDetails<cr>", "Details" },
+                e = { "<cmd>GHExpandPR<cr>", "Expand" },
+                o = { "<cmd>GHOpenPR<cr>", "Open" },
+                p = { "<cmd>GHPopOutPR<cr>", "PopOut" },
+                r = { "<cmd>GHRefreshPR<cr>", "Refresh" },
+                t = { "<cmd>GHOpenToPR<cr>", "Open To" },
+                z = { "<cmd>GHCollapsePR<cr>", "Collapse" },
+            },
+        h = {
+            name = "+Github",
+            c = {
+                name = "+Commits",
+                c = { "<cmd>GHCloseCommit<cr>", "Close" },
+                e = { "<cmd>GHExpandCommit<cr>", "Expand" },
+                o = { "<cmd>GHOpenToCommit<cr>", "Open To" },
+                p = { "<cmd>GHPopOutCommit<cr>", "Pop Out" },
+                z = { "<cmd>GHCollapseCommit<cr>", "Collapse" },
+            },
+            i = {
+                name = "+Issues",
+                p = { "<cmd>GHPreviewIssue<cr>", "Preview" },
+            },
+            l = {
+                name = "+Litee",
+                t = { "<cmd>LTPanel<cr>", "Toggle Panel" },
+            },
+            r = {
+                name = "+Review",
+                b = { "<cmd>GHStartReview<cr>", "Begin" },
+                c = { "<cmd>GHCloseReview<cr>", "Close" },
+                d = { "<cmd>GHDeleteReview<cr>", "Delete" },
+                e = { "<cmd>GHExpandReview<cr>", "Expand" },
+                s = { "<cmd>GHSubmitReview<cr>", "Submit" },
+                z = { "<cmd>GHCollapseReview<cr>", "Collapse" },
+            },
+            t = {
+                name = "+Threads",
+                c = { "<cmd>GHCreateThread<cr>", "Create" },
+                n = { "<cmd>GHNextThread<cr>", "Next" },
+                t = { "<cmd>GHToggleThread<cr>", "Toggle" },
+            },
+        },
+    },
+}, { prefix = "<leader>" })

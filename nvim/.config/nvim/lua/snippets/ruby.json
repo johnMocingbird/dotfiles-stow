@@ -342,6 +342,35 @@
     "prefix": "pry",
     "body": "binding.pry"
   },
+  "Insert radio select SL": {
+    "prefix": "radio",
+    "body": [
+      "${1:object_name}: {",
+      "\tdisplay_value: '${2:Display value text}',",
+      "\tdisplay_type: 'radio_button',",
+      "\tdisplay_options: {",
+      "\t\tyes_option: 'Yes',",
+      "\t\tno_option: 'No',",
+      "\t\tunknown_option: 'Unknown'",
+      "\t}",
+      "},"
+    ]
+  },
+  "Insert UI checkbox for credits": {
+    "prefix": "checkbox sub",
+    "body": [
+      "${1:checkbox_name}: {",
+      "\tdisplay_value: '${2:Display value text}',",
+      "\tdisplay_type: 'checkbox',",
+      "\t${1}_credits: {",
+      "\t\tdisplay_value: '${3|Number of sub-credits,Number of Main Credits|}',",
+      "\t\tdisplay_type: 'input_field'",
+      "\t},",
+      "\tcategory: '${4:Category Name}',",
+      "\tsub_category: ['${5:Sub Category Name}']",
+      "},"
+    ]
+  },
   "Insert irb call": {
     "prefix": "irb",
     "body": "binding.irb"

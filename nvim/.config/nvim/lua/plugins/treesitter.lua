@@ -14,6 +14,7 @@ return {
 	-- syntax highlighting.
 	{
 		"nvim-treesitter/nvim-treesitter",
+		dependencies = { "RRethy/nvim-treesitter-endwise" },
 		version = false, -- last release is way too old and doesn't work on Windows
 		build = ":TSUpdate",
 		event = { "LazyFile", "VeryLazy" },
@@ -36,11 +37,12 @@ return {
 		---@type TSConfig
 		---@diagnostic disable-next-line: missing-fields
 		opts = {
+			endwise = { enable = true },
 			highlight = { enable = true },
 			indent = { enable = true },
+			folding = { enable = true },
 			ensure_installed = {
 				"bash",
-				"c",
 				"diff",
 				"html",
 				"javascript",
@@ -143,5 +145,9 @@ return {
 		"windwp/nvim-ts-autotag",
 		event = "LazyFile",
 		opts = {},
+	},
+	{
+		"kevinhwang91/nvim-ufo",
+		dependencies = { "kevinhwang91/promise-async" },
 	},
 }
