@@ -11,7 +11,28 @@ local f = ls.function_node
 local d = ls.dynamic_node
 local sn = ls.snippet_node
 
-local dynamic_flag_name = function()
+local generate_slug = function(input)
+	vim.notify(input)
+	if type(input) == "string" then
+		local result = string.lower(input)
+		-- Remove special characters
+		result = result:gsub("[^%w%s]", "")
+
+		-- Replace spaces with underscores
+		result = result:gsub("%s+", "_")
+
+		local max_length = 40
+		if #result > max_length then
+			result = result:sub(1, max_length)
+		end
+		return result
+	else
+		return ""
+	end
+end
+
+local dynamic_flag_name = function(input)
+	vim.notify(input)
 	local state = vim.fn.expand("%:t:r")
 	local path = vim.fn.expand("%p")
 	local directory = path:match(".*/([^/]+)/[^/]+$")
@@ -29,8 +50,10 @@ local dynamic_flag_name = function()
 		physical_therapist = "pt",
 	}
 
+	local slug = generate_slug(input)
+
 	local user_type = user_type_map[directory]
-	return state .. "_" .. user_type .. "_"
+	return state .. "_" .. user_type .. "_" .. slug
 end
 
 ls.add_snippets("ruby", {
@@ -68,17 +91,20 @@ ls.add_snippets("ruby", {
 	),
 })
 
--- TODO: add exemption clause
-ls.add_snippets("lua", {
+ls.add_snippets("ruby", {
 	s(
-		"",
+		"exemption",
 		fmt(
 			[[
-      {{
-
-      }},
+      "**EXEMPTION**: You may be exempt from this requirement if any of the following apply:" +
+      "<br>-{}" +
+      "<br>-{}" +
+      "<br>IF you are exempt, click the 3 dots to the right of the task and click 'Attest as exempt'."
       ]],
-			{}
+			{
+				i(1, "body_of_exemption"),
+				i(2, "body_of_exemption"),
+			}
 		)
 	),
 })
@@ -134,36 +160,15 @@ ls.add_snippets("ruby", {
 	}),
 })
 
--- TODO: do something like this, to name the flag name, based on the name of the checkbox
---   local function generate_slug(input)
---   -- Convert to lowercase
---   local result = string.lower(input)
---
---   -- Remove special characters
---   result = result:gsub("[^%w%s]", "")
---
---   -- Replace spaces with underscores
---   result = result:gsub("%s+", "_")
---
---   -- Truncate the string if it exceeds 40 characters
---   local max_length = 40
---   if #result > max_length then
---     result = result:sub(1, max_length)
---   end
---
---   return result
--- end
---
-
 ls.add_snippets("ruby", {
 	s(
 		"auto-checkbox",
 		fmt(
 			[[
-      {}{}: {{
+      {}: {{
         display_value: '{}',
         display_type: 'checkbox',
-        {}{}_credits: {{
+        {}_credits: {{
           display_value: '{}',
           {}
         }},
@@ -172,21 +177,21 @@ ls.add_snippets("ruby", {
       }},
       ]],
 			{
-				f(dynamic_flag_name),
-				i(1, "flag_name"),
-				i(2, "display_value_value"),
-				f(dynamic_flag_name),
 				f(function(args)
-					return args[1][1]
+					return dynamic_flag_name(args[1][1])
 				end, { 1 }),
-				c(3, {
+				i(1, "display_value_value"),
+				f(function(args)
+					return dynamic_flag_name(args[1][1])
+				end, { 1 }),
+				c(2, {
 					t("Number of sub-credits"),
 					t("Number of Main Credits"),
 					i(nil, ""),
 				}),
 				t("display_type: 'input_field'"),
-				i(4, "category"),
-				i(5, "sub_category"),
+				i(3, "category"),
+				i(4, "sub_category"),
 			}
 		)
 	),

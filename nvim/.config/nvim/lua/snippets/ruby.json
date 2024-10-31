@@ -462,5 +462,68 @@
       "\t$0",
       "end"
     ]
+  },
+  "State License Task": {
+    "prefix": "state_license",
+    "body": [
+      "{",
+      "  title: \"Renew state license\",",
+      "  description: \"${1:Enter description}\",",
+      "  active_on: ${2:0}.months,",
+      "  active_till: ${3:0}.months,",
+      "  interval: ${4:2}.years,",
+      "  identifier_under_specialty: 1,",
+      "  cyclic: true,",
+      "  cycle_lead: true",
+      "},"
+    ]
+  },
+  "Sub Credit Task": {
+    "prefix": "sub_credit_task",
+    "body": [
+      "{",
+      "  title: \"${1:}\",",
+      "  description: \"${2:Enter description}\",",
+      "  active_on: ${3:0}.months,",
+      "  active_till: ${4:0}.months,",
+      "  interval: ${5:2}.years,",
+      "  cyclic: ${6|true,false|},",
+      "  sub_credits: ${7:10},",
+      "  category_1_sub_credits_flag: %w[",
+      "    ${8:x}",
+      "  ],",
+      "  sub_credit_flags: {",
+      "    from: \"Certification\",",
+      "    flag_names: %w[",
+      "      ${9:x}",
+      "    ]",
+      "  },",
+      "  identifier_under_specialty: ${10:1}",
+      "},"
+    ]
+  },
+  "Main Credit Task": {
+    "prefix": "main_credit_task",
+    "body": [
+      "{",
+      "  title: \"${1:}\",",
+      "  description: \"${2:Enter description}\",",
+      "  active_on: ${3:0}.months,",
+      "  interval: ${4:2}.years,",
+      "  cyclic: ${5|true,false|},",
+      "  active_till: ${6:0}.months,",
+      "  credits: ${7:0},",
+      "  category_1_main_credits_flags: %w[",
+      "    ${8:''}",
+      "  ],",
+      "  main_credit_flags: {",
+      "    from: \"Certification\",",
+      "    flag_name: %w[",
+      "      ${9:''}",
+      "    ]",
+      "  },",
+      "  identifier_under_specialty: ${10:1}",
+      "},"
+    ]
   }
 }

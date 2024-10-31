@@ -25,6 +25,16 @@ end
 
 local harpoon = require("harpoon")
 
+-- heroku logs --tail -a mymoc-staging | sed -E 's/^[^ ]+ [^ ]+ [^ ]+ [^ ]+ (.*)$/\1/'
+
+map("n", "<leader>fs", ":Telescope lsp_document_symbols<CR>", { noremap = true, silent = true })
+
+if vim.fn.getcwd() == "/home/john/mymoc" then
+	map("n", "<leader>fr", function()
+		require("telescope.builtin").find_files({ search_dirs = { "/home/john/mymoc/app/models/concerns/tasks/" } })
+	end, { desc = "Find Rules" })
+end
+
 map(
 	"n",
 	"<leader>S",
