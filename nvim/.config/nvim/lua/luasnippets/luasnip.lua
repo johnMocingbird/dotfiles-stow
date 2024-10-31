@@ -12,7 +12,6 @@ local d = ls.dynamic_node
 local sn = ls.snippet_node
 
 local generate_slug = function(input)
-	vim.notify(input)
 	if type(input) == "string" then
 		local result = string.lower(input)
 		-- Remove special characters
@@ -32,7 +31,6 @@ local generate_slug = function(input)
 end
 
 local dynamic_flag_name = function(input)
-	vim.notify(input)
 	local state = vim.fn.expand("%:t:r")
 	local path = vim.fn.expand("%p")
 	local directory = path:match(".*/([^/]+)/[^/]+$")
