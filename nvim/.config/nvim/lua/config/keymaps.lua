@@ -8,6 +8,7 @@ vim.g.mapleader = " "
 vim.keymap.del("n", "<C-Down>") -- Removes the resize keybinding in normal mode
 
 map("n", "<leader>gd", ":DiffviewOpen origin/master... --imply-local<CR>", { noremap = true, desc = "Git Diff Master" })
+map("n", "<leader>C", ":ChatGPT<CR>", { noremap = true, desc = "ChatGpt" })
 
 if vim.loop.os_uname().sysname == "Darwin" then
 	map("n", "<leader>oo", ":ObsidianSearch<CR>", { noremap = true, desc = "ObsidianSearch" })
@@ -93,7 +94,19 @@ map(
 	{ noremap = true, silent = true, desc = "Rspec: Test File" }
 )
 
-map("n", "<leader>tt", ":TestNearest<CR>", { desc = "Rspec: Test Nearest", noremap = true, silent = true })
+map(
+	"n",
+	"<leader>tf",
+	":TestFile -strategy=neovim<CR>",
+	{ desc = "Rspec: Test Nearest", noremap = true, silent = true }
+)
+
+map(
+	"n",
+	"<leader>tt",
+	":TestNearest -strategy=neovim<CR>",
+	{ desc = "Rspec: Test Nearest", noremap = true, silent = true }
+)
 
 map(
 	"n",
@@ -357,3 +370,15 @@ wk.register({
         },
     },
 }, { prefix = "<leader>" })
+
+map('n', '<leader>dD', [[:lua CalculateDateDifference()<CR>]], { noremap = true, desc = 'Difference'} )
+
+function CalculateDateDifference()
+  local start_date = vim.fn.input("Start Date:")
+  local end_date = vim.fn.input("End Date:")
+  local handle = io.popen("ruby -e 'require \"date\"; d1 = Date.strptime(\"" .. start_date .. "\", \"%d, %m, %Y\"); d2 = Date.strptime(\"" .. end_date .. "\", \"%d, %m, %Y\"); puts (d2 - d1).to_i'")
+  local result = handle:read("*a")
+  handle:close()
+
+  print(result)
+end
