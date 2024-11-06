@@ -63,7 +63,7 @@ defaults=(
 sketchybar --default "${defaults[@]}"
 
 sketchybar --set mode_indicator drawing_method=separator
-sketchybar --set mode_indicator label="default"
+sketchybar --set mode_indicator label=""
 sketchybar --set mode_indicator drawing_method=separator
 sketchybar --add item yabai right
 sketchybar --add alias MeetingBar center
@@ -75,6 +75,8 @@ source "$ITEM_DIR/spaces.sh"
 source "$ITEM_DIR/yabai.sh"
 source "$ITEM_DIR/cpu.sh"
 source "$ITEM_DIR/front_app.sh"
+source "$ITEM_DIR/tmux.sh"
+
 sketchybar --add item mode_indicator center
 
 # Center

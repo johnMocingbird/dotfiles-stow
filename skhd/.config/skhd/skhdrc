@@ -89,8 +89,9 @@ lalt - s : open "/Applications/Slack.app"
 shift + lalt - s : open "/Users/john/Applications/Chrome Apps.localized/Mocingbird: Shortcut.app/"
 lalt - return : open "/Applications/Alacritty.app/"
 lalt - t : open "/Applications/kitty.app"
+shift + lalt - t : open "/Applications/iTerm.app/"
 lalt - n : open "/Applications/Numbers.app"
-# lalt - p : open "/System/Volumes/Preboot/Cryptexes/App/System/Library/CoreServices/PasswordsSettingsExtension.appex"
+lalt - p : open "/System/Applications/Passwords.app/"
 
 # lalt - lshift - t: alacritty msg create-window
 # Open new Alacritty window
