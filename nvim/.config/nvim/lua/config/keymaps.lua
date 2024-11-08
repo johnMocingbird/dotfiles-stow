@@ -30,6 +30,13 @@ local harpoon = require("harpoon")
 
 map("n", "<leader>fs", ":Telescope lsp_document_symbols<CR>", { noremap = true, silent = true })
 
+map(
+	"n",
+	"<leader>F",
+	":lua require('telescope.builtin').lsp_document_symbols({ symbols = { 'Function', 'Method' } })<CR>",
+	{ noremap = true, silent = true }
+)
+
 if vim.fn.getcwd() == "/home/john/mymoc" then
 	map("n", "<leader>fr", function()
 		require("telescope.builtin").find_files({ search_dirs = { "/home/john/mymoc/app/models/concerns/tasks/" } })
@@ -87,13 +94,13 @@ require("ror").setup({
 	fail_icon = "XXX",
 })
 map("n", "<leader>rc", ":lua require('ror.commands').list_commands()<CR>", { silent = true, desc = "Rails Console" })
-map(
-	"n",
-	"<leader>T",
-	":lua require('ror.test').run()<CR>",
-	{ noremap = true, silent = true, desc = "Rspec: Test File" }
-)
-
+-- map(
+-- 	"n",
+-- 	"<leader>T",
+-- 	":lua require('ror.test').run()<CR>",
+-- 	{ noremap = true, silent = true, desc = "Rspec: Test File" }
+-- )
+--
 map(
 	"n",
 	"<leader>tf",
@@ -103,7 +110,7 @@ map(
 
 map(
 	"n",
-	"<leader>tt",
+	"<leader>T",
 	":TestNearest -strategy=neovim<CR>",
 	{ desc = "Rspec: Test Nearest", noremap = true, silent = true }
 )
