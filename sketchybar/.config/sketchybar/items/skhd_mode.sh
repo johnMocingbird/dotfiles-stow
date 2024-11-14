@@ -19,7 +19,7 @@ case $MODE in
 "resize") COLOR=0xffa6da95 ;;
 "safari") COLOR=0xffa6da95 ;;
 "window-management-mode") COLOR=0xffeed49f ;;
-"default") COLOR=0xffcad3f5 ;;
+"") COLOR=0xffcad3f5 ;;
 "leader") COLOR=0xffcad3f5 ;;
 "system_settings") COLOR=0xffcad3f5 ;;
 "applcation_launcher") COLOR=0xffcad3f5 ;;

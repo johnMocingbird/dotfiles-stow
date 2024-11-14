@@ -1,0 +1,21 @@
+# /Users/john/.config/tmuxinator/mymoc_worktree.yml
+
+name: mymoc_worktree
+root: ~/MyMOC/
+
+windows:
+  - neovim:
+      - ssh -t -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75 'export WORKTREE_DIR_MYMOC="'"$WORKTREE_DIR_MYMOC"''
+      - tmuxinator start mymoc
+  - server:
+      - ssh -t -L 3000:localhost:3000 -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75 'export WORKTREE_DIR_MYMOC="'"$WORKTREE_DIR_MYMOC"'"'
+      - tmuxinator start mymoc-server
+  - rails_console:
+      - ssh -t -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75 'export WORKTREE_DIR_MYMOC="'"$WORKTREE_DIR_MYMOC"'"'
+      - tmuxinator start rails_console
+  - lazy_git:
+      - ssh -t -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75 'export WORKTREE_DIR_MYMOC="'"$WORKTREE_DIR_MYMOC"'"'
+      - tmuxinator start lazy_git
+  - side_kiq:
+      - ssh -t -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75 'export WORKTREE_DIR_MYMOC="'"$WORKTREE_DIR_MYMOC"'"'
+      - tmuxinator start side_kiq
