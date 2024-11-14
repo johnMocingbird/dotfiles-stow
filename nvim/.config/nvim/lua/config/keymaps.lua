@@ -3,7 +3,7 @@ local map = vim.keymap.set
 
 vim.g.mapleader = " "
 -- map("n", "<C-n>", ":Neotree filesystem reveal left<CR>", {})
--- map("n", "<leader>bf", ":Neotree buffers reveal float<CR>", {})
+map("n", "<leader>bf", ":Neotree buffers reveal float<CR>", {})
 --
 vim.keymap.del("n", "<C-Down>") -- Removes the resize keybinding in normal mode
 
@@ -294,11 +294,11 @@ map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 map("n", "<leader>L", function() Util.news.changelog() end, { desc = "LazyVim Changelog" })
 
 -- floating terminal
-local lazyterm = function() Util.terminal(nil, { cwd = Util.root() }) end
-map("n", "<leader>ft", lazyterm, { desc = "Terminal (root dir)" })
+local snacks = function() Util.terminal(nil, { cwd = Util.root() }) end
+map("n", "<leader>ft", snacks, { desc = "Terminal (root dir)" })
 map("n", "<leader>fT", function() Util.terminal() end, { desc = "Terminal (cwd)" })
-map("n", "<c-/>", lazyterm, { desc = "Terminal (root dir)" })
-map("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
+map("n", "<c-/>", snacks, { desc = "Terminal (root dir)" })
+map("n", "<c-_>", snacks, { desc = "which_key_ignore" })
 
 -- Terminal Mappings
 map("t", "<esc><esc>", "<c-\\><c-n>", { desc = "Enter Normal Mode" })

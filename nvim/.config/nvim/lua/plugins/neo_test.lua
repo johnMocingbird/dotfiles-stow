@@ -19,7 +19,7 @@ return {
 			output = { open_on_run = true },
 			quickfix = {
 				open = function()
-					vim.cmd("copen")
+					-- vim.cmd("copen")
 				end,
 			},
 		},
