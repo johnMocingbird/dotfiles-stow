@@ -66,7 +66,6 @@ sketchybar --set mode_indicator drawing_method=separator
 sketchybar --set mode_indicator label=""
 sketchybar --set mode_indicator drawing_method=separator
 sketchybar --add item yabai right
-sketchybar --add alias MeetingBar center
 
 # Left
 source "$ITEM_DIR/app_launcher.sh"
@@ -74,7 +73,7 @@ source "$ITEM_DIR/apple.sh"
 source "$ITEM_DIR/spaces.sh"
 source "$ITEM_DIR/yabai.sh"
 source "$ITEM_DIR/cpu.sh"
-source "$ITEM_DIR/front_app.sh"
+sketchybar --add alias MeetingBar left
 source "$ITEM_DIR/tmux.sh"
 
 sketchybar --add item mode_indicator center
@@ -89,6 +88,7 @@ source "$ITEM_DIR/wifi.sh"
 source "$ITEM_DIR/battery.sh"
 source "$ITEM_DIR/volume.sh"
 source "$ITEM_DIR/safari.sh"
+source "$ITEM_DIR/front_app.sh"
 sketchybar --hotload on
 
 # Forcing all item scripts to run (never do this outside of sketchybarrc)

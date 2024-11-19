@@ -77,7 +77,7 @@ window_management, move, resize, leader < cmd + alt + ctrl - a ; applcation_laun
 #============================================================================================================
 
  
-
+alt + shift - z : ~/.config/skhd/float_center.sh
 ## Misc
 # lalt - t : osascript -e "tell application \"iTerm\" to activate" ; skhd -k "cmd + alt + ctrl - x"
 shift + lalt - w : open "/Applications/Safari.app"
@@ -89,7 +89,7 @@ lalt - s : open "/Applications/Slack.app"
 shift + lalt - s : open "/Users/john/Applications/Chrome Apps.localized/Mocingbird: Shortcut.app/"
 lalt - return : open "/Applications/Alacritty.app/"
 lalt - t : open "/Applications/kitty.app"
-shift + lalt - t : open "/Applications/iTerm.app/"
+shift + lalt - t :  open -na "kitty"
 lalt - n : open "/Applications/Numbers.app"
 lalt - p : open "/System/Applications/Passwords.app/"
 
