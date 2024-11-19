@@ -6,6 +6,7 @@ function COPY_RELATIVE_PATH_TO_CLIPBOARD()
 	vim.fn.setreg("+", relativepath)
 end
 require("telescope").load_extension("git_worktree")
+require("mymoc.telescope_grep")
 if vim.loop.os_uname().sysname == "Darwin" then
 	require("obsidian")
 end
