@@ -251,7 +251,7 @@ map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
 
 -- formatting
 map({ "n", "v" }, "<leader>cf", function()
-	Util.format({ force = true })
+	LazyVim.format({ force = true })
 end, { desc = "Format" })
 
 -- diagnostic

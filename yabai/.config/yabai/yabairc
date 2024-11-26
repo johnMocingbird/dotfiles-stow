@@ -37,7 +37,7 @@ yabai -m config external_bar all:35:0 \
 	bottom_padding 4 \
 	left_padding 4 \
 	right_padding 4 \
-	window_gap 6
+	window_gap 8
 # Exclude problematic apps from being managed:
 yabai -m rule --add app="^(Family|LuLu|Calculator|Software Update|Dictionary|VLC|System Preferences|System Settings|zoom.us|Photo Booth|Archive Utility|Python|LibreOffice|App Store|Steam|Alfred|Activity Monitor|familycircled|Raycast)$" manage=off
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
@@ -45,6 +45,7 @@ yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
 yabai -m rule --add label="Select file to save to" app="^Inkscape$" title="Select file to save to" manage=off
 yabai -m signal --add event=window_focused action="~/.config/yabai/unfloat.sh"
+yabai -m rule --add app="kitty" title="window-switcher" manage=off
 
 yabai -m config layout bsp
 
