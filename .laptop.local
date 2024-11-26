@@ -222,6 +222,7 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/.z
 
 # "zsh-autocomplete
 git clone https://github.com/marlonrichert/zsh-autocomplete.git $HOME/.zsh/zsh-autocomplete
+# TODO: setup append_to_zshrc to zsh with my plugins script
 
 source $HOME/.zshrc
 cfg config --local status.showUntrackedFiles no
