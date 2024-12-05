@@ -1,0 +1,242 @@
+#!/bin/sh
+
+brew bundle --file=- <<EOF
+
+cask "arc" unless File.directory?("/Applications/Arc.app")
+tap "homebrew/cask-fonts"
+tap "FelixKratz/formulae"
+cask "skitch" unless File.directory?("/Applications/Skitch.app")
+cask "vlc" unless File.directory?("/Applications/VLC.app")
+cask "obs" unless File.directory?("/Applications/OBS.app")
+cask "the-unarchiver" unless File.directory?("/Applications/The Unarchiver.app")
+cask "obsidian" unless File.directory?("/Applications/Obsidian.app")
+cask "alfred" unless File.directory?("/Applications/Alfred 5.app")
+
+# font stuff
+cask "font-hack-nerd-font"
+cask "sf-symbols" unless File.directory?("/Applications/SF Symbols beta.app")
+cask "font-jetbrains-mono" unless File.directory?("~/Library/Fonts/JetBrainsMono-Bold.ttf")
+#TODO: is this an issue?
+cask "font-fira-code"
+# brew install --cask font-fira-code
+
+# GitHub extensions
+brew "gh"
+brew "lazygit"
+
+# recommended cli tools
+cask "kitty" unless File.directory?("/Applications/kitty.app")
+cask "alacritty" unless File.directory?("/Applications/Alacritty.app")
+brew "tmux"
+brew "nnn"
+brew "ripgrep"
+brew "neofetch"
+# brew "universal-ctags"
+brew "rename"
+brew "dooit"
+brew "btop"
+brew "weechat"
+# requires slack plugin
+
+# tmux dependency
+brew "stow"
+brew "fzf"
+brew "bat"
+
+# GUI
+brew "jq"
+brew "alfred"
+brew "skhd"
+brew "yabai"
+brew "sketchybar"
+brew "svim"
+brew "switchaudio-osx"
+
+
+
+
+#brew install --cask spacelauncher
+# mac utils
+cask "cleanmymac" unless File.directory?("/Applications/CleanMyMac X.app")
+cask "raycast" unless File.directory?("/Applications/raycast.app")
+cask "meetingbar" unless File.directory?("/Applications/MeetingBar.app")
+cask "elgato-stream-deck" unless File.directory?("/Applications/Elgato Stream Deck.app")
+
+# remote
+
+cask "cloudflare-warp" unless File.directory?("/Applications/Cloudflare WARP.app")
+cask "parsec" unless File.directory?("/Applications/Parsec.app")
+
+
+# other
+cask "parallels" unless File.directory?("/Applications/Parallels Desktop.app")
+cask "keyboard-maestro" unless File.directory?("/Applications/Keyboard Maestro.app")
+cask "balenaetcher" unless File.directory?("/Applications/balenaEtcher.app")
+
+EOF
+
+#Other brew packages
+brew tap homebrew/cask-fonts
+brew install font-hack-nerd-font
+brew install koekeishiya/formulae/skhd
+$(brew --prefix)/opt/fzf/install
+# Mac App Store Apps
+echo "Installing Mac App Store Apps..."
+# mas install 1451685025 #Wireguard
+mas install 1480933944 #Vimari
+mas install 497799835  #xCode
+mas install 1450504903 #nighteye
+mas install 524141863  #Jump VNC
+mas install 1099568401 #home assistant
+
+# macOS Settings
+echo "Changing macOS defaults..."
+# ensures that clicking on the desktop does not trigger "Show Desktop," helping prevent accidental hiding of windows.
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
+
+# Enable browsing across all network interfaces in the Finder.
+defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
+
+# Prevent macOS from creating `.DS_Store` files on network drives.
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+
+# Prevent Spaces (virtual desktops) from spanning multiple displays.
+defaults write com.apple.spaces spans-displays -bool false
+
+# Automatically hide the Dock when not in use.
+defaults write com.apple.dock autohide -bool true
+
+# Disable rearranging of Spaces based on recent use.
+defaults write com.apple.dock "mru-spaces" -bool "false"
+
+# Disable window opening animations (e.g., when opening new windows).
+defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+
+# Disable the quarantine dialog for downloaded applications.
+defaults write com.apple.LaunchServices LSQuarantine -bool false
+
+# Disable "natural" (inverted) scrolling direction for trackpads and mice.
+defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
+
+# Set the keyboard key repeat rate to the fastest setting.
+defaults write NSGlobalDomain KeyRepeat -int 1
+
+# Disable automatic spelling correction.
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+
+# Show all file extensions in Finder.
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+# Auto-hide the macOS menu bar.
+defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
+# Set the highlight color to a custom RGB value (light green in this case).
+defaults write NSGlobalDomain AppleHighlightColor -string "0.65098 0.85490 0.58431"
+
+# Set the accent color (1 = blue).
+defaults write NSGlobalDomain AppleAccentColor -int 1
+
+# Disable shadows in screenshots.
+defaults write com.apple.screencapture disable-shadow -bool true
+
+# Set the default screenshot format to PNG.
+defaults write com.apple.screencapture type -string "png"
+
+# Disable Finder animations (e.g., opening folders).
+defaults write com.apple.finder DisableAllAnimations -bool true
+
+# Hide external hard drives from the desktop.
+defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
+
+# Hide internal hard drives from the desktop.
+defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
+
+# Hide mounted servers from the desktop.
+defaults write com.apple.finder ShowMountedServersOnDesktop -bool false
+
+# Hide removable media from the desktop.
+defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
+
+# Show all hidden files in Finder (e.g., dotfiles).
+defaults write com.apple.Finder AppleShowAllFiles -bool true
+
+# Set the default Finder search scope to "current folder."
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+# Disable the warning dialog when changing file extensions.
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+# Show the full POSIX path in the Finder title bar.
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+# Set the default Finder view style to list view ("Nlsv").
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+
+# Hide the Finder status bar.
+defaults write com.apple.finder ShowStatusBar -bool false
+
+# Prevent Time Machine from offering new disks for backup.
+defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool YES
+
+# Disable Safari from automatically opening "safe" files after downloading.
+defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+
+# Enable the Develop menu in Safari.
+defaults write com.apple.Safari IncludeDevelopMenu -bool true
+
+# Enable WebKit developer extras in Safari.
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+
+# Enable WebKit developer extras for Safari's WebKit2 framework.
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+
+# Enable WebKit developer extras globally.
+defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+
+# Exclude names when copying email addresses from Mail to the clipboard.
+defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
+
+# Enable dragging windows using a three-finger gesture on the trackpad.
+defaults write -g NSWindowShouldDragOnGesture YES
+
+# Set a custom location for saving screenshots (in ~/Documents/Screenshots).
+defaults write com.apple.screencapture location ~/Documents/Screenshots
+
+# Installing Fonts
+git clone git@github.com:shaunsingh/SFMono-Nerd-Font-Ligaturized.git /tmp/SFMono_Nerd_Font
+mv /tmp/SFMono_Nerd_Font/* $HOME/Library/Fonts
+rm -rf /tmp/SFMono_Nerd_Font/
+
+curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v1.0.4/sketchybar-app-font.ttf -o $HOME/Library/Fonts/sketchybar-app-font.ttf
+
+# zsh plugins
+
+#  "zsh-autosuggestions"
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+
+#  "zsh-vi-mode"
+git clone https://github.com/jeffreytse/zsh-vi-mode.git $HOME/.zsh/.zsh-vi-mode
+
+#  "zsh-syntax-highlighting"
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/.zsh-syntax-highlighting
+
+# "zsh-autocomplete
+git clone https://github.com/marlonrichert/zsh-autocomplete.git $HOME/.zsh/zsh-autocomplete
+# TODO: setup append_to_zshrc to zsh with my plugins script
+
+source $HOME/.zshrc
+cfg config --local status.showUntrackedFiles no
+
+fancy_echo "Cleaning up old Homebrew formulae ..."
+brew cleanup
+
+#TODO: setup powerlevel10k and OHMZSH
+#TODO: setup tmux plugins
+
+#if [ -r "$HOME/.rcrc" ]; then
+#  fancy_echo "Updating dotfiles ..."
+# rcup
+#fi
+
+skhd --start-service
+yabai --start-service

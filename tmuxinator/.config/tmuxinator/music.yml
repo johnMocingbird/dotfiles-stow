@@ -1,0 +1,16 @@
+# /Users/john/.config/tmuxinator/music.yml
+
+name: music
+root: ~/
+
+windows:
+  # c955,111x35,0,0[111x17,0,0{68x17,0,0,56,42x17,69,0,57},111x17,0,18{68x17,0,18,58,42x17,69,18,59}]
+  - music:
+      layout: c955,111x35,0,0[111x17,0,0{68x17,0,0,56,42x17,69,0,57},111x17,0,18{68x17,0,18,58,42x17,69,18,59}] # Synchronize all panes of this window, can be enabled before or after the pane commands run.
+      # 'before' represents legacy functionality and will be deprecated in a future release, in favour of 'after'
+      # synchronize: after
+      panes:
+        - am np
+        - am play -s
+        -  #hi
+        - cmatrix

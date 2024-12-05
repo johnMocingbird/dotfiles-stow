@@ -20,6 +20,8 @@ if [ -f ~/.config/zsh/plugins.zsh ]; then
 else
   echo "plugins.zsh file not found"
 fi
+export PATH=$PATH:~/bin
+export PATH=$PATH:~/scripts
 
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
@@ -40,7 +42,7 @@ function kill () {
   command kill -KILL $(pidof "$@")
 }
 
-alias am=zsh /Users/john/development/Apple-Music-CLI-Player/src/am.sh
+alias am="zsh /Users/john/development/Apple-Music-CLI-Player/src/am.sh"
 
 export PATH="/opt/homebrew/opt/postgresql@13/bin:$PATH"
 
