@@ -1,4 +1,5 @@
 local M = {}
+-- TODO: check to handle grep and find_files
 
 local telescope = require("telescope.builtin")
 local pickers = require("telescope.pickers")
@@ -37,7 +38,7 @@ local function grep_in_directory(selection)
 			prompt_title = "Grep in " .. selection.name,
 		})
 	else
-		telescope.live_grep({
+		telescope.find_files({
 			search_dirs = { selection.path },
 			prompt_title = "Grep in " .. selection.name,
 		})

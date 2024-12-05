@@ -33,7 +33,7 @@ local harpoon = require("harpoon")
 
 -- heroku logs --tail -a mymoc-staging | sed -E 's/^[^ ]+ [^ ]+ [^ ]+ [^ ]+ (.*)$/\1/'
 
-map("n", "<leader>fs", ":Telescope lsp_document_symbols<CR>", { noremap = true, silent = true })
+-- map("n", "<leader>fs", ":Telescope lsp_document_symbols<CR>", { noremap = true, silent = true })
 
 map(
 	"n",
@@ -41,6 +41,12 @@ map(
 	":lua require('telescope.builtin').lsp_document_symbols({ symbols = { 'Function', 'Method' } })<CR>",
 	{ noremap = true, silent = true }
 )
+
+-- if vim.fn.getcwd() == "/home/john/mymoc" then
+-- 	map("n", "<leader>sr", function()
+-- 		require("telescope.builtin").find_files({ search_dirs = { "/home/john/mymoc/app/models/concerns/tasks/" } })
+-- 	end, { desc = "Find Rules" })
+-- end
 
 if vim.fn.getcwd() == "/home/john/mymoc" then
 	map("n", "<leader>fr", function()
@@ -87,18 +93,7 @@ map(
 	{ noremap = true, desc = "foldmethod Treesitter", silent = true }
 )
 
-require("ror").setup({
-	test = {
-		file = "Testing File...",
-		line = "Testing current block...",
-	},
-	coverage = {
-		up = "DiffAdd",
-		down = "DiffDelete",
-	},
-	notification = "OKAY!",
-	fail_icon = "XXX",
-})
+require("ror").setup({})
 map("n", "<leader>rc", ":lua require('ror.commands').list_commands()<CR>", { silent = true, desc = "Rails Console" })
 -- map(
 -- 	"n",
@@ -116,7 +111,7 @@ map(
 
 map(
 	"n",
-	"<leader>T",
+	"<leader>tn",
 	":TestNearest -strategy=neovim<CR>",
 	{ desc = "Rspec: Test Nearest", noremap = true, silent = true }
 )
@@ -130,30 +125,17 @@ map(
 
 map(
 	"n",
-	"<leader>gt",
-	":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>",
-	{ noremap = true, silent = true, desc = "Worktrees" }
-)
-
-map(
-	"n",
 	"<leader>gn",
 	":lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>",
 	{ noremap = true, silent = true, desc = "Worktrees" }
 )
+
 map(
 	"n",
-	"<leader>gC",
-	":lua CreateGitWorktreeWithInput()<CR>",
-	{ noremap = true, silent = true, desc = "Create Git worktree with user inputs" }
+	"<leader>gt",
+	":lua require('telescope').extensions.git_worktree.git_worktrees()<CR>",
+	{ noremap = true, silent = true, desc = "Worktrees" }
 )
-
-function CreateGitWorktreeWithInput()
-	local branch_name = vim.fn.input("Branch name: ")
-	local start_point = vim.fn.input("Start point (e.g., master): ")
-	local upstream = vim.fn.input("Upstream (e.g., origin): ")
-	require("git-worktree").create_worktree(branch_name, start_point, upstream)
-end
 
 -- terminal bindings
 map("t", "<C-t>", "<C-\\><C-n>", { noremap = true })
@@ -251,7 +233,7 @@ map("n", "]q", vim.cmd.cnext, { desc = "Next quickfix" })
 
 -- formatting
 map({ "n", "v" }, "<leader>cf", function()
-	Util.format({ force = true })
+	LazyVim.format({ force = true })
 end, { desc = "Format" })
 
 -- diagnostic
