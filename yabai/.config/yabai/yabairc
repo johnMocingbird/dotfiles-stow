@@ -24,7 +24,7 @@ yabai -m config external_bar all:35:0 \
 	window_opacity_duration 0.2 \
 	active_window_opacity 1.0 \
 	normal_window_opacity 0.95 \
-	window_animation_duration 0.3 \
+	window_animation_duration 0.9 \
 	insert_feedback_color 0xff9dd274 \
 	split_ratio 0.50 \
 	auto_balance off \
@@ -43,9 +43,12 @@ yabai -m rule --add app="^(Family|LuLu|Calculator|Software Update|Dictionary|VLC
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+# TODO: add un managed for parelles.
 yabai -m rule --add label="Select file to save to" app="^Inkscape$" title="Select file to save to" manage=off
 yabai -m signal --add event=window_focused action="~/.config/yabai/unfloat.sh"
-yabai -m rule --add app="kitty" title="window-switcher" manage=off
+yabai -m signal --add event=window_focused action="~/.config/yabai/set_tmux_title.sh"
+yabai -m rule --add title="window-switcher" manage=off
+yabai -m rule --add app="^Parallels Desktop" manage=off
 
 yabai -m config layout bsp
 

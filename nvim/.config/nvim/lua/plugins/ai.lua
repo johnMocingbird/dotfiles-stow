@@ -86,4 +86,27 @@ return {
 			"nvim-telescope/telescope.nvim",
 		},
 	},
+	{
+		"jcdickinson/codeium.nvim",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+		},
+		event = "VeryLazy",
+		config = function()
+			require("codeium").setup({
+				enable_cmp_source = true,
+				virtual_text = {
+					enabled = true,
+					filetypes = {
+						-- Disable Codeium for specific filetypes
+						markdown = true,
+						-- ["chatgpt-input"] = false,
+					},
+					default_filetype_enabled = true,
+				},
+				-- Include any other settings you have
+			})
+		end,
+	},
 }

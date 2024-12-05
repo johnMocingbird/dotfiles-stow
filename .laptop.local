@@ -57,7 +57,7 @@ brew "switchaudio-osx"
 
 #brew install --cask spacelauncher
 # mac utils
-cask "cleanmymac" unless File.directory?("/Applications/CleanMyMac X.app")
+# cask "cleanmymac" unless File.directory?("/Applications/CleanMyMac X.app")
 cask "raycast" unless File.directory?("/Applications/raycast.app")
 cask "meetingbar" unless File.directory?("/Applications/MeetingBar.app")
 cask "elgato-stream-deck" unless File.directory?("/Applications/Elgato Stream Deck.app")
@@ -69,7 +69,8 @@ cask "parsec" unless File.directory?("/Applications/Parsec.app")
 
 
 # other
-cask "parallels" unless File.directory?("/Applications/Parallels Desktop.app")
+# This needs to be version 16
+# cask "parallels" unless File.directory?("/Applications/Parallels Desktop.app")
 cask "keyboard-maestro" unless File.directory?("/Applications/Keyboard Maestro.app")
 cask "balenaetcher" unless File.directory?("/Applications/balenaEtcher.app")
 
@@ -223,6 +224,7 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/.z
 # "zsh-autocomplete
 git clone https://github.com/marlonrichert/zsh-autocomplete.git $HOME/.zsh/zsh-autocomplete
 # TODO: setup append_to_zshrc to zsh with my plugins script
+#
 
 source $HOME/.zshrc
 cfg config --local status.showUntrackedFiles no

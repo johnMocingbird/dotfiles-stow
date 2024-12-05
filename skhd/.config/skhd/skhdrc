@@ -93,7 +93,7 @@ shift + lalt - t :  open -na "kitty"
 lalt - n : open "/Applications/Numbers.app"
 lalt - p : open "/System/Applications/Passwords.app/"
 
-lalt - y : /opt/homebrew/bin/kitty --title window-switcher -e /Users/john/.config/skhd/fzfyabi.sh
+lalt - y : /Applications/kitty.app/Contents/MacOS/kitty --single-instance --title window-switcher -e /Users/john/.config/skhd/fzfyabi.sh
 # lalt - lshift - t: alacritty msg create-window
 # Open new Alacritty window
 # lalt - t : alacritty msg create-window

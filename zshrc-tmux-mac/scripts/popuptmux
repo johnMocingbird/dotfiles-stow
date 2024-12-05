@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "$(tmux display-message -p -F "#{session_name}")" = "obsidian" ]; then
+	tmux detach-client
+else
+	tmux popup -E -w 80% -h 80% "tmux attach -t obsidian || tmux new -s obsidian"
+fi
