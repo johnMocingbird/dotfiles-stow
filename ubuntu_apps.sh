@@ -2,6 +2,30 @@
 
 set -e # Exit on any error
 
+#!/bin/bash
+
+set -e # Exit on error
+
+echo "Setting up Firefox policies for Vimium..."
+
+# Create the distribution directory if it doesn't exist
+sudo mkdir -p /usr/lib/firefox/distribution
+
+# Create the policies.json file
+sudo tee /usr/lib/firefox/distribution/policies.json >/dev/null <<EOF
+{
+  "policies": {
+    "Extensions": {
+      "Install": [
+        "https://addons.mozilla.org/firefox/downloads/file/4259790/vimium_ff-2.1.2.xpi"
+      ]
+    }
+  }
+}
+EOF
+
+echo "Vimium extension policy has been configured. Restart Firefox to apply the changes."
+
 # Install i3
 echo "Downloading and installing i3 keyring..."
 /usr/lib/apt/apt-helper download-file https://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2024.03.04_all.deb keyring.deb SHA256:f9bb4340b5ce0ded29b7e014ee9ce788006e9bbfe31e96c09b2118ab91fca734
