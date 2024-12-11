@@ -2,6 +2,7 @@
 # ==================================================================
 # ==================================================================
 
+
 if [ -f ~/.config/zsh/omz_and_p10k.zsh ]; then
     source ~/.config/zsh/omz_and_p10k.zsh
 fi
@@ -63,3 +64,4 @@ export XDG_CONFIG_HOME="$HOME/.config"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export PATH="$HOME/.bin:$PATH"
+

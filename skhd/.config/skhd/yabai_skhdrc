@@ -20,7 +20,7 @@ window_management, leader < h : yabai -m window --focus west  || yabai -m displa
 # lalt - return : yabai -m window --toggle float; sketchybar --trigger window_focus
 
 # Make window zoom to fullscreen: shift + lalt - z
-shift + lalt - z : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
+cmd + ctrl - f : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
 
 # Make window zoom to parent node: lalt - f 
 lalt - z : yabai -m window --toggle zoom-parent; sketchybar --trigger window_focus
