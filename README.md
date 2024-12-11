@@ -1,26 +1,58 @@
 This is setup for stow
 
-https://addons.mozilla.org/firefox/downloads/file/4259790/vimium_ff-2.1.2.xpi
-
-chmod +x gh_setup.sh
-chmod +x ubuntu.sh
-./ubuntu_apps.sh
-./gh_setup.sh
-
+```bash
 git clone git@github.com:MyMOC/front-end.git
 git clone git@github.com:MyMOC/mymoc.git
-git clone git@github.com:johnMocingbird/mydots-stow.git
+git clone git@github.comjohnMocingbird/mydots-stow.git
 
-
-cd /home/parallels/Desktop/Parallels Shared Folders/iCloud
+cd Desktop/Parallels\ Shared\ Folders/iCloud/
 cp latest.dump ~/mymoc/docker/
 cp env.development.local ~/mymoc/.env.development.local
+```
 
 cd mymoc/docker
 
+TODO:
 
-# Focus Kitty
-bindsym Control+t [class="Kitty"] focus
+add better display to .laptop
+add raycast config/keyboard shortcuts
+add keyboard maestro setup
+add meetingbar to .laptop
+add homerow to .laptop
+add synergy3 to .laptop
+add script for ssh keysetup, git and ubuntu
 
-# Focus Firefox
-bindsym Control+w [class="Firefox"] focus
+## MacOS change keyboard shortcuts
+
+Get bundle id
+
+```bash
+mdls -name kMDItemCFBundleIdentifier /Applications/Kitty.app
+```
+
+check existing keyboard shortcuts for an app with bundle id
+
+```bash
+defaults read net.kovidgoyal.kitty NSUserKeyEquivalents
+```
+
+set keyboard shortcut
+
+```bash
+defaults write net.kovidgoyal.kitty NSUserKeyEquivalents -dict-add "kitty Hide kitty" -string "@9"
+```
+
+delete existing keyboard shortcut
+
+```bash
+defaults delete net.kovidgoyal.kitty NSUserKeyEquivalents
+```
+
+todo:
+Android Studio.app
+File-Invalidate Caches...
+AT\*Z
+Build-Generate Signed Bundle / APK...
+^ 我D
+File->Sync Project with Gradle Files
+^ 我S
