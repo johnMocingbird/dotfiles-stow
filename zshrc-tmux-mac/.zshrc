@@ -6,6 +6,7 @@
 if [ -f ~/.config/zsh/omz_and_p10k.zsh ]; then
     source ~/.config/zsh/omz_and_p10k.zsh
 fi
+
 if [[ "$(uname)" == "Darwin" ]]; then
   if [ -f ~/.config/zsh/macos.zsh ]; then
     source ~/.config/zsh/macos.zsh
@@ -28,20 +29,6 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-alias n="nnn"
-function nnn () {
-    command nnn "$@"
-
-    if [ -f "$NNN_TMPFILE" ]; then
-            . "$NNN_TMPFILE"
-    fi
-}
-# alias ls='nnn -de'
-export NNN_FIFO="/tmp/nnn.fifo"
-
-function kill () {
-  command kill -KILL $(pidof "$@")
-}
 
 alias am="zsh /Users/john/development/Apple-Music-CLI-Player/src/am.sh"
 

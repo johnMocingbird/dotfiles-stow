@@ -56,3 +56,17 @@ Build-Generate Signed Bundle / APK...
 ^ 我D
 File->Sync Project with Gradle Files
 ^ 我S
+
+## Windows
+
+- <https://github.com/LGUG2Z/komorebi>
+- <https://github.com/ChrisTitusTech/winutil>
+
+TODO:
+
+- setup fix for keyboard (ie autohotkey)
+- setup dotfiles for windows - neovim - alacritty
+  Applications
+- icue
+- autohotkey
+- komorebi

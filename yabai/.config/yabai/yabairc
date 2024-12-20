@@ -3,16 +3,12 @@
 sudo yabai --load-sa
 yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
 yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
-# yabai -m signal --add event=display_added action="sleep 2 && $HOME/.config/yabai/create_spaces.sh"
-# yabai -m signal --add event=display_removed action="sleep 1 && $HOME/.config/yabai/create_spaces.sh"
-# yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
-# yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
 
+### AUTO PADDING (from fyabai) ###
 # yabai -m config auto_padding on
 # yabai -m config auto_padding_min_aspect 3.5
 # yabai -m config auto_padding_width 1600
 # yabai -m config auto_padding_height 1380
-# $HOME/.config/yabai/create_spaces.sh
 
 yabai -m config external_bar all:35:0 \
 	mouse_follows_focus on \
@@ -25,6 +21,7 @@ yabai -m config external_bar all:35:0 \
 	active_window_opacity 1.0 \
 	normal_window_opacity 0.95 \
 	window_animation_duration 0.1 \
+	window_animation_easing ease_out_quint \
 	insert_feedback_color 0xff9dd274 \
 	split_ratio 0.50 \
 	auto_balance off \
@@ -33,20 +30,19 @@ yabai -m config external_bar all:35:0 \
 	mouse_action2 resize \
 	mouse_drop_action swap \
 	\
-	top_padding 10 \
-	bottom_padding 4 \
-	left_padding 4 \
-	right_padding 4 \
-	window_gap 8
+	top_padding 16 \
+	bottom_padding 16 \
+	left_padding 16 \
+	right_padding 16 \
+	window_gap 16
 # Exclude problematic apps from being managed:
 yabai -m rule --add app="^(Family|LuLu|Calculator|Software Update|Dictionary|VLC|System Preferences|System Settings|zoom.us|Photo Booth|Archive Utility|Python|LibreOffice|App Store|Steam|Alfred|Activity Monitor|familycircled|Raycast)$" manage=off
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
-# TODO: add un managed for parelles.
+# TODO: add un managed for arc setting.
 yabai -m rule --add label="Select file to save to" app="^Inkscape$" title="Select file to save to" manage=off
 yabai -m signal --add event=window_focused action="~/.config/yabai/unfloat.sh"
-yabai -m signal --add event=window_focused action="~/.config/yabai/set_tmux_title.sh"
 yabai -m rule --add title="window-switcher" manage=off
 yabai -m rule --add app="^Parallels Desktop" manage=off
 

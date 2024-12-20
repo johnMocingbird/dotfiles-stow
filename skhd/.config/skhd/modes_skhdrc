@@ -37,8 +37,6 @@ window_management < s : yabai -m window --toggle split
 
 window_management, resize < e : yabai -m space --balance
 
-lalt - o : osascript -e 'tell application "System Events" to keystroke "s" using control down' -e 'tell application "System Events" to keystroke "o"'
-
 window_management, leader < x : osascript -e 'tell application "System Events" to keystroke "w" using command down'
 
 #============================================================================================================

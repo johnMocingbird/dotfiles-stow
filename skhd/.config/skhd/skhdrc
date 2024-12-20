@@ -8,7 +8,10 @@
 :: code : ~/.config/sketchybar/items/skhd_mode.sh code
 :: default : ~/.config/sketchybar/items/skhd_mode.sh default
 :: leader : ~/.config/sketchybar/items/skhd_mode.sh leader
-:: system_settings : ~/.config/sketchybar/items/skhd_mode.sh system_settings
+:: system_settings : ~/.config/sketchybar/items/skhd_modbe.sh system_settings
+:: disabled : ~/.config/sketchybar/items/skhd_mode.sh disabled
+
+
 #============================================================================================================
 ## keybinding to inter modes 
 lalt - space; leader
@@ -41,8 +44,7 @@ leader < s : osascript -e 'tell application "System Events" to keystroke "o" usi
 leader < h : osascript -e 'tell application "System Events" to keystroke "h" using {command down, option down, control down }' ;  skhd -k "cmd + alt + ctrl - x"
  # open homerow
 leader < f : osascript -e 'tell application "System Events" to keystroke "f" using { option down }' ;  skhd -k "cmd + alt + ctrl - x"
-# leader < return: osascript -e 'tell application "System Events" to keystroke " " using {option down, command down}' ; skhd -k "cmd + alt + ctrl - x"
-
+# open kitty
 leader < space : open "/Applications/kitty.app" ; skhd -k "cmd + alt + ctrl - x"
 # leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"
 # leader < g : osascript -e 'tell application "System Events" to keystroke "g" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x"
@@ -68,22 +70,15 @@ window_management, move, resize, leader < cmd + alt + ctrl - a ; applcation_laun
 #=============================Import other layers here=======================================================
 
 
-#.load "applications_skhdrc"
+#=============================Common app launcher ===========================================================
 #============================================================================================================
-#============================================================================================================
-#============================================================================================================
-#=========================Felix=Yabai=Config=================================================================
-#============================================================================================================
-#============================================================================================================
-
  
 alt + shift - z : ~/.config/skhd/float_center.sh
 ## Misc
-# lalt - t : osascript -e "tell application \"iTerm\" to activate" ; skhd -k "cmd + alt + ctrl - x"
 shift + lalt - w : open "/Applications/Safari.app"
 lalt - w : open "/Applications/Arc.app"
 lalt - i : open "/Applications/Simulator.app alias"
-# lalt - x : open "/Applications/xcode.app"
+lalt - x : open "/Applications/xcode.app"
 lalt - c : open "/Applications/ChatGPT.app"
 lalt - s : open "/Applications/Slack.app"
 shift + lalt - s : open "/Users/john/Applications/Chrome Apps.localized/Mocingbird: Shortcut.app/"
@@ -94,14 +89,6 @@ lalt - n : open "/Applications/Numbers.app"
 lalt - p : open "/System/Applications/Passwords.app/"
 
 lalt - y : /Applications/kitty.app/Contents/MacOS/kitty --single-instance --title window-switcher -e /Users/john/.config/skhd/fzfyabi.sh
-# lalt - lshift - t: alacritty msg create-window
-# Open new Alacritty window
-# lalt - t : alacritty msg create-window
-
-
-# Toggle sketchybar
-# shift + lalt - space : sketchybar --bar hidden=toggle
-#shift + lalt - r : sketchybar --remove '/.*/' && sh -c 'export CONFIG_DIR=$HOME/.config/sketchybar && $CONFIG_DIR/sketchybarrc'
 
 
 resize, move < escape : skhd -k "cmd + alt + ctrl - x"
@@ -120,6 +107,7 @@ system_settings < m : osascript -e 'tell application "System Events" to open loc
 system_settings < t : osascript -e 'tell application "System Events" to open location "raycast://extensions/raycast/system/open-trash"' ;  skhd -k "cmd + alt + ctrl - x"
 system_settings < p : osascript -e 'tell application "System Events" to keystroke "p" using {command down, option down, control down}' ;  skhd -k "cmd + alt + ctrl - x"
 
- .load "safari_skhdrc"
+ .load "modes_skhdrc"
+#=========================Felix=Yabai=Config=================================================================
  .load "yabai_skhdrc"
 

@@ -27,6 +27,7 @@ clean_ios() {
 export NNN_PLUG='l:launch;y:cbcopy-mac;p:cbpaste-mac;v:preview-tui;i:imgview;a:apk-staging;A:apk-prod'
 
 
+# NOTE: Tmuxinator
 alias mymoc='tmuxinator start mymoc'
 alias r_c='tmuxinator start rails_console'
 alias front='tmuxinator start front_end'

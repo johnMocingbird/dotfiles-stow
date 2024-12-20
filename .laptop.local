@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# NOTE: brew bundle install
 brew bundle --file=- <<EOF
 
 cask "arc" unless File.directory?("/Applications/Arc.app")
@@ -11,6 +12,7 @@ cask "obs" unless File.directory?("/Applications/OBS.app")
 cask "the-unarchiver" unless File.directory?("/Applications/The Unarchiver.app")
 cask "obsidian" unless File.directory?("/Applications/Obsidian.app")
 cask "alfred" unless File.directory?("/Applications/Alfred 5.app")
+cask "plex" unless File.directory?("/Applications/Plex.app")
 
 # font stuff
 cask "font-hack-nerd-font"
@@ -47,17 +49,16 @@ brew "bat"
 # GUI
 brew "jq"
 brew "alfred"
-brew "skhd"
+brew "koekeishiya/formulae/skhd"
 brew "yabai"
-brew "sketchybar"
 brew "svim"
 brew "switchaudio-osx"
 
 
 
 
-#brew install --cask spacelauncher
 # mac utils
+#brew install --cask spacelauncher
 # cask "cleanmymac" unless File.directory?("/Applications/CleanMyMac X.app")
 cask "raycast" unless File.directory?("/Applications/raycast.app")
 cask "meetingbar" unless File.directory?("/Applications/MeetingBar.app")
@@ -77,12 +78,15 @@ cask "balenaetcher" unless File.directory?("/Applications/balenaEtcher.app")
 
 EOF
 
-#Other brew packages
-brew tap homebrew/cask-fonts
-brew install font-hack-nerd-font
-brew install koekeishiya/formulae/skhd
-$(brew --prefix)/opt/fzf/install
-# Mac App Store Apps
+# NOTE: Github ssh key setup
+if ! check_ssh_key; then
+  fancy_echo "No SSH key found. Authenticating with GH CLI..."
+  gh auth login
+else
+  fancy_echo "SSH key is already set up. Skipping GitHub authentication."
+fi
+
+# NOTE: Mac App Store Apps
 echo "Installing Mac App Store Apps..."
 # mas install 1451685025 #Wireguard
 mas install 1480933944 #Vimari
@@ -91,7 +95,7 @@ mas install 1450504903 #nighteye
 mas install 524141863  #Jump VNC
 mas install 1099568401 #home assistant
 
-# macOS Settings
+# NOTE: macOS Settings
 echo "Changing macOS defaults..."
 # ensures that clicking on the desktop does not trigger "Show Desktop," helping prevent accidental hiding of windows.
 defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
@@ -204,28 +208,88 @@ defaults write -g NSWindowShouldDragOnGesture YES
 # Set a custom location for saving screenshots (in ~/Documents/Screenshots).
 defaults write com.apple.screencapture location ~/Documents/Screenshots
 
-# Installing Fonts
+# NOTE: Installing Fonts
 git clone git@github.com:shaunsingh/SFMono-Nerd-Font-Ligaturized.git /tmp/SFMono_Nerd_Font
 mv /tmp/SFMono_Nerd_Font/* $HOME/Library/Fonts
 rm -rf /tmp/SFMono_Nerd_Font/
 
 curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v1.0.4/sketchybar-app-font.ttf -o $HOME/Library/Fonts/sketchybar-app-font.ttf
 
-# zsh plugins
+#NOTE: install OHMZSH
 
-#  "zsh-autosuggestions"
-git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "Installing Oh My Zsh..."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+else
+  echo "Oh My Zsh is already installed. Skipping installation."
+fi
 
-#  "zsh-vi-mode"
-git clone https://github.com/jeffreytse/zsh-vi-mode.git $HOME/.zsh/.zsh-vi-mode
+# NOTE: zsh plugins and powerlevel10k and clone repos
 
-#  "zsh-syntax-highlighting"
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/.zsh-syntax-highlighting
+mkdir development
 
-# "zsh-autocomplete
-git clone https://github.com/marlonrichert/zsh-autocomplete.git $HOME/.zsh/zsh-autocomplete
-# TODO: setup append_to_zshrc to zsh with my plugins script i have a setup for this already
+repos=(
+  "git@github.com:zsh-users/zsh-autosuggestions.git $HOME/.config/zsh-plugins/zsh-autosuggestions"
+  "git@github.com:jeffreytse/zsh-vi-mode.git $HOME/.config/zsh-plugins/zsh-vi-mode"
+  "git@github.com:zsh-users/zsh-syntax-highlighting.git $HOME/.config/zsh-plugins/zsh-syntax-highlighting"
+  "git@github.com:marlonrichert/zsh-autocomplete.git $HOME/.config/zsh-plugins/zsh-autocomplete"
+  "git@github.com:romkatv/powerlevel10k.git $HOME/.config/zsh-plugins/powerlevel10k"
+  "git@github.com:MyMOC/mymoc.git $HOME/mymoc"
+  "git@github.com:MyMOC/mobilemoc.git $HOME/development/mobilemoc"
+  "git@github.com:MyMOC/front-end.git $HOME/development/front-end"
+  "git@github.com:MyMOC/utilities.git $HOME/development/utilities_mymoc"
+)
+
+# Clone repositories
+for repo in "${repos[@]}"; do
+  repo_url=$(echo "$repo" | awk '{print $1}')
+  target_dir=$(echo "$repo" | awk '{print $2}')
+
+  # Ensure the parent directory exists
+  parent_dir=$(dirname "${target_dir/#\~/$HOME}")
+  if [ ! -d "$parent_dir" ]; then
+    echo "Creating directory $parent_dir..."
+    mkdir -p "$parent_dir"
+  fi
+
+  # Clone the repository if it doesn't already exist
+  if [ ! -d "${target_dir/#\~/$HOME}" ]; then
+    echo "Cloning $repo_url into ${target_dir/#\~/$HOME}..."
+    git clone --depth=1 "$repo_url" "${target_dir/#\~/$HOME}"
+  else
+    echo "Repository already exists at ${target_dir/#\~/$HOME}. Skipping clone."
+  fi
+done
+#  #  "zsh-autosuggestions"
+#  git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.config/zsh-plugins/zsh-autosuggestions
+#  #  "zsh-vi-mode"
+#  git clone https://github.com/jeffreytse/zsh-vi-mode.git $HOME/.config/zsh-plugins/zsh-vi-mode
+#  #  "zsh-syntax-highlighting"
+#  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.config/zsh-plugins/zsh-syntax-highlighting
+#  # "zsh-autocomplete
+#  git clone https://github.com/marlonrichert/zsh-autocomplete.git $HOME/.config/zsh-plugins/zsh-autocomplete
 #
+# NOTE: zshrc setup
+
+append_to_zshrc "$(
+	cat <<EOF
+if [[ "$(uname)" == "Darwin" ]]; then
+  if [ -f ~/.config/zsh/macos.zsh ]; then
+    source ~/.config/zsh/macos.zsh
+  fi
+fi
+
+if [ -f ~/.config/zsh/general.zsh ]; then
+  source ~/.config/zsh/general.zsh
+fi
+
+if [ -f ~/.config/zsh/plugins.zsh ]; then
+  source ~/.config/zsh/plugins.zsh
+else
+  echo "plugins.zsh file not found"
+fi
+EOF
+)"
 
 source $HOME/.zshrc
 cfg config --local status.showUntrackedFiles no
@@ -243,3 +307,28 @@ brew cleanup
 
 skhd --start-service
 yabai --start-service
+
+# NOTE: SSH key for development machine
+SSH_KEY_PATH="$HOME/.ssh/ubuntu_id_rsa"
+
+# Check if the SSH key exists
+if [ ! -f "$SSH_KEY_PATH" ]; then
+  fancy_echo "SSH key not found. Generating a new SSH key at $SSH_KEY_PATH..."
+
+  # Generate the SSH key without a passphrase
+  ssh-keygen -t rsa -b 4096 -f "$SSH_KEY_PATH" -N "" -C "coakleymjohn@gmail.com"
+
+  fancy_echo "SSH key generated successfully!"
+  fancy_echo "remember to add your ssh key to development machine"
+  fancy_echo "cat ~/.ssh/ubuntu_id_rsa.pub | pbcopy"
+  cat ~/.ssh/ubuntu_id_rsa.pub | pbcopy
+else
+  fancy_echo "SSH key already exists at $SSH_KEY_PATH. Skipping generation."
+fi
+
+
+# TODO: Setup tmux config with stow
+# clean up scripts that i dont use..
+# todo add install for kitty scroll back
+fancy_echo "please setup kitty scrollback"
+fancy_echo "https://github.com/mikesmithgh/kitty-scrollback.nvim"
