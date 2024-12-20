@@ -32,7 +32,6 @@ brew "lazygit"
 cask "kitty" unless File.directory?("/Applications/kitty.app")
 cask "alacritty" unless File.directory?("/Applications/Alacritty.app")
 brew "tmux"
-brew "1password-cli"
 brew "nnn"
 brew "ripgrep"
 brew "neofetch"
