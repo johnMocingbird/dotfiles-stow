@@ -202,7 +202,7 @@ defaults write -g NSWindowShouldDragOnGesture YES
 defaults write com.apple.screencapture location ~/Documents/Screenshots
 
 # disable downloaded software warning
-sudo spctl --master-disable
+# sudo spctl --master-disable
 
 # NOTE: zsh plugins and powerlevel10k and clone repos
 
