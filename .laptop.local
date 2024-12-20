@@ -1,15 +1,13 @@
 #!/bin/sh
 
 # NOTE: brew bundle install
-brew install --cask font-jetbrains-mono-nerd-font
 brew install --cask homerow
 
 brew bundle --file=- <<EOF
 
 cask "arc" unless File.directory?("/Applications/Arc.app")
-tap "homebrew/cask-fonts"
 tap "FelixKratz/formulae"
-cask "skitch" unless File.directory?("/Applications/Skitch.app")
+# cask "skitch" unless File.directory?("/Applications/Skitch.app")
 cask "vlc" unless File.directory?("/Applications/VLC.app")
 cask "obs" unless File.directory?("/Applications/OBS.app")
 cask "the-unarchiver" unless File.directory?("/Applications/The Unarchiver.app")
@@ -18,12 +16,7 @@ cask "alfred" unless File.directory?("/Applications/Alfred 5.app")
 cask "plex" unless File.directory?("/Applications/Plex.app")
 
 # font stuff
-cask "font-hack-nerd-font"
-cask "sf-symbols" unless File.directory?("/Applications/SF Symbols beta.app")
 cask "font-jetbrains-mono" unless File.directory?("~/Library/Fonts/JetBrainsMono-Bold.ttf")
-#TODO: is this an issue?
-cask "font-fira-code"
-# brew install --cask font-fira-code
 
 # GitHub extensions
 brew "lazygit"
