@@ -198,32 +198,18 @@ defaults write -g NSWindowShouldDragOnGesture YES
 # Set a custom location for saving screenshots (in ~/Documents/Screenshots).
 defaults write com.apple.screencapture location ~/Documents/Screenshots
 
-# NOTE: Installing Fonts
-git clone git@github.com:shaunsingh/SFMono-Nerd-Font-Ligaturized.git /tmp/SFMono_Nerd_Font
-mv /tmp/SFMono_Nerd_Font/* $HOME/Library/Fonts
-rm -rf /tmp/SFMono_Nerd_Font/
-
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v1.0.4/sketchybar-app-font.ttf -o $HOME/Library/Fonts/sketchybar-app-font.ttf
-
-#NOTE: install OHMZSH
-
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-  echo "Installing Oh My Zsh..."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-else
-  echo "Oh My Zsh is already installed. Skipping installation."
-fi
+# disable downloaded software warning
+sudo spctl --master-disable
 
 # NOTE: zsh plugins and powerlevel10k and clone repos
 
-mkdir development
+mkdir -p development
 
 repos=(
-  "git@github.com:zsh-users/zsh-autosuggestions.git $HOME/.config/zsh-plugins/zsh-autosuggestions"
-  "git@github.com:jeffreytse/zsh-vi-mode.git $HOME/.config/zsh-plugins/zsh-vi-mode"
-  "git@github.com:zsh-users/zsh-syntax-highlighting.git $HOME/.config/zsh-plugins/zsh-syntax-highlighting"
-  "git@github.com:marlonrichert/zsh-autocomplete.git $HOME/.config/zsh-plugins/zsh-autocomplete"
-  "git@github.com:romkatv/powerlevel10k.git $HOME/.config/zsh-plugins/powerlevel10k"
+  "git@github.com:zsh-users/zsh-autosuggestions.git $HOME/.zsh/zsh-autosuggestions"
+  "git@github.com:jeffreytse/zsh-vi-mode.git $HOME/.zsh/zsh-vi-mode"
+  "git@github.com:zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting"
+  "git@github.com:marlonrichert/zsh-autocomplete.git $HOME/.zsh/zsh-autocomplete"
   "git@github.com:MyMOC/mymoc.git $HOME/mymoc"
   "git@github.com:MyMOC/mobilemoc.git $HOME/development/mobilemoc"
   "git@github.com:MyMOC/front-end.git $HOME/development/front-end"
@@ -282,7 +268,6 @@ EOF
 )"
 
 source $HOME/.zshrc
-cfg config --local status.showUntrackedFiles no
 
 fancy_echo "Cleaning up old Homebrew formulae ..."
 brew cleanup
@@ -322,3 +307,5 @@ fi
 # todo add install for kitty scroll back
 fancy_echo "please setup kitty scrollback"
 fancy_echo "https://github.com/mikesmithgh/kitty-scrollback.nvim"
+
+
