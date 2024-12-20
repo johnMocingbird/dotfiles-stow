@@ -52,6 +52,7 @@ brew "jq"
 cask "alfred" unless File.directory?("/Applications/Alfred 5.app")
 brew "koekeishiya/formulae/skhd"
 brew "yabai"
+brew "borders"
 brew "svim"
 brew "switchaudio-osx"
 
