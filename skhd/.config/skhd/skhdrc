@@ -20,6 +20,9 @@ lalt - space; leader
 #===============================IMPORTANT! CREATE AN ESCAPE FOR EACH NEW MODE================================
 resize, applcation_launcher, system_settings, safari, leader, window_management < escape ; default  # use this to escpae from each mode
 # use this to allow for esc from mode with double bress
+
+disabled < cmd + alt + ctrl + shift - e ; default
+cmd + alt + ctrl + shift - d ; disabled
 #============================================================================================================
 #============================================================================================================
 #=====================================Switch Back to default if double pressed===============================
