@@ -1,26 +1,18 @@
 This is setup for stow
 
-```bash
-git clone git@github.com:MyMOC/front-end.git
-git clone git@github.com:MyMOC/mymoc.git
-git clone git@github.comjohnMocingbird/mydots-stow.git
-
-cd Desktop/Parallels\ Shared\ Folders/iCloud/
-cp latest.dump ~/mymoc/docker/
-cp env.development.local ~/mymoc/.env.development.local
-```
-
-cd mymoc/docker
+## Mac
 
 TODO:
-
-add better display to .laptop
 add raycast config/keyboard shortcuts
 add keyboard maestro setup
-add meetingbar to .laptop
-add homerow to .laptop
 add synergy3 to .laptop
-add script for ssh keysetup, git and ubuntu
+
+chrom/arc plugins
+
+- add chrome vimuium plugin
+- icloud password
+
+## linux
 
 ## MacOS change keyboard shortcuts
 

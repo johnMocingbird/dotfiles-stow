@@ -126,7 +126,6 @@ brew bundle --file=- <<EOF
 # mas-cli to install macOS apps
 brew "mas"
 mas "XCode", id: 497799835
-# tap "homebrew/cask-versions"
 
 # Android
 cask "zulu@17" unless File.directory?("/opt/homebrew/Caskroom/zulu@17/")
