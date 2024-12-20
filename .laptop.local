@@ -250,25 +250,12 @@ done
 #
 # NOTE: zshrc setup
 
-append_to_zshrc "$(
-	cat <<EOF
-if [[ "$(uname)" == "Darwin" ]]; then
-  if [ -f ~/.config/zsh/macos.zsh ]; then
-    source ~/.config/zsh/macos.zsh
-  fi
-fi
-
-if [ -f ~/.config/zsh/general.zsh ]; then
-  source ~/.config/zsh/general.zsh
-fi
-
-if [ -f ~/.config/zsh/plugins.zsh ]; then
-  source ~/.config/zsh/plugins.zsh
-else
-  echo "plugins.zsh file not found"
-fi
-EOF
-)"
+append_to_zshrc 'source $HOME/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh'
+append_to_zshrc 'source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
+append_to_zshrc 'source $HOME/.zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh'
+append_to_zshrc 'source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh'
+append_to_zshrc 'source ~/.config/zsh/general.zsh'
+append_to_zshrc 'source ~/.config/zsh/macos.zsh'
 
 source $HOME/.zshrc
 
@@ -310,5 +297,7 @@ fi
 # todo add install for kitty scroll back
 fancy_echo "please setup kitty scrollback"
 fancy_echo "https://github.com/mikesmithgh/kitty-scrollback.nvim"
+
+
 
 
