@@ -23,7 +23,6 @@ cask "font-fira-code"
 # brew install --cask font-fira-code
 
 # GitHub extensions
-brew "gh"
 brew "lazygit"
 
 # recommended cli tools
@@ -78,13 +77,6 @@ cask "balenaetcher" unless File.directory?("/Applications/balenaEtcher.app")
 
 EOF
 
-# NOTE: Github ssh key setup
-if ! check_ssh_key; then
-  fancy_echo "No SSH key found. Authenticating with GH CLI..."
-  gh auth login
-else
-  fancy_echo "SSH key is already set up. Skipping GitHub authentication."
-fi
 
 # NOTE: Mac App Store Apps
 echo "Installing Mac App Store Apps..."
