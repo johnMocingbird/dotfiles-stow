@@ -1,6 +1,9 @@
 #!/bin/sh
 
 # NOTE: brew bundle install
+brew install --cask font-jetbrains-mono-nerd-font
+brew install --cask homerow
+
 brew bundle --file=- <<EOF
 
 cask "arc" unless File.directory?("/Applications/Arc.app")
@@ -47,7 +50,7 @@ brew "bat"
 
 # GUI
 brew "jq"
-brew "alfred"
+cask "alfred" unless File.directory?("/Applications/Alfred 5.app")
 brew "koekeishiya/formulae/skhd"
 brew "yabai"
 brew "svim"
@@ -60,7 +63,10 @@ brew "switchaudio-osx"
 #brew install --cask spacelauncher
 # cask "cleanmymac" unless File.directory?("/Applications/CleanMyMac X.app")
 cask "raycast" unless File.directory?("/Applications/raycast.app")
-cask "meetingbar" unless File.directory?("/Applications/MeetingBar.app")
+cask "parallels" unless File.directory?("/Applications/Parallels Desktop.app")
+# TODO:
+# brew install --cask monitorcontrol
+cask "betterdisplay" unless File.directory?("/Applications/BetterDisplay.app")
 cask "elgato-stream-deck" unless File.directory?("/Applications/Elgato Stream Deck.app")
 
 # remote
@@ -70,7 +76,7 @@ cask "parsec" unless File.directory?("/Applications/Parsec.app")
 
 
 # other
-# This needs to be version 16
+# This needs to be version 20
 # cask "parallels" unless File.directory?("/Applications/Parallels Desktop.app")
 cask "keyboard-maestro" unless File.directory?("/Applications/Keyboard Maestro.app")
 cask "balenaetcher" unless File.directory?("/Applications/balenaEtcher.app")
