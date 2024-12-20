@@ -73,7 +73,7 @@ window_management, move, resize, leader < cmd + alt + ctrl - a ; applcation_laun
 #=============================Common app launcher ===========================================================
 #============================================================================================================
  
-alt + shift - z : ~/.config/skhd/float_center.sh
+alt + shift - z : float_center.sh
 ## Misc
 shift + lalt - w : open "/Applications/Safari.app"
 lalt - w : open "/Applications/Arc.app"
@@ -88,7 +88,8 @@ shift + lalt - t :  open -na "kitty"
 lalt - n : open "/Applications/Numbers.app"
 lalt - p : open "/System/Applications/Passwords.app/"
 
-lalt - y : /Applications/kitty.app/Contents/MacOS/kitty --single-instance --title window-switcher -e /Users/john/.config/skhd/fzfyabi.sh
+# yabai fzf windows
+lalt - y : /Applications/kitty.app/Contents/MacOS/kitty --single-instance --title window-switcher -e fzfyabi.sh
 
 
 resize, move < escape : skhd -k "cmd + alt + ctrl - x"
