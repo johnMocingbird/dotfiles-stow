@@ -56,7 +56,6 @@ brew "switchaudio-osx"
 #brew install --cask spacelauncher
 # cask "cleanmymac" unless File.directory?("/Applications/CleanMyMac X.app")
 cask "raycast" unless File.directory?("/Applications/raycast.app")
-cask "parallels" unless File.directory?("/Applications/Parallels Desktop.app")
 # TODO:
 # brew install --cask monitorcontrol
 cask "betterdisplay" unless File.directory?("/Applications/BetterDisplay.app")
@@ -176,16 +175,16 @@ defaults write com.apple.finder ShowStatusBar -bool false
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool YES
 
 # Disable Safari from automatically opening "safe" files after downloading.
-defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+# defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
 
 # Enable the Develop menu in Safari.
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
+sudo defaults write com.apple.Safari IncludeDevelopMenu -bool true
 
 # Enable WebKit developer extras in Safari.
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+sudo defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
 
 # Enable WebKit developer extras for Safari's WebKit2 framework.
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+sudo defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
 
 # Enable WebKit developer extras globally.
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
