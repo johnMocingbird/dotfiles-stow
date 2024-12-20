@@ -79,11 +79,14 @@ EOF
 # NOTE: Mac App Store Apps
 echo "Installing Mac App Store Apps..."
 # mas install 1451685025 #Wireguard
-mas install 1480933944 #Vimari
-mas install 497799835  #xCode
-mas install 1450504903 #nighteye
-mas install 524141863  #Jump VNC
-mas install 1099568401 #home assistant
+
+if prompt_user "Do you really want to install apps from the app store?"; then
+  mas install 1480933944 #Vimari
+  mas install 497799835  #xCode
+  mas install 1450504903 #nighteye
+  mas install 524141863  #Jump VNC
+  mas install 1099568401 #home assistant
+fi
 
 # NOTE: macOS Settings
 echo "Changing macOS defaults..."
