@@ -300,8 +300,8 @@ fi
 fancy_echo "TODO:"
 fancy_echo "- please setup kitty scrollback"
 fancy_echo '- do not forget to setup vanta'
-fanch_echo '- setup simulator app alias'
-fanch_echo '- keep nots of other things to do'
+fancy_echo '- setup simulator app alias'
+fancy_echo '- keep nots of other things to do'
 open https://github.com/mikesmithgh/kitty-scrollback.nvim
 open https://symless.com/synergy/download/package/mac/synergy-3.2.1-macos-arm64.dmg
 open https://docs.docker.com/desktop/setup/install/mac-install/#install-and-run-docker-desktop-on-mac
