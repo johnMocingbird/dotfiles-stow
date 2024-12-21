@@ -9,9 +9,6 @@ add synergy3 to .laptop
 
 chrom/arc plugins
 
-- add chrome vimuium plugin
-- icloud password
-
 ## linux
 
 ## MacOS change keyboard shortcuts
