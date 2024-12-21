@@ -296,6 +296,7 @@ fi
 # todo add install for kitty scroll back
 fancy_echo "please setup kitty scrollback"
 fancy_echo "https://github.com/mikesmithgh/kitty-scrollback.nvim"
+open https://github.com/mikesmithgh/kitty-scrollback.nvim
 
 
 
