@@ -49,17 +49,25 @@ brew "borders"
 brew "svim"
 brew "switchaudio-osx"
 
-
-
-
 # mac utils
 #brew install --cask spacelauncher
 # cask "cleanmymac" unless File.directory?("/Applications/CleanMyMac X.app")
 cask "raycast" unless File.directory?("/Applications/raycast.app")
-# TODO:
+
+# Mac apps:
 # brew install --cask monitorcontrol
+brew "aspell"
 cask "betterdisplay" unless File.directory?("/Applications/BetterDisplay.app")
 cask "elgato-stream-deck" unless File.directory?("/Applications/Elgato Stream Deck.app")
+cask "whatsapp" unless File.directory?("/Applications/WhatsApp.app")
+cask "messenger" unless File.directory?("/Applications/Messenger.app")
+cask "keymap" unless File.directory?("/Applications/Keymapp.app")
+cask "microsoft-word" unless File.directory?("/Applications/Microsoft Word.app")
+cask "bartender" unless File.directory?("/Applications/Bartender 5.app")
+cask "logitune" unless File.directory?("/Applications/LogiTune.app")
+cask "chatgpt" unless File.directory?("/Applications/ChatGPT.app")
+cask "xmind" unless File.directory?("/Applications/Xmind.app")
+cask "zoom" unless File.directory?("/Applications/zoom.us.app")
 
 # remote
 
@@ -80,12 +88,14 @@ EOF
 echo "Installing Mac App Store Apps..."
 # mas install 1451685025 #Wireguard
 
-if prompt_user "Do you really want to install apps from the app store?"; then
+if prompt_user "Do you want to install apps from the app store?"; then
   mas install 1480933944 #Vimari
   mas install 497799835  #xCode
   mas install 1450504903 #nighteye
   mas install 524141863  #Jump VNC
   mas install 1099568401 #home assistant
+  mas install 899247664 # testflight
+
 fi
 
 # NOTE: macOS Settings
@@ -261,9 +271,6 @@ append_to_zshrc 'source ~/.config/zsh/macos.zsh'
 fancy_echo "Cleaning up old Homebrew formulae ..."
 brew cleanup
 
-#TODO: setup powerlevel10k and OHMZSH
-#TODO: setup tmux plugins
-
 #if [ -r "$HOME/.rcrc" ]; then
 #  fancy_echo "Updating dotfiles ..."
 # rcup
@@ -290,14 +297,14 @@ else
   fancy_echo "SSH key already exists at $SSH_KEY_PATH. Skipping generation."
 fi
 
-
-# TODO: Setup tmux config with stow
-# clean up scripts that i dont use..
-# todo add install for kitty scroll back
-fancy_echo "please setup kitty scrollback"
-fancy_echo "https://github.com/mikesmithgh/kitty-scrollback.nvim"
+fancy_echo "TODO:"
+fancy_echo "- please setup kitty scrollback"
+fancy_echo '- do not forget to setup vanta'
+fanch_echo '- setup simulator app alias'
+fanch_echo '- keep nots of other things to do'
 open https://github.com/mikesmithgh/kitty-scrollback.nvim
-
+open https://symless.com/synergy/download/package/mac/synergy-3.2.1-macos-arm64.dmg
+open https://docs.docker.com/desktop/setup/install/mac-install/#install-and-run-docker-desktop-on-mac
 
 
 
