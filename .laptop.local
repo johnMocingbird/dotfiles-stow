@@ -257,7 +257,6 @@ append_to_zshrc 'source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh'
 append_to_zshrc 'source ~/.config/zsh/general.zsh'
 append_to_zshrc 'source ~/.config/zsh/macos.zsh'
 
-source $HOME/.zshrc
 
 fancy_echo "Cleaning up old Homebrew formulae ..."
 brew cleanup
