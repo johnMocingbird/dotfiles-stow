@@ -1,7 +1,12 @@
 #!/bin/sh
 
 # NOTE: brew bundle install
+
 brew install --cask homerow
+brew install --cask font-fira-code-nerd-font
+brew install --cask font-jetbrains-mono-nerd-font
+brew install font-hack-nerd-font
+
 
 brew bundle --file=- <<EOF
 
@@ -14,9 +19,6 @@ cask "the-unarchiver" unless File.directory?("/Applications/The Unarchiver.app")
 cask "obsidian" unless File.directory?("/Applications/Obsidian.app")
 cask "alfred" unless File.directory?("/Applications/Alfred 5.app")
 cask "plex" unless File.directory?("/Applications/Plex.app")
-
-# font stuff
-cask "font-jetbrains-mono" unless File.directory?("~/Library/Fonts/JetBrainsMono-Bold.ttf")
 
 # GitHub extensions
 brew "lazygit"
@@ -218,7 +220,7 @@ defaults write com.apple.screencapture location ~/Documents/Screenshots
 
 mkdir -p development
 
-repos=(
+git clone repos=(
   "git@github.com:zsh-users/zsh-autosuggestions.git $HOME/.zsh/zsh-autosuggestions"
   "git@github.com:jeffreytse/zsh-vi-mode.git $HOME/.zsh/zsh-vi-mode"
   "git@github.com:zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting"
@@ -227,6 +229,7 @@ repos=(
   "git@github.com:MyMOC/mobilemoc.git $HOME/development/mobilemoc"
   "git@github.com:MyMOC/front-end.git $HOME/development/front-end"
   "git@github.com:MyMOC/utilities.git $HOME/development/utilities_mymoc"
+  "https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm"
 )
 
 # Clone repositories
@@ -284,6 +287,8 @@ SSH_KEY_PATH="$HOME/.ssh/ubuntu_id_rsa"
 
 # Check if the SSH key exists
 if [ ! -f "$SSH_KEY_PATH" ]; then
+  git config --global user.email "john.coakley@mocingbird.com"
+
   fancy_echo "SSH key not found. Generating a new SSH key at $SSH_KEY_PATH..."
 
   # Generate the SSH key without a passphrase
@@ -298,11 +303,18 @@ else
 fi
 
 fancy_echo "TODO:"
-fancy_echo "- please setup kitty scrollback"
 fancy_echo '- do not forget to setup vanta'
 fancy_echo '- setup simulator app alias'
 fancy_echo '- keep nots of other things to do'
-open https://github.com/mikesmithgh/kitty-scrollback.nvim
+fancy_echo '- install tmux-plugins with leader I'
+fancy_echo '- change your kitty font with...'
+fancy_echo 'kitty list-fonts'
+
+fancy_echo 'Change keyboard settings'
+fancy_echo '- mission control, spaces 1-6'
+fancy_echo '-'
+
+
 open https://symless.com/synergy/download/package/mac/synergy-3.2.1-macos-arm64.dmg
 open https://docs.docker.com/desktop/setup/install/mac-install/#install-and-run-docker-desktop-on-mac
 
