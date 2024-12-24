@@ -51,6 +51,9 @@ File->Sync Project with Gradle Files
 - <https://github.com/LGUG2Z/komorebi>
 - <https://github.com/ChrisTitusTech/winutil>
 
+mklink /D "C:\Users\coakl\.config\alacritty" "C:\Users\coakl\AppData\Roaming\alacritty"  
+mklink /D C:\Users\coakl\.config\nvim C:\Users\coakl\AppData\Local\nvim                         
+
 TODO:
 
 - setup fix for keyboard (ie autohotkey)
