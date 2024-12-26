@@ -11,6 +11,11 @@ default, move, resize < lalt - j    : yabai -m window --focus south || yabai -m 
 default, move, resize < lalt - k    : yabai -m window --focus north || yabai -m display --focus north
 default, move, resize < lalt - l : yabai -m window --focus east  || yabai -m display --focus east || yabai -m display --focus 2
 
+alt - left : yabai -m window --move rel:-50:0
+alt - right : yabai -m window --move rel:50:0
+alt - up : yabai -m window --move rel:0:-50
+alt - down : yabai -m window --move rel:0:50
+
 window_management, leader < h : yabai -m window --focus west  || yabai -m display --focus west
 # Extended Window Navigation: lalt - {h, ä}
 # lalt - n : yabai -m window --focus  last
