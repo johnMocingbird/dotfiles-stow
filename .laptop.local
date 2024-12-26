@@ -225,7 +225,7 @@ defaults write com.apple.screencapture location ~/Documents/Screenshots
 
 mkdir -p development
 
-git clone repos=(
+repos=(
   "git@github.com:zsh-users/zsh-autosuggestions.git $HOME/.zsh/zsh-autosuggestions"
   "git@github.com:jeffreytse/zsh-vi-mode.git $HOME/.zsh/zsh-vi-mode"
   "git@github.com:zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting"
@@ -264,7 +264,7 @@ append_to_zshrc 'source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh'
 append_to_zshrc 'source ~/.config/zsh/general.zsh'
 append_to_zshrc 'source ~/.config/zsh/macos.zsh'
 append_to_zshrc 'export PATH="$HOME/scripts:$PATH"'
-append_to_zshrc 'alias am=$HOME/.zsh/zsh-autosuggestions/Apple-Music-CLI-Player/am.ah'
+append_to_zshrc 'alias am=$HOME/.zsh/Apple-Music-CLI-Player/src/am.ah'
 
 
 
