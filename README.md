@@ -52,7 +52,7 @@ File->Sync Project with Gradle Files
 - <https://github.com/ChrisTitusTech/winutil>
 
 mklink /D "C:\Users\coakl\.config\alacritty" "C:\Users\coakl\AppData\Roaming\alacritty"  
-mklink /D C:\Users\coakl\.config\nvim C:\Users\coakl\AppData\Local\nvim                         
+mklink /D C:\Users\coakl\.config\nvim C:\Users\coakl\AppData\Local\nvim
 
 TODO:
 
@@ -62,3 +62,12 @@ TODO:
 - icue
 - autohotkey
 - komorebi
+
+### Projects
+
+```sh
+ git clone git@github.com:MyMOC/mymoc.git $HOME/mymoc
+ git clone git@github.com:MyMOC/mobilemoc.git $HOME/development/mobilemoc
+ git clone git@github.com:MyMOC/front-end.git $HOME/development/front-end
+ git clone git@github.com:MyMOC/utilities.git $HOME/development/utilities_mymoc
+```

@@ -6,6 +6,7 @@ brew install --cask homerow
 brew install --cask font-fira-code-nerd-font
 brew install --cask font-jetbrains-mono-nerd-font
 brew install font-hack-nerd-font
+brew install saulpw/vd/visidata
 
 
 brew bundle --file=- <<EOF
@@ -37,10 +38,14 @@ brew "btop"
 brew "weechat"
 # requires slack plugin
 
+brew "docker"
+brew "docker-compose"
+
 # tmux dependency
 brew "stow"
 brew "fzf"
 brew "bat"
+brew "cmatrix"
 
 # GUI
 brew "jq"
@@ -225,11 +230,8 @@ git clone repos=(
   "git@github.com:jeffreytse/zsh-vi-mode.git $HOME/.zsh/zsh-vi-mode"
   "git@github.com:zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting"
   "git@github.com:marlonrichert/zsh-autocomplete.git $HOME/.zsh/zsh-autocomplete"
-  "git@github.com:MyMOC/mymoc.git $HOME/mymoc"
-  "git@github.com:MyMOC/mobilemoc.git $HOME/development/mobilemoc"
-  "git@github.com:MyMOC/front-end.git $HOME/development/front-end"
-  "git@github.com:MyMOC/utilities.git $HOME/development/utilities_mymoc"
   "https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm"
+  "git@github.com:mcthomas/Apple-Music-CLI-Player.git $HOME/.zsh/Apple-Music-CLI-Player"
 )
 
 # Clone repositories
@@ -252,15 +254,7 @@ for repo in "${repos[@]}"; do
     echo "Repository already exists at ${target_dir/#\~/$HOME}. Skipping clone."
   fi
 done
-#  #  "zsh-autosuggestions"
-#  git clone https://github.com/zsh-users/zsh-autosuggestions $HOME/.config/zsh-plugins/zsh-autosuggestions
-#  #  "zsh-vi-mode"
-#  git clone https://github.com/jeffreytse/zsh-vi-mode.git $HOME/.config/zsh-plugins/zsh-vi-mode
-#  #  "zsh-syntax-highlighting"
-#  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.config/zsh-plugins/zsh-syntax-highlighting
-#  # "zsh-autocomplete
-#  git clone https://github.com/marlonrichert/zsh-autocomplete.git $HOME/.config/zsh-plugins/zsh-autocomplete
-#
+
 # NOTE: zshrc setup
 
 append_to_zshrc 'source $HOME/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh'
@@ -269,6 +263,9 @@ append_to_zshrc 'source $HOME/.zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh'
 append_to_zshrc 'source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh'
 append_to_zshrc 'source ~/.config/zsh/general.zsh'
 append_to_zshrc 'source ~/.config/zsh/macos.zsh'
+append_to_zshrc 'export PATH="$HOME/scripts:$PATH"'
+append_to_zshrc 'alias am=$HOME/.zsh/zsh-autosuggestions/Apple-Music-CLI-Player/am.ah'
+
 
 
 fancy_echo "Cleaning up old Homebrew formulae ..."
@@ -302,7 +299,9 @@ else
   fancy_echo "SSH key already exists at $SSH_KEY_PATH. Skipping generation."
 fi
 
+
 fancy_echo "TODO:"
+fancy_echo '- setup ssh as mentioned above'
 fancy_echo '- do not forget to setup vanta'
 fancy_echo '- setup simulator app alias'
 fancy_echo '- keep nots of other things to do'
@@ -312,11 +311,18 @@ fancy_echo 'kitty list-fonts'
 
 fancy_echo 'Change keyboard settings'
 fancy_echo '- mission control, spaces 1-6'
-fancy_echo '-'
+fancy_echo '- reduce motion'
 
+fancy_echo ''
+fancy_echo 'Make Scripts executable'
 
+fancy_echo 'Important for backend development!'
+fancy_echo 'setup Apple-Music-CLI-Player'
+fancy_echo 'Import bookmarks through arc://bookmarks/'
+open https://github.com/mcthomas/Apple-Music-CLI-Player
 open https://symless.com/synergy/download/package/mac/synergy-3.2.1-macos-arm64.dmg
-open https://docs.docker.com/desktop/setup/install/mac-install/#install-and-run-docker-desktop-on-mac
+open /Users/john/Library/Mobile Documents/com~apple~CloudDocs
+open arc://bookmarks/ 
 
 
 

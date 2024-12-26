@@ -1,7 +1,7 @@
 # /Users/john/.config/tmuxinator/rails_console.yml
 
 name: front_end
-root: ~/development/mocingbird/front-end/
+root: ~/development/front-end/
 
 windows:
   - neovim:

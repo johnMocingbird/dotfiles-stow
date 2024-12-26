@@ -1,6 +1,6 @@
 
-alias ios='cd ~/development/mobile_dev/mobilemoc-ios/ && npx react-native run-ios --terminal iTerm --simulator="iPhone 15 Pro Max" --scheme="Staging" --mode Debug'
-alias ios_local='cd ~/development/mobile_dev/mobilemoc-ios/ && npx react-native run-ios --terminal iTerm --simulator="iPhone 15 Pro Max" --scheme="Development" --mode Debug'
+alias ios='cd ~/development/mobilemoc/ && npx react-native run-ios --terminal iTerm --simulator="iPhone 15 Pro Max" --scheme="Staging" --mode Debug'
+alias ios_local='cd ~/development/mobilemoc/ && npx react-native run-ios --terminal iTerm --simulator="iPhone 15 Pro Max" --scheme="Development" --mode Debug'
 alias mobile='cd ~/development/mobile_dev/mobilemoc-ios/'
 alias ubuntu='ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75'
 alias ubuntu_server='ssh -L 3000:localhost:3000 -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75'
