@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-apk_file_path="/Users/john/development/mobile_dev/mobilemoc-ios/android/app/build/outputs/apk/staging/release/"
+apk_file_path="/Users/john/development/mobilemoc/android/app/build/outputs/apk/staging/release/"
 
 month_name=""
 day=$(date +%d)
@@ -50,7 +50,7 @@ case $month_num in
 	;;
 esac
 
-cd ~/development/mobile_dev/mobilemoc-ios/android/
+cd ~/development/mobilemoc/android/
 ./gradlew assembleStagingRelease
 
 new_apk="mocingbird_stag_${day}_${month_name}_${year}.apk"

@@ -20,7 +20,7 @@ yabai -m config external_bar all:35:0 \
 	window_opacity_duration 0.2 \
 	active_window_opacity 1.0 \
 	normal_window_opacity 0.95 \
-	window_animation_duration 0.1 \
+	window_animation_duration 0.5 \
 	window_animation_easing ease_out_quint \
 	insert_feedback_color 0xff9dd274 \
 	split_ratio 0.50 \
@@ -39,7 +39,17 @@ yabai -m config external_bar all:35:0 \
 yabai -m rule --add app="^(Family|LuLu|Calculator|Software Update|Dictionary|VLC|System Preferences|System Settings|zoom.us|Photo Booth|Archive Utility|Python|LibreOffice|App Store|Steam|Alfred|Activity Monitor|familycircled|Raycast)$" manage=off
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
+# yabai -m rule --add label="Arc" app="^Arc$" title="^(John|General|Profiles|Max|Links|Shortcuts|Icon|Advance)$" manage=off
+# yabai -m rule --add label="Arc" app="Arc" title="(John|General|Profiles|Max|Links|Shortcuts|Icon|Advance)" manage=off
+# yabai -m rule --add app="Arc" title="^(General|Profiles|John)$" manage=off
+# yabai -m rule --add app="Arc" title="General" manage=off
+# yabai -m rule --add app="Arc" title="Profiles" manage=off
+yabai -m rule --add app="Arc" title="John" manage=off
+
+yabai -m rule --add app="Arc" title="General" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+yabai -m rule --add label="Safari" app="^Safari$" title="^Personal — Sign in – Google accounts$" manage=off
+yabai -m rule --add label="Safari" app="^Safari$" title="^Personal Đăng nhập — Tài khoản Google$" manage=off
 # TODO: add un managed for arc setting.
 yabai -m rule --add label="Select file to save to" app="^Inkscape$" title="Select file to save to" manage=off
 yabai -m signal --add event=window_focused action="~/.config/yabai/unfloat.sh"
@@ -48,5 +58,5 @@ yabai -m rule --add app="^Parallels Desktop" manage=off
 
 yabai -m config layout bsp
 
-echo "yabai configuration loaded.. yes this one was loaded........"
+echo "yabai configuration loaded..."
 borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
