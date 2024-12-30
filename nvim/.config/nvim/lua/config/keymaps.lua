@@ -27,13 +27,11 @@ end
 
 map("n", "<leader>tm", function()
 	mymoc_utils.open_rspec_file()
-end, { noremap = true, silent = true })
+end, { noremap = true, silent = true, desc = "MyMoc: Open RSpec File" })
 
 local harpoon = require("harpoon")
 
 -- heroku logs --tail -a mymoc-staging | sed -E 's/^[^ ]+ [^ ]+ [^ ]+ [^ ]+ (.*)$/\1/'
-
--- map("n", "<leader>fs", ":Telescope lsp_document_symbols<CR>", { noremap = true, silent = true })
 
 map(
 	"n",
@@ -41,6 +39,22 @@ map(
 	":lua require('telescope.builtin').lsp_document_symbols({ symbols = { 'Function', 'Method' } })<CR>",
 	{ noremap = true, silent = true }
 )
+
+-- TODO: -- Function to comment out all 'binding.pry'
+function CommentBindingPry()
+	local current_buffer = vim.api.nvim_get_current_buf()
+	vim.api.nvim_buf_set_lines(
+		current_buffer,
+		0,
+		-1,
+		false,
+		vim.tbl_map(function(line)
+			return line:gsub("binding%.pry", "# binding.pry")
+		end, vim.api.nvim_buf_get_lines(current_buffer, 0, -1, false))
+	)
+end
+
+vim.keymap.set("n", "<leader>tc", CommentBindingPry, { desc = "Comment all binding.pry" })
 
 -- if vim.fn.getcwd() == "/home/john/mymoc" then
 -- 	map("n", "<leader>sr", function()
@@ -102,16 +116,11 @@ map("n", "<leader>rc", ":lua require('ror.commands').list_commands()<CR>", { sil
 -- 	{ noremap = true, silent = true, desc = "Rspec: Test File" }
 -- )
 --
-map(
-	"n",
-	"<leader>tf",
-	":TestFile -strategy=neovim<CR>",
-	{ desc = "Rspec: Test Nearest", noremap = true, silent = true }
-)
+map("n", "<leader>tT", ":TestFile -strategy=neovim<CR>", { desc = "Rspec: Test File", noremap = true, silent = true })
 
 map(
 	"n",
-	"<leader>tn",
+	"<leader>tR",
 	":TestNearest -strategy=neovim<CR>",
 	{ desc = "Rspec: Test Nearest", noremap = true, silent = true }
 )
