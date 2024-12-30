@@ -1,0 +1,14 @@
+# /Users/john/.config/tmuxinator/mobile.yml
+
+name: mobile
+root: /Users/john/development/mobilemoc/
+
+windows:
+  - neovim:
+      - nvim .
+  - server:
+      - npm start
+  - C_Start_App:
+      - npm run ios:dev
+  - lazy_git:
+      - lazygit

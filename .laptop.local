@@ -1,27 +1,27 @@
 #!/bin/sh
 
+# NOTE: brew bundle install
+
+brew install --cask homerow
+brew install --cask font-fira-code-nerd-font
+brew install --cask font-jetbrains-mono-nerd-font
+brew install font-hack-nerd-font
+brew install saulpw/vd/visidata
+
+
 brew bundle --file=- <<EOF
 
 cask "arc" unless File.directory?("/Applications/Arc.app")
-tap "homebrew/cask-fonts"
 tap "FelixKratz/formulae"
-cask "skitch" unless File.directory?("/Applications/Skitch.app")
+# cask "skitch" unless File.directory?("/Applications/Skitch.app")
 cask "vlc" unless File.directory?("/Applications/VLC.app")
 cask "obs" unless File.directory?("/Applications/OBS.app")
 cask "the-unarchiver" unless File.directory?("/Applications/The Unarchiver.app")
 cask "obsidian" unless File.directory?("/Applications/Obsidian.app")
 cask "alfred" unless File.directory?("/Applications/Alfred 5.app")
-
-# font stuff
-cask "font-hack-nerd-font"
-cask "sf-symbols" unless File.directory?("/Applications/SF Symbols beta.app")
-cask "font-jetbrains-mono" unless File.directory?("~/Library/Fonts/JetBrainsMono-Bold.ttf")
-#TODO: is this an issue?
-cask "font-fira-code"
-# brew install --cask font-fira-code
+cask "plex" unless File.directory?("/Applications/Plex.app")
 
 # GitHub extensions
-brew "gh"
 brew "lazygit"
 
 # recommended cli tools
@@ -38,29 +38,43 @@ brew "btop"
 brew "weechat"
 # requires slack plugin
 
+brew "docker"
+brew "docker-compose"
+
 # tmux dependency
 brew "stow"
 brew "fzf"
 brew "bat"
+brew "cmatrix"
 
 # GUI
 brew "jq"
-brew "alfred"
-brew "skhd"
+cask "alfred" unless File.directory?("/Applications/Alfred 5.app")
+brew "koekeishiya/formulae/skhd"
 brew "yabai"
-brew "sketchybar"
+brew "borders"
 brew "svim"
 brew "switchaudio-osx"
 
-
-
-
-#brew install --cask spacelauncher
 # mac utils
+#brew install --cask spacelauncher
 # cask "cleanmymac" unless File.directory?("/Applications/CleanMyMac X.app")
 cask "raycast" unless File.directory?("/Applications/raycast.app")
-cask "meetingbar" unless File.directory?("/Applications/MeetingBar.app")
+
+# Mac apps:
+# brew install --cask monitorcontrol
+brew "aspell"
+cask "betterdisplay" unless File.directory?("/Applications/BetterDisplay.app")
 cask "elgato-stream-deck" unless File.directory?("/Applications/Elgato Stream Deck.app")
+cask "whatsapp" unless File.directory?("/Applications/WhatsApp.app")
+cask "messenger" unless File.directory?("/Applications/Messenger.app")
+cask "keymapp" unless File.directory?("/Applications/Keymapp.app")
+cask "microsoft-word" unless File.directory?("/Applications/Microsoft Word.app")
+cask "bartender" unless File.directory?("/Applications/Bartender 5.app")
+cask "logitune" unless File.directory?("/Applications/LogiTune.app")
+cask "chatgpt" unless File.directory?("/Applications/ChatGPT.app")
+cask "xmind" unless File.directory?("/Applications/Xmind.app")
+cask "zoom" unless File.directory?("/Applications/zoom.us.app")
 
 # remote
 
@@ -69,28 +83,29 @@ cask "parsec" unless File.directory?("/Applications/Parsec.app")
 
 
 # other
-# This needs to be version 16
+# This needs to be version 20
 # cask "parallels" unless File.directory?("/Applications/Parallels Desktop.app")
 cask "keyboard-maestro" unless File.directory?("/Applications/Keyboard Maestro.app")
 cask "balenaetcher" unless File.directory?("/Applications/balenaEtcher.app")
 
 EOF
 
-#Other brew packages
-brew tap homebrew/cask-fonts
-brew install font-hack-nerd-font
-brew install koekeishiya/formulae/skhd
-$(brew --prefix)/opt/fzf/install
-# Mac App Store Apps
+
+# NOTE: Mac App Store Apps
 echo "Installing Mac App Store Apps..."
 # mas install 1451685025 #Wireguard
-mas install 1480933944 #Vimari
-mas install 497799835  #xCode
-mas install 1450504903 #nighteye
-mas install 524141863  #Jump VNC
-mas install 1099568401 #home assistant
 
-# macOS Settings
+if prompt_user "Do you want to install apps from the app store?"; then
+  mas install 1480933944 #Vimari
+  mas install 497799835  #xCode
+  mas install 1450504903 #nighteye
+  mas install 524141863  #Jump VNC
+  mas install 1099568401 #home assistant
+  mas install 899247664 # testflight
+
+fi
+
+# NOTE: macOS Settings
 echo "Changing macOS defaults..."
 # ensures that clicking on the desktop does not trigger "Show Desktop," helping prevent accidental hiding of windows.
 defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
@@ -180,16 +195,16 @@ defaults write com.apple.finder ShowStatusBar -bool false
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool YES
 
 # Disable Safari from automatically opening "safe" files after downloading.
-defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+# defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
 
 # Enable the Develop menu in Safari.
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
+sudo defaults write com.apple.Safari IncludeDevelopMenu -bool true
 
 # Enable WebKit developer extras in Safari.
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+sudo defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
 
 # Enable WebKit developer extras for Safari's WebKit2 framework.
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+sudo defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
 
 # Enable WebKit developer extras globally.
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
@@ -203,37 +218,58 @@ defaults write -g NSWindowShouldDragOnGesture YES
 # Set a custom location for saving screenshots (in ~/Documents/Screenshots).
 defaults write com.apple.screencapture location ~/Documents/Screenshots
 
-# Installing Fonts
-git clone git@github.com:shaunsingh/SFMono-Nerd-Font-Ligaturized.git /tmp/SFMono_Nerd_Font
-mv /tmp/SFMono_Nerd_Font/* $HOME/Library/Fonts
-rm -rf /tmp/SFMono_Nerd_Font/
+# disable downloaded software warning
+# sudo spctl --master-disable
 
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v1.0.4/sketchybar-app-font.ttf -o $HOME/Library/Fonts/sketchybar-app-font.ttf
+# NOTE: zsh plugins and powerlevel10k and clone repos
 
-# zsh plugins
+mkdir -p development
 
-#  "zsh-autosuggestions"
-git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+repos=(
+  "git@github.com:zsh-users/zsh-autosuggestions.git $HOME/.zsh/zsh-autosuggestions"
+  "git@github.com:jeffreytse/zsh-vi-mode.git $HOME/.zsh/zsh-vi-mode"
+  "git@github.com:zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting"
+  "git@github.com:marlonrichert/zsh-autocomplete.git $HOME/.zsh/zsh-autocomplete"
+  "https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm"
+  "git@github.com:mcthomas/Apple-Music-CLI-Player.git $HOME/.zsh/Apple-Music-CLI-Player"
+)
 
-#  "zsh-vi-mode"
-git clone https://github.com/jeffreytse/zsh-vi-mode.git $HOME/.zsh/.zsh-vi-mode
+# Clone repositories
+for repo in "${repos[@]}"; do
+  repo_url=$(echo "$repo" | awk '{print $1}')
+  target_dir=$(echo "$repo" | awk '{print $2}')
 
-#  "zsh-syntax-highlighting"
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/.zsh-syntax-highlighting
+  # Ensure the parent directory exists
+  parent_dir=$(dirname "${target_dir/#\~/$HOME}")
+  if [ ! -d "$parent_dir" ]; then
+    echo "Creating directory $parent_dir..."
+    mkdir -p "$parent_dir"
+  fi
 
-# "zsh-autocomplete
-git clone https://github.com/marlonrichert/zsh-autocomplete.git $HOME/.zsh/zsh-autocomplete
-# TODO: setup append_to_zshrc to zsh with my plugins script
-#
+  # Clone the repository if it doesn't already exist
+  if [ ! -d "${target_dir/#\~/$HOME}" ]; then
+    echo "Cloning $repo_url into ${target_dir/#\~/$HOME}..."
+    git clone --depth=1 "$repo_url" "${target_dir/#\~/$HOME}"
+  else
+    echo "Repository already exists at ${target_dir/#\~/$HOME}. Skipping clone."
+  fi
+done
 
-source $HOME/.zshrc
-cfg config --local status.showUntrackedFiles no
+# NOTE: zshrc setup
+
+append_to_zshrc 'source $HOME/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh'
+append_to_zshrc 'source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
+append_to_zshrc 'source $HOME/.zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh'
+append_to_zshrc 'source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh'
+append_to_zshrc 'source ~/.config/zsh/general.zsh'
+append_to_zshrc 'source ~/.config/zsh/macos.zsh'
+append_to_zshrc 'export PATH="$HOME/scripts:$PATH"'
+append_to_zshrc 'alias am=$HOME/.zsh/Apple-Music-CLI-Player/src/am.ah'
+
+
 
 fancy_echo "Cleaning up old Homebrew formulae ..."
 brew cleanup
-
-#TODO: setup powerlevel10k and OHMZSH
-#TODO: setup tmux plugins
 
 #if [ -r "$HOME/.rcrc" ]; then
 #  fancy_echo "Updating dotfiles ..."
@@ -242,3 +278,51 @@ brew cleanup
 
 skhd --start-service
 yabai --start-service
+
+# NOTE: SSH key for development machine
+SSH_KEY_PATH="$HOME/.ssh/ubuntu_id_rsa"
+
+# Check if the SSH key exists
+if [ ! -f "$SSH_KEY_PATH" ]; then
+  git config --global user.email "john.coakley@mocingbird.com"
+
+  fancy_echo "SSH key not found. Generating a new SSH key at $SSH_KEY_PATH..."
+
+  # Generate the SSH key without a passphrase
+  ssh-keygen -t rsa -b 4096 -f "$SSH_KEY_PATH" -N "" -C "coakleymjohn@gmail.com"
+
+  fancy_echo "SSH key generated successfully!"
+  fancy_echo "remember to add your ssh key to development machine"
+  fancy_echo "cat ~/.ssh/ubuntu_id_rsa.pub | pbcopy"
+  cat ~/.ssh/ubuntu_id_rsa.pub | pbcopy
+else
+  fancy_echo "SSH key already exists at $SSH_KEY_PATH. Skipping generation."
+fi
+
+
+fancy_echo "TODO:"
+fancy_echo '- setup ssh as mentioned above'
+fancy_echo '- do not forget to setup vanta'
+fancy_echo '- setup simulator app alias'
+fancy_echo '- keep nots of other things to do'
+fancy_echo '- install tmux-plugins with leader I'
+fancy_echo '- change your kitty font with...'
+fancy_echo 'kitty list-fonts'
+
+fancy_echo 'Change keyboard settings'
+fancy_echo '- mission control, spaces 1-6'
+fancy_echo '- reduce motion'
+
+fancy_echo ''
+fancy_echo 'Make Scripts executable'
+
+fancy_echo 'Important for backend development!'
+fancy_echo 'setup Apple-Music-CLI-Player'
+fancy_echo 'Import bookmarks through arc://bookmarks/'
+open https://github.com/mcthomas/Apple-Music-CLI-Player
+open https://symless.com/synergy/download/package/mac/synergy-3.2.1-macos-arm64.dmg
+open /Users/john/Library/Mobile Documents/com~apple~CloudDocs
+open arc://bookmarks/ 
+
+
+

@@ -11,6 +11,11 @@ default, move, resize < lalt - j    : yabai -m window --focus south || yabai -m 
 default, move, resize < lalt - k    : yabai -m window --focus north || yabai -m display --focus north
 default, move, resize < lalt - l : yabai -m window --focus east  || yabai -m display --focus east || yabai -m display --focus 2
 
+alt - left : yabai -m window --move rel:-50:0
+alt - right : yabai -m window --move rel:50:0
+alt - up : yabai -m window --move rel:0:-50
+alt - down : yabai -m window --move rel:0:50
+
 window_management, leader < h : yabai -m window --focus west  || yabai -m display --focus west
 # Extended Window Navigation: lalt - {h, ä}
 # lalt - n : yabai -m window --focus  last
@@ -20,7 +25,7 @@ window_management, leader < h : yabai -m window --focus west  || yabai -m displa
 # lalt - return : yabai -m window --toggle float; sketchybar --trigger window_focus
 
 # Make window zoom to fullscreen: shift + lalt - z
-shift + lalt - z : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
+cmd + ctrl - f : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
 
 # Make window zoom to parent node: lalt - f 
 lalt - z : yabai -m window --toggle zoom-parent; sketchybar --trigger window_focus

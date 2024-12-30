@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+MUX_SESSIONS=$(tmuxinator list | tail -n +2 | awk '{print $1}')
+TMUX_EXISTING=$(tmux list-sessions -F '#S' 2>/dev/null)
+SESSIONS=$( (
+	echo "$TMUX_EXISTING"
+	echo "$MUX_SESSIONS"
+) | sort -u)
+
+SESSION=$(echo "$SESSIONS" | fzf --prompt="Select session: ")
+[ -z "$SESSION" ] && exit 0
+
+if echo "$TMUX_EXISTING" | grep -q "^$SESSION$"; then
+	# Session already exists, just switch to it
+	tmux switch-client -t "$SESSION"
+elif echo "$MUX_SESSIONS" | grep -q "^$SESSION$"; then
+	# It's a tmuxinator session, but not running. Start it without attaching, then switch.
+	# If your tmuxinator version doesn't support --no-attach, remove it and handle differently.
+	tmuxinator start "$SESSION" --no-attach
+	tmux switch-client -t "$SESSION"
+else
+	# Neither existing nor a known tmuxinator session
+	tmux new -d -s "$SESSION"
+	tmux switch-client -t "$SESSION"
+fi

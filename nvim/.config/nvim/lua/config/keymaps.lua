@@ -305,6 +305,25 @@ if vim.fn.executable("lazygit") == 1 then
 	end, { desc = "Lazygit Log (cwd)" })
 end
 
+-- ui user interface
+-- map("<leader>N", function()
+-- 	Snacks.notifier.show_history()
+-- end, { desc = "Notification History" })
+--
+
+map("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true })
+map("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
+
+map("n", "<leader>bt", function()
+	local visable = vim.o.showtabline
+	if visable ~= 0 then
+		vim.cmd("set showtabline=0")
+	else
+		vim.cmd("set showtabline=2")
+	end
+end, { desc = "Toggle Buffer Line" })
+
+map("n", "<leader>N", ":NnnPicker<CR>", { noremap = true, desc = "ObsidianSearch" })
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
 
@@ -340,7 +359,7 @@ map("n", "<leader>w", "<c-w>", { desc = "Windows", remap = true })
 map("n", "<leader>-", "<C-W>s", { desc = "Split Window Below", remap = true })
 map("n", "<leader>|", "<C-W>v", { desc = "Split Window Right", remap = true })
 map("n", "<leader>wd", "<C-W>c", { desc = "Delete Window", remap = true })
-LazyVim.ui.maximize():map("<leader>wm")
+-- LazyVim.ui.maximize():map("<leader>wm")
 
 -- tabs
 map("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })

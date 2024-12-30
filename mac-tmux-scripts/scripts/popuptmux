@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Check if a session name was passed as an argument
+if [ -z "$1" ]; then
+  echo "Usage: $0 <session_name>"
+  exit 1
+fi
+
+SESSION_NAME="$1"
+
+if [ "$(tmux display-message -p -F "#{session_name}" 2>/dev/null)" = "$SESSION_NAME" ]; then
+  tmux detach-client
+else
+  tmux popup -E -w 80% -h 80% "tmux attach -t $SESSION_NAME || tmux new -s $SESSION_NAME"
+fi
