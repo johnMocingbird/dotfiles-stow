@@ -1,4 +1,4 @@
-apps_to_unfloat=("Safari" "Arc" "Terminal" "kitty" "Alacritty" "Slack" "ChatGPT")
+apps_to_unfloat=("Arc" "Terminal" "kitty" "Slack" "ChatGPT")
 
 # Query all windows and unfloat those that match the apps and are currently floating
 yabai -m query --windows | jq -c '.[]' | while read -r window; do

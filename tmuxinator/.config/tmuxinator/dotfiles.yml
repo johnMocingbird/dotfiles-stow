@@ -1,0 +1,10 @@
+# /Users/john/.config/tmuxinator/dotfiles.yml
+
+name: dotfiles
+root: ~/dotfiles-stow/
+
+windows:
+  - neovim:
+      - nvim .
+  - lazy_git:
+      - lazygit

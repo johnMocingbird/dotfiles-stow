@@ -1,14 +1,10 @@
 # Declare modes 
 
 :: window_management : ~/.config/sketchybar/items/skhd_mode.sh window-management-mode
-:: applcation_launcher : ~/.config/sketchybar/items/skhd_mode.sh applcation_launcher
 :: resize : ~/.config/sketchybar/items/skhd_mode.sh resize
-:: move @ : ~/.config/sketchybar/items/skhd_mode.sh move
-:: safari : ~/.config/sketchybar/items/skhd_mode.sh safari
-:: code : ~/.config/sketchybar/items/skhd_mode.sh code
 :: default : ~/.config/sketchybar/items/skhd_mode.sh default
 :: leader : ~/.config/sketchybar/items/skhd_mode.sh leader
-:: system_settings : ~/.config/sketchybar/items/skhd_modbe.sh system_settings
+:: system_settings : ~/.config/sketchybar/items/skhd_mode.sh system_settings
 :: disabled : ~/.config/sketchybar/items/skhd_mode.sh disabled
 
 
@@ -18,7 +14,7 @@ lalt - space; leader
 
 #============================================================================================================
 #===============================IMPORTANT! CREATE AN ESCAPE FOR EACH NEW MODE================================
-resize, applcation_launcher, system_settings, safari, leader, window_management < escape ; default  # use this to escpae from each mode
+resize, system_settings, leader, window_management < escape ; default  # use this to escpae from each mode
 # use this to allow for esc from mode with double bress
 
 disabled < cmd + alt + ctrl + shift - e ; default
@@ -28,7 +24,7 @@ cmd + alt + ctrl + shift - d ; disabled
 #=====================================Switch Back to default if double pressed===============================
 
 
-system_settings, applcation_launcher, leader, safari, default, move, window_management < cmd + alt + ctrl - x ; default # if you want to exist mode with double press add mode here
+system_settings, leader, default, window_management < cmd + alt + ctrl - x ; default # if you want to exist mode with double press add mode here
 leader < lalt - space : skhd -k "cmd + alt + ctrl - x" 
 #============================================================================================================
 #================================LEADER=(switch to different layers here)====================================
@@ -37,8 +33,6 @@ leader < lalt - space : skhd -k "cmd + alt + ctrl - x"
 
 leader < p ; system_settings
 leader < w ; window_management
-# app applcation_launcher
-leader < a : osascript -e 'tell application "System Events" to keystroke "i" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x" 
 # mocingbird
 leader < m : osascript -e 'tell application "System Events" to keystroke "s" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x"
 # shorcut
@@ -55,21 +49,14 @@ leader < space : open "/Applications/kitty.app" ; skhd -k "cmd + alt + ctrl - x"
 
 # leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"
 #Keyboard shorcut to enter a layer
-cmd + alt + ctrl - w ; move 
-cmd + alt + ctrl - a ; applcation_launcher 
 cmd + alt + ctrl - r ; resize 
-cmd + alt + ctrl - i : osascript -e "tell application \"iTerm\" to activate" : skhd -k "cmd + alt + ctrl - x"
 #==========================================================================================================
 #===============Switching to modes while in other modes====================================================
-window_management < cmd + alt + ctrl - w ; move
-window_management, move < r ; resize
-window_management, resize < m ; move
-applcation_launcher < cmd + alt + ctrl - a ; default
+window_management < r ; resize
 
 
-applcation_launcher, leader < cmd + alt + ctrl - w ; window_management
-window_management, applcation_launcher < cmd + alt + ctrl - l ; leader
-window_management, move, resize, leader < cmd + alt + ctrl - a ; applcation_launcher
+leader < cmd + alt + ctrl - w ; window_management
+window_management < cmd + alt + ctrl - l ; leader
 #=============================Import other layers here=======================================================
 
 
@@ -95,7 +82,7 @@ lalt - p : open "/System/Applications/Passwords.app/"
 lalt - y : /Applications/kitty.app/Contents/MacOS/kitty --single-instance --title window-switcher -e fzfyabi.sh
 
 
-resize, move < escape : skhd -k "cmd + alt + ctrl - x"
+resize < escape : skhd -k "cmd + alt + ctrl - x"
 
 
 #============================================================================================================
