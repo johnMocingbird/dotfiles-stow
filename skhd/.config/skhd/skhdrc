@@ -33,20 +33,8 @@ leader < lalt - space : skhd -k "cmd + alt + ctrl - x"
 
 leader < p ; system_settings
 leader < w ; window_management
-# mocingbird
-leader < m : osascript -e 'tell application "System Events" to keystroke "s" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x"
-# shorcut
-leader < s : osascript -e 'tell application "System Events" to keystroke "o" using {command down, option down, control down }' ;  skhd -k "cmd + alt + ctrl - x"
-# smartHome
-leader < h : osascript -e 'tell application "System Events" to keystroke "h" using {command down, option down, control down }' ;  skhd -k "cmd + alt + ctrl - x"
- # open homerow
-leader < f : osascript -e 'tell application "System Events" to keystroke "f" using { option down }' ;  skhd -k "cmd + alt + ctrl - x"
-# open kitty
 leader < space : open "/Applications/kitty.app" ; skhd -k "cmd + alt + ctrl - x"
 # leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"
-# leader < g : osascript -e 'tell application "System Events" to keystroke "g" using {command down, option down, control down, shift down}' ;  skhd -k "cmd + alt + ctrl - x"
-# leader < c : osascript -e 'tell application "System Events" to open location "raycast://extensions/frouo/google-chrome-profiles/index"' ; skhd -k "cmd + alt + ctrl - x"
-
 # leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"
 #Keyboard shorcut to enter a layer
 cmd + alt + ctrl - r ; resize 
@@ -57,8 +45,6 @@ window_management < r ; resize
 
 leader < cmd + alt + ctrl - w ; window_management
 window_management < cmd + alt + ctrl - l ; leader
-#=============================Import other layers here=======================================================
-
 
 #=============================Common app launcher ===========================================================
 #============================================================================================================
