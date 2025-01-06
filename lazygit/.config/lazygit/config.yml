@@ -1,7 +1,34 @@
+gui:
+  nerdFontsVersion: "3"
+  theme:
+    activeBorderColor:
+      - "#ff9e64"
+      - "bold"
+    inactiveBorderColor:
+      - "#27a1b9"
+    searchingActiveBorderColor:
+      - "#ff9e64"
+      - "bold"
+    optionsTextColor:
+      - "#7aa2f7"
+    selectedLineBgColor:
+      - "#283457"
+    cherryPickedCommitFgColor:
+      - "#7aa2f7"
+    cherryPickedCommitBgColor:
+      - "#bb9af7"
+    markedBaseCommitFgColor:
+      - "#7aa2f7"
+    markedBaseCommitBgColor:
+      - "#e0af68"
+    unstagedChangesColor:
+      - "#db4b4b"
+    defaultFgColor:
+      - "#c0caf5"
 customCommands:
   - key: "<c-p>"
     context: "localBranches"
-    description: "open pr for current branch"
+    description: "open pull request for current branch (staging)"
     prompts:
       - type: "input"
         title: "Title of Pr"
@@ -11,4 +38,4 @@ customCommands:
         title: "Body of pr"
         key: "BodyName"
         initialValue: ""
-    command: "gh pr create --base master --head $(git branch --show-current) --title '{{.Form.TitleName}}' --body '{{.Form.BodyName}}'"
+    command: "gh pr create --base staging --head $(git branch --show-current) --title '{{.Form.TitleName}}' --body '{{.Form.BodyName}}'"
