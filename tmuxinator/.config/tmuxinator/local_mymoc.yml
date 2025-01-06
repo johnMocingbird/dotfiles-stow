@@ -1,0 +1,16 @@
+# /Users/john/.config/tmuxinator/local_mymoc.yml
+
+name: local_mymoc
+root: ~/mymoc
+
+windows:
+  - neovim:
+      - nvim .
+  - server:
+      - bin/rails s
+  - rails_console:
+      - rails c
+  - lazy_git:
+      - lazygit
+  - side_kiq:
+      - start_worker

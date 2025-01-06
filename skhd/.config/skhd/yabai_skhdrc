@@ -1,4 +1,20 @@
 ## Navigation (lalt - ...)
+
+
+#scratchpad setup
+#KeyClu[Scratchpad]: Open Music
+cmd + alt - a : yabai -m window --toggle music || open  -a Music
+#KeyClu[Scratchpad]: Open Alacritty
+cmd + alt - t : yabai -m window --toggle throwaway || open -a Alacritty
+#KeyClu[Scratchpad]: Open Home
+cmd + alt - h : yabai -m window --toggle home || open -a Home
+#KeyClu[Scratchpad]: Open iPhone
+cmd + alt - i : yabai -m window --toggle iphone || open -a 'iPhone Mirroring'
+#KeyClu[Scratchpad]: Open Safari
+cmd + alt - w : yabai -m window --toggle safari || open -a Safari
+
+
+
 # Space Navigation (four spaces per display): lalt - {1, 2, 3, 4}
 lalt - 1 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[1] ]] && yabai -m space --focus $SPACES[1]
 lalt - 2 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[2] ]] && yabai -m space --focus $SPACES[2]
@@ -6,15 +22,16 @@ lalt - 3 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [
 lalt - 4 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[4] ]] && yabai -m space --focus $SPACES[4]
 
 # Window Navigation (through display borders): lalt - {j, k, l, ö}
-default, move, resize < lalt - h    : yabai -m window --focus west  || yabai -m display --focus west  || yabai -m display --focus 1
-default, move, resize < lalt - j    : yabai -m window --focus south || yabai -m display --focus south || yabai -m display --focus 3
-default, move, resize < lalt - k    : yabai -m window --focus north || yabai -m display --focus north
-default, move, resize < lalt - l : yabai -m window --focus east  || yabai -m display --focus east || yabai -m display --focus 2
+default, resize < lalt - h    : yabai -m window --focus west  || yabai -m display --focus west  || yabai -m display --focus 1
+default, resize < lalt - j    : yabai -m window --focus south || yabai -m display --focus south || yabai -m display --focus 3
+default, resize < lalt - k    : yabai -m window --focus north || yabai -m display --focus north
+default, resize < lalt - l : yabai -m window --focus east  || yabai -m display --focus east || yabai -m display --focus 2
 
-alt - left : yabai -m window --move rel:-50:0
-alt - right : yabai -m window --move rel:50:0
-alt - up : yabai -m window --move rel:0:-50
-alt - down : yabai -m window --move rel:0:50
+# floating window movement
+alt + ctrl + shift - left : yabai -m window --move rel:-50:0
+alt + ctrl + shift - right : yabai -m window --move rel:50:0
+alt + ctrl + shift - up : yabai -m window --move rel:0:-50
+alt + ctrl + shift - down : yabai -m window --move rel:0:50
 
 window_management, leader < h : yabai -m window --focus west  || yabai -m display --focus west
 # Extended Window Navigation: lalt - {h, ä}

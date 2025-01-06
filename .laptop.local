@@ -66,7 +66,6 @@ cask "raycast" unless File.directory?("/Applications/raycast.app")
 brew "aspell"
 cask "betterdisplay" unless File.directory?("/Applications/BetterDisplay.app")
 cask "elgato-stream-deck" unless File.directory?("/Applications/Elgato Stream Deck.app")
-cask "whatsapp" unless File.directory?("/Applications/WhatsApp.app")
 cask "messenger" unless File.directory?("/Applications/Messenger.app")
 cask "keymapp" unless File.directory?("/Applications/Keymapp.app")
 cask "microsoft-word" unless File.directory?("/Applications/Microsoft Word.app")
@@ -102,6 +101,8 @@ if prompt_user "Do you want to install apps from the app store?"; then
   mas install 524141863  #Jump VNC
   mas install 1099568401 #home assistant
   mas install 899247664 # testflight
+  mas install 310633997 # whatsapp
+  # mas install 454638411 # messanger
 
 fi
 
@@ -265,6 +266,14 @@ append_to_zshrc 'source ~/.config/zsh/general.zsh'
 append_to_zshrc 'source ~/.config/zsh/macos.zsh'
 append_to_zshrc 'export PATH="$HOME/scripts:$PATH"'
 append_to_zshrc 'alias am=$HOME/.zsh/Apple-Music-CLI-Player/src/am.ah'
+
+
+#git
+
+git config --global core.editor nvim
+append_to_zshrc '# added for lazygit config'
+append_to_zshrc 'export XDG_CONFIG_HOME="$HOME/.config"'
+
 
 
 
