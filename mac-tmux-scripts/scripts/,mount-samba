@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Define your SMB share details
+SERVER="smb://john:Anahata426!@192.168.50.75/UBUNTU-DEV"
+MOUNT_POINT="/Volumes/UBUNTU-DEV"
+
+# Create the mount point if it doesn't exist
+if [ ! -d "$MOUNT_POINT" ]; then
+    mkdir -p "$MOUNT_POINT"
+fi
+
+# Mount the SMB share
+mount_smbfs "$SERVER" "$MOUNT_POINT"

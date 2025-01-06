@@ -10,6 +10,7 @@ This is setup for stow
 4. [Resize Mode](#resize-mode)
 5. [System Settings Mode](#system-settings-mode)
 6. [Disabled Mode](#disabled-mode)
+7. <D-f>
 
 ---
 

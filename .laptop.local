@@ -268,6 +268,14 @@ append_to_zshrc 'export PATH="$HOME/scripts:$PATH"'
 append_to_zshrc 'alias am=$HOME/.zsh/Apple-Music-CLI-Player/src/am.ah'
 
 
+#git
+
+git config --global core.editor nvim
+append_to_zshrc '# added for lazygit config'
+append_to_zshrc 'export XDG_CONFIG_HOME="$HOME/.config"'
+
+
+
 
 fancy_echo "Cleaning up old Homebrew formulae ..."
 brew cleanup

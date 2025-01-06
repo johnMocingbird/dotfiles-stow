@@ -2,7 +2,12 @@
 
 sudo yabai --load-sa
 yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+# yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
+yabai -m signal --add event=window_destroyed action="yabai -m window --focus first || yabai -m space --focus 4"
+
+# S K E T C H Y B A R  E V E N T S - new idea from https://github.com/FelixKratz/SketchyBar/discussions/12
+yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus &> /dev/null"
+yabai -m signal --add event=window_title_changed action="sketchybar --trigger title_change &> /dev/null"
 
 ### AUTO PADDING (from fyabai) ###
 # yabai -m config auto_padding on
@@ -32,8 +37,6 @@ yabai -m config external_bar all:35:0 \
 	\
 	top_padding 16 \
 	bottom_padding 16 \
-	left_padding 16 \
-	right_padding 16 \
 	window_gap 16
 # Exclude problematic apps from being managed:
 yabai -m rule --add app="^(Family|LuLu|Calculator|Software Update|Dictionary|VLC|System Preferences|System Settings|zoom.us|Photo Booth|Archive Utility|Python|LibreOffice|App Store|Steam|Alfred|Activity Monitor|familycircled|Raycast)$" manage=off
@@ -45,6 +48,7 @@ yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password
 # yabai -m rule --add app="Arc" title="General" manage=off
 # yabai -m rule --add app="Arc" title="Profiles" manage=off
 yabai -m rule --add app="Arc" title="John" manage=off
+yabai -m rule --add app="Arc" title=" " manage=off
 yabai -m rule --add app="Arc" title="Đăng nhập - Tài khoản Google" manage=off
 # yabai -m rule --add app="Arc" title="" manage=off
 
@@ -69,3 +73,15 @@ yabai -m rule --add app="^Safari$" scratchpad=safari grid=12:12:4:1:4:10
 
 echo "yabai configuration loaded..."
 borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
+
+# 32:9 resolution should constrain managed area to middle third (or so)
+if yabai -m query --displays --display 1 | jq -e '.frame | (.w)/(.h) | round == 4' >/dev/null; then
+	yabai -m config left_padding 400
+	yabai -m config right_padding 400
+
+	# other stuff for 32:9 specific setup
+	# yabai -m rule --add title=MiniPlayer manage=off
+else
+	yabai -m config left_padding 12
+	yabai -m config right_padding 12
+fi

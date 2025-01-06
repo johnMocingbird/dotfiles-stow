@@ -51,6 +51,8 @@ window_management < cmd + alt + ctrl - l ; leader
  
 alt + shift - z : float_center.sh
 ## Misc
+cmd + alt + ctrl + shift - s : start.sh
+
 shift + lalt - w : open "/Applications/Safari.app"
 lalt - w : open "/Applications/Arc.app"
 lalt - i : open "/Applications/Simulator.app alias"

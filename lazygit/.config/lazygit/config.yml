@@ -1,0 +1,14 @@
+customCommands:
+  - key: "<c-p>"
+    context: "localBranches"
+    description: "open pr for current branch"
+    prompts:
+      - type: "input"
+        title: "Title of Pr"
+        key: "TitleName"
+        initialValue: ""
+      - type: "input"
+        title: "Body of pr"
+        key: "BodyName"
+        initialValue: ""
+    command: "gh pr create --base master --head $(git branch --show-current) --title '{{.Form.TitleName}}' --body '{{.Form.BodyName}}'"

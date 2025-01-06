@@ -1,7 +1,7 @@
 working_directory = "None"
 [colors.vi_mode_cursor]
 text = "CellBackground"
-cursor = "#9D7CD8"  # Tokyo Night Purple
+cursor = "#9D7CD8"      # Tokyo Night Purple
 
 # [selection]
 # save_to_clipboard= true
@@ -19,16 +19,8 @@ shape = "Block"
 [font]
 size = 19.0
 
-[font.bold]
-family = "Liga SFMono Nerd Font"
-style = "Italic"
-
-[font.bold_italic]
-family = "Liga SFMono Nerd Font"
-style = "Bold Italic"
-
 [font.normal]
-family = "Liga SFMono Nerd Font"
+family = "JetBrainsMono Nerd Font Mono"
 
 [[keyboard.bindings]]
 action = "Quit"
@@ -61,7 +53,7 @@ history = 10000
 multiplier = 3
 
 [mouse]
-hide_when_typing = true 
+hide_when_typing = true
 
 [window]
 decorations = "buttonless"
