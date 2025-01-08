@@ -19,8 +19,8 @@ return {
 				end,
 				desc = "Explorer NeoTree (cwd)",
 			},
-			{ "<leader>E", "<leader>fe", desc = "Explorer NeoTree (Root Dir)", remap = true },
-			{ "<leader>e", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+			{ "<leader>E", "<leader>fE", desc = "Explorer NeoTree (Root Dir)", remap = true },
+			{ "<leader>fe", desc = "Explorer NeoTree (cwd)", remap = true },
 		},
 		deactivate = function()
 			vim.cmd([[Neotree close]])

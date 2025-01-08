@@ -323,7 +323,8 @@ map("n", "<leader>bt", function()
 	end
 end, { desc = "Toggle Buffer Line" })
 
-map("n", "<leader>N", ":NnnPicker<CR>", { noremap = true, desc = "ObsidianSearch" })
+map("n", "<leader>N", ":NnnPicker<CR>", { noremap = true, desc = "nnn picker" })
+map("n", "<leader>e", ":NnnExplorer<CR>", { noremap = true, desc = "nnn Explorer" })
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
 
