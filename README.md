@@ -1,8 +1,6 @@
 This is setup for stow
 
-## Mac
-
-### SKHD Keybindings Table of Contents
+## Mac Keybindings
 
 1. [Leader Mode](#leader-mode)
 2. [Window Management Mode](#window-management-mode)
@@ -184,35 +182,74 @@ todo.
   - <kbd>shift + ctrl + lalt + h/j/k/l/s</kbd> → Insert window west/south/north/east/stack
   - <kbd>lalt + v</kbd> → Insert window south + `cmd - n`
 
+## TMUX Keybindings
+
+**Prefix**  
+
+- <kbd>Ctrl+s</kbd>
+
+---
+
+Reload Configuration
+
+- <kbd>Prefix + r</kbd>  
+  Reload `~/.tmux.conf`
+
+- <kbd>Prefix + o</kbd>  
+  Open `sessionx` a popup to switch sessions
+
+---
+
+### Popups & Commands
+
+- <kbd>Prefix + f</kbd>  
+  Open `nnn -d` in a popup (file explorer)
+- <kbd>Prefix + n</kbd>  
+  Run `popuptmux-notes` (Obsidian notes)
+- <kbd>Prefix + z</kbd>  
+  Open `fzf-sessions` in a popup
+- <kbd>Prefix + G</kbd>  
+  Run `,tmux-popup lazygit`
+- <kbd>Prefix + m</kbd>  
+  Run `popuptmux weechat`
+- <kbd>Prefix + b</kbd>  
+  Run `popuptmux w3m www.google.com`
+- <kbd>Prefix + t</kbd>  
+  Run `popuptmux dooit`
+
+---
+
+### Pane Navigation (Vi-Style)
+
+- <kbd>Prefix + h</kbd> → Select pane left  
+- <kbd>Prefix + j</kbd> → Select pane down  
+- <kbd>Prefix + k</kbd> → Select pane up  
+- <kbd>Prefix + l</kbd> → Select pane right  
+
+*Note:* `setw -g mode-keys vi` sets copy-mode to Vi-keys.
+
+---
+
+### Window Switching
+
+- <kbd>Prefix + e</kbd> → Go to window named `neovim`  
+- <kbd>Prefix + s</kbd> → Go to window named `server`  
+- <kbd>Prefix + c</kbd> → Go to window named `rails_console`  
+- <kbd>Prefix + g</kbd> → Go to window named `lazy_git`  
+- <kbd>Prefix + q</kbd> → Go to window named `side_kiq`
+
+---
+
+### Additional
+
+- <kbd>Ctrl+\\</kbd> → Sends `Ctrl+\\` to the pane  
+- <kbd>Prefix + b</kbd> → Toggle status line  
+
 ---
 
 ## linux
 
 ## MacOS change keyboard shortcuts
-
-Get bundle id
-
-```bash
-mdls -name kMDItemCFBundleIdentifier /Applications/Kitty.app
-```
-
-check existing keyboard shortcuts for an app with bundle id
-
-```bash
-defaults read net.kovidgoyal.kitty NSUserKeyEquivalents
-```
-
-set keyboard shortcut
-
-```bash
-defaults write net.kovidgoyal.kitty NSUserKeyEquivalents -dict-add "kitty Hide kitty" -string "@9"
-```
-
-delete existing keyboard shortcut
-
-```bash
-defaults delete net.kovidgoyal.kitty NSUserKeyEquivalents
-```
 
 todo:
 Android Studio.app
