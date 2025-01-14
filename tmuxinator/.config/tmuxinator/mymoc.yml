@@ -1,7 +1,7 @@
 # /Users/john/.config/tmuxinator/mymoc.yml
 
 name: mymoc
-root: ~/mymoc
+root: ~/
 
 windows:
   - neovim:

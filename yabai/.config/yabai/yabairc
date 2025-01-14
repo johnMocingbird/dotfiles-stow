@@ -52,11 +52,13 @@ yabai -m rule --add app="Arc" title=" " manage=off
 yabai -m rule --add app="Arc" title="Đăng nhập - Tài khoản Google" manage=off
 # yabai -m rule --add app="Arc" title="" manage=off
 
+yabai -m rule --add app="Preview" manage=off
+yabai -m rule --add app="FaceTime" manage=off
+
 yabai -m rule --add app="Arc" title="General" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^Personal — Sign in – Google accounts$" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^Personal Đăng nhập — Tài khoản Google$" manage=off
-# TODO: add un managed for arc setting.
 yabai -m rule --add label="Select file to save to" app="^Inkscape$" title="Select file to save to" manage=off
 yabai -m signal --add event=window_focused action="~/.config/yabai/unfloat.sh"
 yabai -m rule --add title="window-switcher" manage=off
@@ -67,7 +69,8 @@ yabai -m config layout bsp
 # scratchpad setup
 yabai -m rule --add app="^Music$" scratchpad=music grid=12:12:4:1:4:10
 yabai -m rule --add app="^Home$" scratchpad=home grid=12:12:4:1:4:10
-yabai -m rule --add app="^iPhone Mirroring$" scratchpad=iphone grid=12:12:4:1:4:10
+yabai -m rule --add app="^iPhone Mirroring$" scratchpad=phone grid=12:12:4:1:4:10
+yabai -m rule --add app="^Simulator$" scratchpad=iphone grid=12:12:4:1:4:10
 yabai -m rule --add app="^Alacritty$" scratchpad=throwaway grid=12:12:9:1:3:8
 yabai -m rule --add app="^Safari$" scratchpad=safari grid=12:12:4:1:4:10
 
@@ -75,13 +78,13 @@ echo "yabai configuration loaded..."
 borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
 
 # 32:9 resolution should constrain managed area to middle third (or so)
-if yabai -m query --displays --display 1 | jq -e '.frame | (.w)/(.h) | round == 4' >/dev/null; then
-	yabai -m config left_padding 400
-	yabai -m config right_padding 400
-
-	# other stuff for 32:9 specific setup
-	# yabai -m rule --add title=MiniPlayer manage=off
-else
-	yabai -m config left_padding 12
-	yabai -m config right_padding 12
-fi
+# if yabai -m query --displays --display 1 | jq -e '.frame | (.w)/(.h) | round == 4' >/dev/null; then
+# 	yabai -m config left_padding 400
+# 	yabai -m config right_padding 400
+#
+# 	# other stuff for 32:9 specific setup
+# 	# yabai -m rule --add title=MiniPlayer manage=off
+# else
+# 	yabai -m config left_padding 12
+# 	yabai -m config right_padding 12
+# fi
