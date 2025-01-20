@@ -49,7 +49,7 @@ window_management < cmd + alt + ctrl - l ; leader
 #=============================Common app launcher ===========================================================
 #============================================================================================================
  
-alt + shift - z : float_center.sh
+lalt + shift - z : float_center.sh
 ## Misc
 cmd + alt + ctrl + shift - s : start.sh
 

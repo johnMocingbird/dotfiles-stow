@@ -140,11 +140,17 @@ todo.
   - <kbd>lalt + y</kbd> → Launch `fzfyabi.sh` in kitty (Window switcher)
 
 - **Scratchpad toggles**  
-  - <kbd>cmd + alt + a</kbd> → Toggle Music window or open Music  
-  - <kbd>cmd + alt + t</kbd> → Toggle Alacritty window or open Alacritty  
-  - <kbd>cmd + alt + h</kbd> → Toggle Home app or open Home  
-  - <kbd>cmd + alt + i</kbd> → Toggle iPhone Mirroring or open it  
-  - <kbd>cmd + alt + w</kbd> → Toggle Safari or open Safari
+  - <kbd>rctrl + a</kbd> → Toggle Music window
+  - <kbd>rctrl + t</kbd> → Toggle Alacritty window
+  - <kbd>rctrl + h</kbd> → Toggle Home app
+  - <kbd>rctrl + p</kbd> → Toggle iPhone Mirroring
+  - <kbd>rctrl + w</kbd> → Toggle Safari
+  - <kbd>rctrl + i</kbd> → Toggle Simulator
+  - <kbd>rctrl + s</kbd> → Toggle Slack
+  - <kbd>rctrl + m</kbd> → Toggle Messages
+  - <kbd>rctrl + d</kbd> → Toggle Stream Deck
+  - <kbd>rctrl + shift + s</kbd> → Toggle Shortcut
+  - <kbd>rctrl + c</kbd> → Toggle ChatGPT
 
 - **Space Navigation (Default)**  
   - <kbd>lalt + 1</kbd> → Focus space #1  

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MUX_SESSIONS=$(tmuxinator list | tail -n +2 | awk '{print $1}')
+MUX_SESSIONS=$(tmuxinator list | tail -n +2 | tr -s '[:space:]' '\n')
 TMUX_EXISTING=$(tmux list-sessions -F '#S' 2>/dev/null)
 SESSIONS=$( (
 	echo "$TMUX_EXISTING"
