@@ -11,3 +11,12 @@ require("nnn").setup()
 if vim.loop.os_uname().sysname == "Darwin" then
 	require("obsidian")
 end
+
+require("livepreview.config").set({
+	port = 5500,
+	autokill = false,
+	browser = "default",
+	dynamic_root = false,
+	sync_scroll = true,
+	picker = nil,
+})
