@@ -5,7 +5,7 @@ local settings = require("settings")
 -- Padding item required because of bracket
 sbar.add("item", { width = 5 })
 
-local apple = sbar.add("item", {
+local apple = sbar.add("item", "apple", {
 	icon = {
 		font = { size = 16.0 },
 		string = icons.apple,

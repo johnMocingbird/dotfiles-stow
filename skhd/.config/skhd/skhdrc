@@ -1,12 +1,11 @@
 # Declare modes 
 
-:: window_management : ~/.config/sketchybar/items/skhd_mode.sh window-management-mode
-:: resize : ~/.config/sketchybar/items/skhd_mode.sh resize
-:: default : ~/.config/sketchybar/items/skhd_mode.sh default
-:: leader : ~/.config/sketchybar/items/skhd_mode.sh leader
-:: system_settings : ~/.config/sketchybar/items/skhd_mode.sh system_settings
-:: disabled : ~/.config/sketchybar/items/skhd_mode.sh disabled
-
+:: window_management : ~/scripts/sketchy_helpers.sh window_mode
+:: resize : ~/scripts/sketchy_helpers.sh resize_mode
+:: default : ~/scripts/sketchy_helpers.sh normal_mode
+:: leader : ~/scripts/sketchy_helpers.sh leader_mode
+:: system_settings : ~/scripts/sketchy_helpers.sh system_mode
+:: disabled : ~/scripts/sketchy_helpers.sh disabled_mode
 
 #============================================================================================================
 ## keybinding to inter modes 
@@ -14,7 +13,7 @@ lalt - space; leader
 
 #============================================================================================================
 #===============================IMPORTANT! CREATE AN ESCAPE FOR EACH NEW MODE================================
-resize, system_settings, leader, window_management < escape ; default  # use this to escpae from each mode
+resize, system_settings, disabled, leader, window_management < escape ; default  # use this to escpae from each mode
 # use this to allow for esc from mode with double bress
 
 disabled < cmd + alt + ctrl + shift - e ; default
@@ -24,7 +23,7 @@ cmd + alt + ctrl + shift - d ; disabled
 #=====================================Switch Back to default if double pressed===============================
 
 
-system_settings, leader, default, window_management < cmd + alt + ctrl - x ; default # if you want to exist mode with double press add mode here
+system_settings, leader, default, window_management, disabled < cmd + alt + ctrl - x ; default # if you want to exist mode with double press add mode here
 leader < lalt - space : skhd -k "cmd + alt + ctrl - x" 
 #============================================================================================================
 #================================LEADER=(switch to different layers here)====================================
@@ -33,6 +32,7 @@ leader < lalt - space : skhd -k "cmd + alt + ctrl - x"
 
 leader < p ; system_settings
 leader < w ; window_management
+leader < x ; disabled
 leader < space : open "/Applications/kitty.app" ; skhd -k "cmd + alt + ctrl - x"
 # leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"
 # leader < t : osascript -e 'tell application "System Events" to keystroke "s" using {control down}' ; skhd -k "cmd + alt + ctrl - x"

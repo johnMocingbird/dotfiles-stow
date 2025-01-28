@@ -1,17 +1,16 @@
 local sbar = require("sketchybar")
+local colors = require("colors")
+
 -- https://github.com/FelixKratz/SketchyBar/discussions/12
 
-sbar.add("item", "skhd_mode", {
+local skhd = sbar.add("item", "skhd_mode", {
 	position = "center",
 	width = 100,
 	label = {
 		font = { style = "Regular", size = 12.0 },
 	},
 })
-
--- sbar.add("alias", "MeetingBar", {
--- 	position = "center",
--- })
+skhd:set({ icon = { string = "[N]", color = colors.red } })
 
 -- TODO: Convert to lua
 -- # M O D A L  I N D I C A T O R
@@ -62,6 +61,9 @@ sbar.add("item", "skhd_mode", {
 --   yabai -m config insert_feedback_color 0xff${color3:1};
 --
 --   # S K E T C H Y B A R
+-- sketchybar -m --set skhd_mode icon.color="0xFF83A1F1"
+-- sketchybar -m --set skhd_mode icon="[W]"
+--
 --   sketchybar -m --bar color=0xF0${color3:1}
 --   sketchybar -m --default label.color=0xFF${foreground:1}
 --   sketchybar -m --default icon.color=0xFF${background:1}
