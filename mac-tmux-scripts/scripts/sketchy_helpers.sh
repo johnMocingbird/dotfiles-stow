@@ -33,6 +33,9 @@ function leader_mode() {
 
 	sketchybar -m --set apple icon.color="0xFF00FF00"
 	sketchybar -m --set apple icon="􁁺"
+	# sketchybar --set apple popup.drawing=true
+	sketchybar --trigger skhd_mode MODE="leader_mode"
+
 }
 
 function resize_mode() {

@@ -38,8 +38,7 @@ local window_mod = sbar.add("item", "window_mod", {
 	},
 })
 
--- how can I do a loop?
-local skhd_modes = {
+local leader_mode_icons = {
 	{
 		icon = "p 􀰑  􀍟 ",
 		label = "System Preferences",
@@ -97,23 +96,24 @@ local window_mode = {
 	},
 }
 
-local variables = {}
-
-for _, binding in ipairs(window_mode) do
-	local variable_name = to_snake_case(binding.label)
-	variables[variable_name] = sbar.add("item", {
-		position = "popup.apple",
-		icon = {
-			string = binding.icon,
-			width = 100,
-			align = "left",
-		},
-		label = {
-			string = binding.label,
-			width = 100,
-			align = "right",
-		},
-	})
+function set_items(items)
+	local variables = {}
+	for _, binding in ipairs(items) do
+		local variable_name = to_snake_case(binding.label)
+		variables[variable_name] = sbar.add("item", variable_name, {
+			position = "popup.apple",
+			icon = {
+				string = binding.icon,
+				width = 100,
+				align = "left",
+			},
+			label = {
+				string = binding.label,
+				width = 100,
+				align = "right",
+			},
+		})
+	end
 end
 
 local preferences_mod = sbar.add("item", {
@@ -169,3 +169,19 @@ sbar.add("bracket", { apple.name }, {
 
 -- Padding item required because of bracket
 sbar.add("item", { width = 7 })
+
+apple:subscribe("skhd_mode", function(env)
+	print(env)
+	if env == "leader_mode" then
+		apple:set({
+			popup = { align = "left", drawing = true },
+		})
+		set_items(leader_mode_icons)
+	end
+end)
+
+-- I don't understand what I need to do for custom event...
+-- it looks like I need to do 2 things..
+-- 1. create the custom event- i guess this is where I need to define the script too..
+-- 2. trigger the script. (this is where i can pass the skhd_mode via env varibles)
+--
