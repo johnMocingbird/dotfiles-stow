@@ -35,10 +35,10 @@ window_management, leader < 3 : SPACES=($(yabai -m query --displays --display | 
 window_management, leader < 4 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[4] ]] && yabai -m space --focus $SPACES[4]
 
 # floating window movement.
-shift - left : yabai -m window --move rel:-50:0
-shift - right : yabai -m window --move rel:50:0
-shift - up : yabai -m window --move rel:0:-50
-shift - down : yabai -m window --move rel:0:50
+window_management, resize < left : yabai -m window --move rel:-50:0
+window_management, resize < right : yabai -m window --move rel:50:0
+window_management, resize < up : yabai -m window --move rel:0:-50
+window_management, resize < down : yabai -m window --move rel:0:50
 
 
 
