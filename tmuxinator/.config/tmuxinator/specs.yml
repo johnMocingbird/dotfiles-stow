@@ -1,0 +1,10 @@
+# /Users/john/.config/tmuxinator/specs.yml
+
+name: specs
+root: ~/Downloads/specs
+
+windows:
+  - neovim:
+      - ls
+  - rails_console:
+      - nnn

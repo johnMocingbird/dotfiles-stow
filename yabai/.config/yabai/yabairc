@@ -17,14 +17,14 @@ yabai -m signal --add event=window_title_changed action="sketchybar --trigger ti
 
 yabai -m config external_bar all:35:0 \
 	mouse_follows_focus on \
-	focus_follows_mouse off \
+	focus_follows_mouse autofocus \
 	window_zoom_persist off \
 	window_placement second_child \
 	window_shadow float \
 	window_opacity on \
 	window_opacity_duration 0.2 \
 	active_window_opacity 1.0 \
-	normal_window_opacity 0.95 \
+	normal_window_opacity 0.90 \
 	window_animation_duration 0.5 \
 	window_animation_easing ease_out_quint \
 	insert_feedback_color 0xff9dd274 \
@@ -55,7 +55,7 @@ yabai -m rule --add label="About This Mac" app="System Information" title="About
 yabai -m rule --add label="Safari" app="^Safari$" title="^Personal — Sign in – Google accounts$" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^Personal Đăng nhập — Tài khoản Google$" manage=off
 yabai -m rule --add label="Select file to save to" app="^Inkscape$" title="Select file to save to" manage=off
-yabai -m signal --add event=window_focused action="~/.config/yabai/unfloat.sh"
+# yabai -m signal --add event=window_focused action="~/.config/yabai/unfloat.sh"
 yabai -m rule --add title="window-switcher" manage=off
 yabai -m rule --add app="^Parallels Desktop" manage=off
 
@@ -66,13 +66,14 @@ yabai -m rule --add app="^Music$" scratchpad=music grid=12:12:4:1:4:10
 yabai -m rule --add app="^Shortcut$" scratchpad=shortcut grid=12:12:4:1:4:10
 yabai -m rule --add app="Slack" scratchpad=slack grid=20:20:2:1:16:18
 yabai -m rule --add app="Messages" scratchpad=messages grid=20:20:2:1:16:18
-yabai -m rule --add app="^Home$" scratchpad=home grid=12:12:4:1:4:10
+yabai -m rule --add app="^Home$" scratchpad=home grid=20:20:2:1:16:18
 yabai -m rule --add app="^iPhone Mirroring$" scratchpad=phone grid=12:12:4:1:4:10
 yabai -m rule --add app="^Simulator$" scratchpad=iphone grid=12:12:4:1:4:10
 yabai -m rule --add app="^Alacritty$" scratchpad=throwaway grid=12:12:9:1:3:8
-yabai -m rule --add app="^Safari$" scratchpad=safari grid=12:12:4:1:4:10
+yabai -m rule --add app="^Safari$" scratchpad=safari grid=20:20:2:1:16:18
 yabai -m rule --add app="Stream Deck" scratchpad=stream_deck grid=12:12:4:1:4:10
 yabai -m rule --add app="ChatGPTChrome" scratchpad=chat grid=12:12:4:1:4:10
+yabai -m rule --add app="ChatGPT" scratchpad=chatgpt grid=20:20:2:1:16:18
 # yabai -m rule --add app="^Calcure$" scratchpad=safari grid=12:12:4:1:4:10
 # eabai -m rule --add app="^Systems Setings$" scratchpad=safari grid=12:12:4:1:4:10
 
