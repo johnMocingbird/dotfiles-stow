@@ -22,6 +22,7 @@ alias log="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d
 alias cfg="git --git-dir=$HOME/dotfiles/ --work-tree=$HOME"
 alias push="git push"
 alias g="lazygit"
+alias fzf-ri="ri -l | fzf --preview "ri {}" --select-1 --exit-0 | xargs -r ri | nvim +'setlocal buftype=nofile ft=ruby'"
 
 alias ssh="TERM=xterm-256color ssh"
 
