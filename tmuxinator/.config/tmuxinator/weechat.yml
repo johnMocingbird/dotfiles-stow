@@ -1,0 +1,8 @@
+# /Users/john/.config/tmuxinator/weechat.yml
+
+name: weechat
+root: ~/atac_env/
+
+windows:
+  - weechat:
+      - weechat .

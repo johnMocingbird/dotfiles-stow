@@ -44,6 +44,7 @@ yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add app="Arc" title="John" manage=off
 yabai -m rule --add app="Arc" title=" " manage=off
+yabai -m rule --add app="Skitch" manage=off
 yabai -m rule --add app="Arc" title="Đăng nhập - Tài khoản Google" manage=off
 # yabai -m rule --add app="Arc" title="" manage=off
 
