@@ -1,5 +1,10 @@
 return {
-	{ "vim-test/vim-test" },
+	{
+		"vim-test/vim-test",
+	},
+	{
+		"ThePrimeagen/vim-be-good",
+	},
 	-- {
 	-- 	"christoomey/vim-tmux-navigator",
 	-- 	cmd = {

@@ -171,7 +171,6 @@ sbar.add("bracket", { apple.name }, {
 sbar.add("item", { width = 7 })
 
 apple:subscribe("skhd_mode", function(env)
-	print(env)
 	if env == "leader_mode" then
 		apple:set({
 			popup = { align = "left", drawing = true },

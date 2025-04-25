@@ -3,6 +3,12 @@ local map = vim.keymap.set
 local mymoc_utils = require("mymoc.utils")
 
 vim.g.mapleader = " "
+
+map({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+map({ "n", "v" }, "<leader>aa", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+map("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
+map("n", "<leader>T", ":term<CR>", { noremap = true, desc = "Terminal Buffer" })
+
 -- map("n", "<C-n>", ":Neotree filesystem reveal left<CR>", {})
 map("n", "<leader>bf", ":Neotree buffers reveal float<CR>", {})
 --

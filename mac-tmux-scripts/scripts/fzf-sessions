@@ -16,7 +16,7 @@ if echo "$TMUX_EXISTING" | grep -q "^$SESSION$"; then
 elif echo "$MUX_SESSIONS" | grep -q "^$SESSION$"; then
 	# It's a tmuxinator session, but not running. Start it without attaching, then switch.
 	# If your tmuxinator version doesn't support --no-attach, remove it and handle differently.
-	tmuxinator start "$SESSION" --no-attach
+	tmuxinator start "$SESSION"
 	tmux switch-client -t "$SESSION"
 else
 	# Neither existing nor a known tmuxinator session

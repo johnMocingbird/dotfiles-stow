@@ -290,4 +290,16 @@ TODO:
  git clone git@github.com:MyMOC/mobilemoc.git $HOME/development/mobilemoc
  git clone git@github.com:MyMOC/front-end.git $HOME/development/front-end
  git clone git@github.com:MyMOC/utilities.git $HOME/development/utilities_mymoc
+ git clone git@github.com:rails/rails.git $HOME/development/docs/rails_api
+ git clone git@github.com:ruby/ruby.git $HOME/development/docs/ruby
+```
+
+### Setup Local docs
+
+```sh
+gem install rdoc-markdown
+```
+
+```sh
+rdoc --format=markdown
 ```
