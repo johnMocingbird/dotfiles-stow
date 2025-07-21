@@ -10,6 +10,7 @@ cmd + alt - w : yabai -m window --toggle safari || open -a Safari
 cmd + alt - i : yabai -m window --toggle iphone || open -a Simulator
 cmd + alt - s : yabai -m window --toggle slack || open -a Slack
 
+rctrl - f : yabai -m window --toggle firefox || open  -a Firefox
 rctrl - a : yabai -m window --toggle music || open  -a Music
 rctrl - t : yabai -m window --toggle throwaway || open -a Alacritty
 rctrl - h : yabai -m window --toggle home || open -a Home

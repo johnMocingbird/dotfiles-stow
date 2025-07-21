@@ -317,8 +317,9 @@ end
 -- end, { desc = "Notification History" })
 --
 
-map("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true })
-map("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
+-- map("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true })
+-- map("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
+Snacks.scroll.disable()
 
 map("n", "<leader>bt", function()
 	local visable = vim.o.showtabline

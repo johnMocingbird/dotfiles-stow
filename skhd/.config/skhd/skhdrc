@@ -85,6 +85,7 @@ system_settings < r : osascript -e 'tell application "System Events" to open loc
 system_settings < m : osascript -e 'tell application "System Events" to open location "raycast://script-commands/monitor-layout-main"' ;  skhd -k "cmd + alt + ctrl - x"
 system_settings < t : osascript -e 'tell application "System Events" to open location "raycast://extensions/raycast/system/open-trash"' ;  skhd -k "cmd + alt + ctrl - x"
 system_settings < p : osascript -e 'tell application "System Events" to keystroke "p" using {command down, option down, control down}' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < s : yabai -m window --toggle settings || open -a System\ Settings
 
  .load "modes_skhdrc"
 #=========================Felix=Yabai=Config=================================================================

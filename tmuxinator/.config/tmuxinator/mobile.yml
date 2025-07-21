@@ -7,7 +7,7 @@ windows:
   - neovim:
       - nvim .
   - server:
-      - npm start
+      - nvim +":term npm start"
   - rails_console:
       - npm run ios:dev
   - lazy_git:
