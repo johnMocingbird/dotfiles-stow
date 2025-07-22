@@ -54,7 +54,7 @@ lalt + shift - z : float_center.sh
 cmd + alt + ctrl + shift - s : start.sh
 
 shift + lalt - w : open "/Applications/Safari.app"
-lalt - w : open "/Applications/Arc.app"
+lalt - w : open "/Applications/Google Chrome.app/"
 lalt - i : open "/Applications/Simulator.app alias"
 lalt - x : open "/Applications/xcode.app"
 lalt - c : open "/Applications/ChatGPT.app"
