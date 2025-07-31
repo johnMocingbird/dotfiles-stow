@@ -1,0 +1,52 @@
+#!/bin/bash
+get_mic_index() {
+	ffmpeg -f avfoundation -list_devices true -i "" 2>&1 |
+		grep -i 'Studio Display Microphone' |
+		sed -E 's/.*\[([0-9]+)\].*/\1/'
+}
+
+RECORD_FILE="/tmp/voice_input.wav"
+MODEL_PATH="$HOME/development/utils/whisper.cpp/models/ggml-large-v3.bin"
+WHISPER_BIN="$HOME/development/utils/whisper.cpp/build/bin/whisper-cli"
+
+echo "🎙️  Recording... (press ENTER to finish, or Q/Ctrl-C to cancel)"
+
+# Start recording
+MIC_INDEX=$(get_mic_index)
+if [[ -z "$MIC_INDEX" ]]; then
+	echo "❌ Could not find Studio Display Microphone. Exiting."
+	exit 1
+fi
+
+ffmpeg -f avfoundation -i "none:$MIC_INDEX" -ac 1 -ar 16000 -y "$RECORD_FILE" </dev/null >/tmp/ffmpeg.log 2>&1 &
+FFMPEG_PID=$!
+echo "🟢 ffmpeg started with PID $FFMPEG_PID"
+
+# Wait for user input
+while true; do
+	echo -n "⌨️  Press ENTER to finish or Q + ENTER to cancel: "
+	read -r key
+	echo "🔑 Input received: '$key'"
+
+	if [[ -z "$key" ]]; then
+		echo "↩️  ENTER detected. Stopping recording..."
+		kill -INT $FFMPEG_PID
+		wait $FFMPEG_PID 2>/dev/null
+
+		echo "🧠 Transcribing..."
+		"$WHISPER_BIN" -m "$MODEL_PATH" -f "$RECORD_FILE" --output-txt -of /tmp/voice >/dev/null 2>&1
+		RESULT=$(cat /tmp/voice.txt | sed 's/^[[:space:]]*//')
+
+		echo "$RESULT"
+		echo "$RESULT" | pbcopy
+		osascript -e 'display notification "Transcription copied to clipboard." with title "Whisper"'
+		exit 0
+
+	elif [[ "$key" == "q" || "$key" == "Q" ]]; then
+		echo "❌ Canceling..."
+		kill -INT $FFMPEG_PID
+		wait $FFMPEG_PID 2>/dev/null
+		echo "Recording canceled."
+		exit 1
+	fi
+done

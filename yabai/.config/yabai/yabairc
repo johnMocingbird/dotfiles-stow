@@ -72,6 +72,9 @@ yabai -m rule --add app="^iPhone Mirroring$" scratchpad=phone grid=12:12:4:1:4:1
 yabai -m rule --add app="^Simulator$" scratchpad=iphone grid=12:12:4:1:4:10
 yabai -m rule --add app="^Alacritty$" scratchpad=throwaway grid=12:12:9:1:3:8
 yabai -m rule --add app="^Safari$" scratchpad=safari grid=20:20:2:1:16:18
+yabai -m rule --add app="^Firefox$" scratchpad=firefox grid=20:20:2:1:16:18
+
+yabai -m rule --add app="System Settings" scratchpad=settings grid=20:20:2:1:16:18
 yabai -m rule --add app="Stream Deck" scratchpad=stream_deck grid=12:12:4:1:4:10
 yabai -m rule --add app="ChatGPTChrome" scratchpad=chat grid=12:12:4:1:4:10
 yabai -m rule --add app="ChatGPT" scratchpad=chatgpt grid=20:20:2:1:16:18

@@ -1,5 +1,6 @@
 gui:
   nerdFontsVersion: "3"
+  screenMode: half
   theme:
     activeBorderColor:
       - "#ff9e64"
@@ -30,6 +31,14 @@ customCommands:
     context: "localBranches"
     description: "open pull request for current branch (staging)"
     prompts:
+      - type: "menu"
+        title: "Select base branch"
+        key: "BaseBranch"
+        options:
+          - name: "staging"
+            value: "staging"
+          - name: "production"
+            value: "production"
       - type: "input"
         title: "Title of Pr"
         key: "TitleName"
@@ -38,4 +47,4 @@ customCommands:
         title: "Body of pr"
         key: "BodyName"
         initialValue: ""
-    command: "gh pr create --base staging --head $(git branch --show-current) --title '{{.Form.TitleName}}' --body '{{.Form.BodyName}}'"
+    command: "gh pr create --base {{.Form.BaseBranch}} --head $(git branch --show-current) --title '{{.Form.TitleName}}' --body '{{.Form.BodyName}}'"

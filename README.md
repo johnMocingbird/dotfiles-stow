@@ -117,6 +117,8 @@ todo.
 - <kbd>m</kbd> → Apply `monitor-layout-main` (Raycast)  
 - <kbd>t</kbd> → Open Trash (Raycast)  
 - <kbd>p</kbd> → Connect to AirPods (custom keystroke)
+- <kbd>s</kbd> → Toggle Mac Settings (scratch pad)
+
 
 ---
 

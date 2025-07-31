@@ -54,10 +54,11 @@ lalt + shift - z : float_center.sh
 cmd + alt + ctrl + shift - s : start.sh
 
 shift + lalt - w : open "/Applications/Safari.app"
-lalt - w : open "/Applications/Arc.app"
+lalt - w : open "/Applications/Google Chrome.app/"
 lalt - i : open "/Applications/Simulator.app alias"
 lalt - x : open "/Applications/xcode.app"
 lalt - c : open "/Applications/ChatGPT.app"
+lalt - r : open "/Applications/OBS.app/"
 lalt - s : open "/Applications/Slack.app"
 shift + lalt - s : open "/Users/john/Applications/Chrome Apps.localized/Mocingbird: Shortcut.app/"
 lalt - return : open "/Applications/Alacritty.app/"
@@ -85,6 +86,7 @@ system_settings < r : osascript -e 'tell application "System Events" to open loc
 system_settings < m : osascript -e 'tell application "System Events" to open location "raycast://script-commands/monitor-layout-main"' ;  skhd -k "cmd + alt + ctrl - x"
 system_settings < t : osascript -e 'tell application "System Events" to open location "raycast://extensions/raycast/system/open-trash"' ;  skhd -k "cmd + alt + ctrl - x"
 system_settings < p : osascript -e 'tell application "System Events" to keystroke "p" using {command down, option down, control down}' ;  skhd -k "cmd + alt + ctrl - x"
+system_settings < s : yabai -m window --toggle settings || open -a System\ Settings
 
  .load "modes_skhdrc"
 #=========================Felix=Yabai=Config=================================================================
