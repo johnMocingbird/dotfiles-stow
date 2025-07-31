@@ -5,7 +5,7 @@ root: ~/
 
 windows:
   - neovim:
-      - mosh --ssh="ssh -i /Users/john/.ssh/ubuntu_id_rsa" john@192.168.50.75
+      - ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75
       - tmuxinator start mymoc
   - server:
       - ssh -L 3000:localhost:3000 -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.50.75

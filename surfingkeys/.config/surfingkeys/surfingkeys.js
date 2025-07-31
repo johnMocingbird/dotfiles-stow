@@ -100,13 +100,14 @@ map('H', 'S');
 /* --- put these three lines together, in this order --- */
 unmap('R');          // drop old history-forward override
 map('R', 'L');       // ✔  R now inherits the *default* regional-hints
-unmap('L');          // drop old history-forward override
+map('L', 'D');       // re-assign history-forward to L (or Alt-L etc.)
 
 
 // Scroll Page Down/Up
 mapkey("<Ctrl-d>", "Scroll down", () => { Normal.scroll("pageDown"); });
 mapkey("<Ctrl-u>", "Scroll up", () => { Normal.scroll("pageUp"); });
 map('<Ctrl-b>', 'U');  // scroll full page up
+//map('<Ctrl-f>', 'P');  // scroll full page down -- looks like we can't overwrite browser-native binding
 
 // Next/Prev Page
 map('K', '[[');
