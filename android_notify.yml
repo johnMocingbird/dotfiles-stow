@@ -1,0 +1,112 @@
+blueprint:
+  name: Announce Android app notifications via TTS
+  description: >
+    Uses the Companion App "Last Notification" sensor to speak selected app
+    notifications. Toggle per-app with input_booleans named
+    `input_boolean.notify_app_<package>` (optional).
+  domain: automation
+  input:
+    phone_last_notification:
+      name: Last Notification sensor
+      selector:
+        entity:
+          domain: sensor
+    media_player:
+      name: Media player for TTS
+      selector:
+        entity:
+          domain: media_player
+    allowed_packages_csv:
+      name: Allowed app package names (comma-separated)
+      description: e.g. com.slack, com.shopify.mobile
+      default: ""
+      selector:
+        text:
+    include_keyword:
+      name: Include keyword (optional)
+      description: Only speak if this appears in the title/text
+      default: ""
+      selector:
+        text:
+    exclude_keyword:
+      name: Exclude keyword (optional)
+      description: Do NOT speak if this appears in the title/text
+      default: ""
+      selector:
+        text:
+    speak_mode:
+      name: Speak mode
+      default: summary
+      selector:
+        select:
+          options:
+            - summary
+            - full
+    summary_message:
+      name: Summary message template
+      description: >
+        Used when 'summary' mode is selected.
+        Jinja available: {{ pkg }}, {{ title }}, {{ text }}
+      default: "New {{ pkg }} notification: {{ title or text }}"
+      selector:
+        text:
+
+mode: queued
+max: 10
+
+trigger:
+  - platform: state
+    entity_id: !input phone_last_notification
+
+variables:
+  sensor_id: !input phone_last_notification
+  pkg: "{{ state_attr(sensor_id, 'android.package') or state_attr(sensor_id, 'package') or '' }}"
+  title: "{{ state_attr(sensor_id, 'android.title') or '' }}"
+  text: "{{ state_attr(sensor_id, 'android.text') or '' }}"
+  bigtext: "{{ state_attr(sensor_id, 'android.bigText') or '' }}"
+  body: "{{ (title ~ ' ' ~ text ~ ' ' ~ bigtext)|trim }}"
+  allowed_csv: !input allowed_packages_csv
+  allowed_list: >-
+    {{ (allowed_csv | lower | replace(' ', '')).split(',') if allowed_csv|trim != '' else [] }}
+  include_kw: "{{ (input | lower) if (input := !input include_keyword) else '' }}"
+  exclude_kw: "{{ (input | lower) if (input := !input exclude_keyword) else '' }}"
+  app_toggle_entity: >-
+    {{ 'input_boolean.notify_app_' ~
+       (pkg|lower|regex_replace('[^a-z0-9_]+','_')) }}
+  app_toggle_ok: >-
+    {{ states(app_toggle_entity) in ['on','unknown','unavailable',''] }}
+  allowed_ok: >-
+    {{ allowed_list | length == 0 or (pkg|lower) in allowed_list }}
+  include_ok: >-
+    {{ include_kw == '' or include_kw in (body|lower) }}
+  exclude_ok: >-
+    {{ exclude_kw == '' or exclude_kw not in (body|lower) }}
+  speak_summary: !input speak_mode
+  summary_template: !input summary_message
+  summary_text: >-
+    {{ summary_template | replace('{{ pkg }}', pkg)
+                        | replace('{{ title }}', title)
+                        | replace('{{ text }}', text) }}
+
+condition:
+  - condition: template
+    value_template: "{{ allowed_ok and include_ok and exclude_ok and app_toggle_ok and pkg != '' }}"
+
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ speak_summary == 'summary' }}"
+        sequence:
+          - service: tts.speak
+            data:
+              message: "{{ summary_text }}"
+            target:
+              entity_id: !input media_player
+      - conditions: []
+        sequence:
+          - service: tts.speak
+            data:
+              message: "{{ body if body|length>0 else ('New ' ~ pkg ~ ' notification') }}"
+            target:
+              entity_id: !input media_player
