@@ -1,0 +1,215 @@
+#!/bin/sh
+
+# Welcome to the Arch Linux setup script!
+
+fancy_echo() {
+  local fmt="$1"
+  shift
+  # shellcheck disable=SC2059
+  printf "\n$fmt\n" "$@"
+}
+
+append_to_file() {
+  local text="$1"
+  local file="$2"
+  local skip_new_line="${3:-0}"
+
+  if [ -w "$file" ]; then
+    if ! grep -Fqs "$text" "$file"; then
+      if [ "$skip_new_line" -eq 1 ]; then
+        printf "%s\n" "$text" >>"$file"
+      else
+        printf "\n%s\n" "$text" >>"$file"
+      fi
+    fi
+  else
+    fancy_echo "Warning: Cannot write to $file. Skipping."
+  fi
+}
+
+append_to_zshrc() {
+  local text="$1"
+  local skip_new_line="${2:-0}"
+  append_to_file "$text" "$HOME/.zshrc" "$skip_new_line"
+}
+
+create_vimrc() {
+  fancy_echo "Setting up .vimrc..."
+  if [ ! -f "$HOME/.vimrc" ]; then
+    touch "$HOME/.vimrc"
+    echo ".vimrc created!"
+  else
+    echo ".vimrc already exists, skipping creation."
+  fi
+
+  cat <<EOF >"$HOME/.vimrc"
+" Basic settings
+set number           " Show line numbers
+syntax on            " Enable syntax highlighting
+set tabstop=4        " Set tab width
+set shiftwidth=4     " Set indentation width
+set expandtab        " Use spaces instead of tabs
+set relativenumber   " Show relative line numbers
+
+vnoremap y "+y
+noremap y "+y
+noremap p "+p
+EOF
+  echo ".vimrc has been configured!"
+}
+
+# Call the function in the script
+create_vimrc
+
+trap 'ret=$?; test $ret -ne 0 && printf "failed
+
+" >&2; exit $ret' EXIT
+set -e
+
+if [ ! -d "$HOME/.bin/" ]; then
+  mkdir "$HOME/.bin"
+fi
+
+if [ ! -f "$HOME/.zshrc" ]; then
+  touch "$HOME/.zshrc"
+fi
+
+# Function to install packages with yay
+install_packages() {
+  fancy_echo "Installing packages: $*"
+  yay -S --needed --noconfirm "$@"
+}
+
+# --- Core System Setup ---
+fancy_echo "Installing core packages..."
+install_packages \
+  zsh \
+  stow \
+  tmux \
+  fzf \
+  ripgrep \
+  bat \
+  unrar
+
+# --- Shell Setup ---
+update_shell() {
+  local shell_path
+  shell_path="$(command -v zsh)"
+
+  fancy_echo "Changing your shell to zsh ..."
+  if ! grep "$shell_path" /etc/shells >/dev/null 2>&1; then
+    fancy_echo "Adding '$shell_path' to /etc/shells"
+    sudo sh -c "echo $shell_path >> /etc/shells"
+  fi
+  sudo chsh -s "$shell_path" "$USER"
+}
+
+case "$SHELL" in
+  */zsh)
+    fancy_echo "Shell is already zsh."
+    ;;
+  *)
+    update_shell
+    ;;
+esac
+
+# --- ASDF Setup ---
+fancy_echo "Configuring asdf version manager ..."
+if ! command -v asdf >/dev/null; then
+  install_packages asdf-vm
+  append_to_zshrc '. /opt/asdf-vm/asdf.sh' 1
+fi
+
+# Source asdf for the current script
+. /opt/asdf-vm/asdf.sh
+
+add_or_update_asdf_plugin() {
+  local name="$1"
+  local url="$2"
+
+  if ! asdf plugin-list | grep -Fq "$name"; then
+    asdf plugin-add "$name" "$url"
+  else
+    asdf plugin-update "$name"
+  fi
+}
+
+add_or_update_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
+add_or_update_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
+
+install_asdf_language() {
+  local language="$1"
+  local version="$2"
+  asdf install "$language" "$version"
+  asdf global "$language" "$version"
+}
+
+fancy_echo "Installing latest Ruby..."
+install_asdf_language "ruby" "latest"
+gem install cocoapods cocoapods-deintegrate
+
+fancy_echo "Installing LTS Node..."
+node_lts="20.11.1"
+install_asdf_language "nodejs" "$node_lts"
+
+# --- ZSH Plugins and Config ---
+fancy_echo "Cloning zsh plugins and other repos..."
+mkdir -p "$HOME/.zsh"
+mkdir -p "$HOME/.tmux/plugins"
+mkdir -p "$HOME/development"
+
+repos=(
+  "https://github.com/zsh-users/zsh-autosuggestions.git $HOME/.zsh/zsh-autosuggestions"
+  "https://github.com/jeffreytse/zsh-vi-mode.git $HOME/.zsh/zsh-vi-mode"
+  "https://github.com/zsh-users/zsh-syntax-highlighting.git $HOME/.zsh/zsh-syntax-highlighting"
+  "https://github.com/marlonrichert/zsh-autocomplete.git $HOME/.zsh/zsh-autocomplete"
+  "https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm"
+)
+
+for repo in "${repos[@]}"; do
+  repo_url=$(echo "$repo" | awk '{print $1}')
+  target_dir=$(echo "$repo" | awk '{print $2}')
+
+  if [ ! -d "${target_dir/#\~/$HOME}" ]; then
+    fancy_echo "Cloning $repo_url into ${target_dir/#\~/$HOME}..."
+    git clone --depth=1 "$repo_url" "${target_dir/#\~/$HOME}"
+  else
+    fancy_echo "Repository already exists at ${target_dir/#\~/$HOME}. Skipping clone."
+  fi
+done
+
+fancy_echo "Setting up zshrc..."
+append_to_zshrc 'source $HOME/.zsh/zsh-autocomplete/zsh-autocomplete.plugin.zsh'
+append_to_zshrc 'source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
+append_to_zshrc 'source $HOME/.zsh/zsh-vi-mode/zsh-vi-mode.plugin.zsh'
+append_to_zshrc 'source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh'
+append_to_zshrc 'source ~/.config/zsh/general.zsh'
+# Note: macos.zsh might need to be adapted for Linux.
+# append_to_zshrc 'source ~/.config/zsh/macos.zsh'
+append_to_zshrc 'export PATH="$HOME/scripts:$PATH"'
+
+# --- Git Config ---
+fancy_echo "Configuring Git..."
+git config --global core.editor nvim
+append_to_zshrc '# added for lazygit config'
+append_to_zshrc 'export XDG_CONFIG_HOME="$HOME/.config"'
+
+# --- SSH Key ---
+SSH_KEY_PATH="$HOME/.ssh/id_rsa"
+if [ ! -f "$SSH_KEY_PATH" ]; then
+  fancy_echo "SSH key not found. Generating a new SSH key at $SSH_KEY_PATH..."
+  ssh-keygen -t rsa -b 4096 -f "$SSH_KEY_PATH" -N "" -C "$(whoami)@$(hostname)"
+  fancy_echo "SSH key generated successfully!"
+  fancy_echo "Public key:"
+  cat "${SSH_KEY_PATH}.pub"
+else
+  fancy_echo "SSH key already exists at $SSH_KEY_PATH. Skipping generation."
+fi
+
+# --- Run local customizations ---
+if [ -f "/Users/john/dotfiles-stow/arch.local" ]; then
+  fancy_echo "Running your customizations from /Users/john/dotfiles-stow/arch.local ..."
+  sh "/Users/john/dotfiles-stow/arch.local"
+fi
+
+fancy_echo "Setup complete! Please restart your terminal."

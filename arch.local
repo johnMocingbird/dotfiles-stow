@@ -1,0 +1,100 @@
+#!/bin/sh
+
+fancy_echo() {
+	local fmt="$1"
+	shift
+	printf "\n$fmt\n" "$@"
+}
+
+install_packages() {
+	fancy_echo "Installing packages: $*"
+	yay -S --needed --noconfirm "$@"
+}
+
+prompt_user() {
+	local prompt_message="$1"
+	read -p "$prompt_message (y/n): " choice
+	if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
+		return 0 # Success
+	else
+		return 1 # Failure
+	fi
+}
+
+fancy_echo "Installing additional applications..."
+
+# --- Fonts ---
+install_packages \
+	nerd-fonts-fira-code \
+	nerd-fonts-jetbrains-mono \
+	nerd-fonts-hack
+
+# --- Development Tools ---
+install_packages \
+	jdk17-openjdk \
+	android-studio \
+	watchman \
+	github-cli \
+	docker \
+	docker-compose \
+	lazygit \
+	visual-studio-code-bin \
+	react-native-debugger-bin
+
+# --- CLI Tools ---
+install_packages \
+	w3m \
+	nnn \
+	neofetch \
+	btop \
+	weechat \
+	cmatrix \
+	jq \
+	visidata \
+	dooit \
+	skhd
+
+# --- GUI Applications ---
+install_packages \
+	kitty \
+	alacritty \
+	google-chrome \
+	vlc \
+	obs-studio \
+	obsidian \
+	slack-desktop \
+	postman-bin \
+	plex-desktop \
+	arc-bin \
+	streamdeck-ui \
+	messenger-for-desktop \
+	logiops \
+	chatgpt-desktop-bin \
+	xmind-zen-bin \
+	zoom \
+	cloudflare-warp-bin \
+	parsec-desktop \
+	balena-etcher
+
+fancy_echo "Note: Some macOS applications do not have direct Linux equivalents."
+fancy_echo "Consider the following alternatives:"
+fancy_echo "- Alfred/Raycast -> Rofi (already in your dotfiles)"
+fancy_echo "- Yabai/Borders -> i3/Sway (i3 config found in your dotfiles)"
+fancy_echo "- Skitch -> Flameshot or Shutter"
+fancy_echo "- Microsoft Office -> LibreOffice or OnlyOffice"
+fancy_echo "- BetterDisplay -> arandr"
+fancy_echo "- Bartender -> Polybar (config found in your dotfiles)"
+
+fancy_echo "Note: macOS-specific settings (via 'defaults' command) have been skipped."
+fancy_echo "You should configure your system via dotfiles for i3, polybar, skhd, etc."
+
+fancy_echo "Starting and enabling services..."
+sudo systemctl enable --now docker
+
+# Add user to docker group
+sudo usermod -aG docker $USER
+fancy_echo "User added to the docker group. Please log out and log back in for this to take effect."
+
+systemctl --user enable --now skhd
+
+fancy_echo "Local customizations complete!"
