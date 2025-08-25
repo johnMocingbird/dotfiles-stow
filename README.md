@@ -29,9 +29,9 @@ This is setup for stow
 - <kbd>k</kbd> → Focus north
 - <kbd>l</kbd> → Focus east
 
-- <kbd>1</kbd> → Focus space #1  
-- <kbd>2</kbd> → Focus space #2  
-- <kbd>3</kbd> → Focus space #3  
+- <kbd>1</kbd> → Focus space #1
+- <kbd>2</kbd> → Focus space #2
+- <kbd>3</kbd> → Focus space #3
 - <kbd>4</kbd> → Focus space #4
 
 ---
@@ -118,7 +118,6 @@ todo.
 - <kbd>t</kbd> → Open Trash (Raycast)  
 - <kbd>p</kbd> → Connect to AirPods (custom keystroke)
 - <kbd>s</kbd> → Toggle Mac Settings (scratch pad)
-
 
 ---
 
@@ -224,6 +223,8 @@ Reload Configuration
   Run `popuptmux w3m www.google.com`
 - <kbd>Prefix + t</kbd>  
   Run `popuptmux dooit`
+- <kbd>Prefix + a</kbd>  
+  Run `popuptmux gemini`
 
 ---
 

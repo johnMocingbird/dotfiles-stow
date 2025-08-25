@@ -4,13 +4,10 @@ name: local_mymoc
 root: ~/mymoc
 
 windows:
-  - neovim:
-      - nvim .
-  - server:
-      - bin/rails s
-  - rails_console:
-      - rails c
+  - neovim: nvim .
+  - server: nvim +":term  bin/rails s"
+  - rails_console: nvim +":term rails c"
   - lazy_git:
       - lazygit
-  - side_kiq:
-      - start_worker
+  - side_kiq: nvim +":term start_worker"
+  - gemini: nvim + ":term gemini"

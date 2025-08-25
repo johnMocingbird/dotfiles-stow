@@ -7,6 +7,6 @@ windows:
   - neovim:
       - nvim .
   - server:
-      - npm run start-local
+      - nvim +":term npm run start-local"
   - lazy_git:
       - lazygit

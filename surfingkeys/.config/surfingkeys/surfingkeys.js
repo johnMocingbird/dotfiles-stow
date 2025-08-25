@@ -24,9 +24,15 @@ const {
     vunmap
 } = api;
 
-// ---- Settings ----
-Hints.setCharacters('asdfgyuiopqwertnmzxcvb');
+const maps = {}
 
+// Leader key for global shortcuts
+const L = '<Space>';
+
+// =============================================================================
+// === Settings ===
+// =============================================================================
+Hints.setCharacters('asdfgyuiopqwertnmzxcvb');
 settings.defaultSearchEngine = 'd';
 settings.hintAlign = 'left';
 settings.omnibarPosition = 'bottom';
@@ -35,9 +41,13 @@ settings.focusAfterClosed = 'last';
 settings.scrollStepSize = 200;
 settings.tabsThreshold = 0;
 settings.modeAfterYank = 'Normal';
+settings.richHintsForKeystroke = 500;   // keep the popup, just restyled
 
-/* theme: centre popup + bigger keys */
+// =============================================================================
+// === Theme ===
+// =============================================================================
 settings.theme = `
+/* ─── base theme ───────────────────────────────────────────────────── */
 #sk_keystroke{
   left:50%!important; bottom:50%!important;
   transform:translate(-50%,50%);
@@ -45,127 +55,52 @@ settings.theme = `
   padding:12px 16px;
 }
 #sk_keystroke kbd{ font-size:24px !important; }
-`;
-settings.richHintsForKeystroke = 500;   // keep the popup, just restyled
 
-// ---- Map -----
-// --- Hints ---
-// Open Multiple Links
-map('<Alt-f>', 'cf');
-function regionHints(side) {
-  const W = window.innerWidth, H = window.innerHeight;
-  const test = r => ({
-    left:  r.right  < W/2,
-    right: r.left   > W/2,
-    bottom:r.top    > H/2
-  }[side]);
-  const els = [...document.querySelectorAll('a,button,[onclick],input[type=submit]')]
-               .filter(e => {
-                 const r = e.getBoundingClientRect();
-                 return r.width && r.height && test(r);
-               });
-  Hints.create(els, Hints.dispatchMouseClick);
+/* ─── keystroke popup polish ───────────────────────────────────────── */
+#sk_keystroke {
+  /* container */
+  background : rgba(20,20,20,.92) !important;   /* softer black  */
+  color      : #E6F2FF            !important;   /* light-cyan text */
+  border     : 1px solid #3A3A3A  !important;
+  border-radius: 8px              !important;
+  padding    : 14px 18px          !important;
+  font-family: "SF Mono", Menlo, monospace !important;
+  line-height: 1.35;
+  box-shadow : 0 4px 14px rgba(0,0,0,.45) !important;
 }
-mapkey('<Space>hl', 'Hints on left half' , () => regionHints('left'));
-mapkey('<Space>hr', 'Hints on right half', () => regionHints('right'));
-mapkey('<Space>hb', 'Hints on bottom'    , () => regionHints('bottom'));
+/* every <kbd> tag (the key blocks) */
+#sk_keystroke kbd {
+  background : #111               !important;
+  color      : #FF5555            !important;   /* red key label */
+  border     : 1px solid #555     !important;
+  border-radius: 4px              !important;
+  padding    : 2px 6px            !important;
+  font-size  : 24px               !important;
+  margin-right: 8px               !important;
+}
+/* description text after each key */
+#sk_keystroke .annotation {
+  display    : flex;
+  align-items: center;
+  margin     : 0 0 6px 0;
+}
+/* last item: trim bottom gap */
+#sk_keystroke .annotation:last-child { margin-bottom: 0; }
 
-// Yank Link URL
-map('<Alt-y>', 'ya');
-map('<Alt-u>', 'ya');
+/* ─── enlarge kbd capsule so text fits ────────────────────────────── */
+#sk_keystroke kbd{
+  display:inline-block;      /* let padding widen the box            */
+  white-space:pre;           /* keep "<Space>" as one chunk           */
+  padding:4px 10px 5px;      /* ↑ extra vertical + horizontal room    */
+  line-height:1.1 !important;/* tighten baseline, avoid clipping      */
+}
+/* optional: if keys feel too tall after the change, nudge the font   */
+#sk_keystroke kbd{ font-size:22px !important; }   /* or 20 / 24 px    */
+`;
 
-// Open Hint in new tab
-map('F', 'C');
-
-// --- Nav ---
-// Open Clipboard URL in current tab
-mapkey('p', "Open the clipboard's URL in the current tab", () => { Clipboard.read(function(response) { window.location.href = response.data; }); });
-
-// Open Clipboard URL in new tab
-map('P', 'cc');
-
-// Open a URL in current tab
-map('o', 'go');
-
-// Choose a buffer/tab
-map('b', 'T');
-
-// Edit current URL, and open in same tab
-map('O', ';U');
-
-// Edit current URL, and open in new tab
-map('T', ';u');
-// History Back/Forward
-map('H', 'S');
-/* --- put these three lines together, in this order --- */
-unmap('R');          // drop old history-forward override
-map('R', 'L');       // ✔  R now inherits the *default* regional-hints
-map('L', 'D');       // re-assign history-forward to L (or Alt-L etc.)
-
-
-// Scroll Page Down/Up
-mapkey("<Ctrl-d>", "Scroll down", () => { Normal.scroll("pageDown"); });
-mapkey("<Ctrl-u>", "Scroll up", () => { Normal.scroll("pageUp"); });
-map('<Ctrl-b>', 'U');  // scroll full page up
-//map('<Ctrl-f>', 'P');  // scroll full page down -- looks like we can't overwrite browser-native binding
-
-// Next/Prev Page
-map('K', '[[');
-map('J', ']]');
-
-// Open Chrome Flags
-mapkey('gF', '#12Open Chrome Flags', () => { tabOpenLink("chrome://flags/"); });
-
-// --- Tabs ---
-// Tab Delete/Undo
-map('D', 'x');
-mapkey('d', '#3Close current tab', () => { RUNTIME("closeTab"); });
-mapkey('u', '#3Restore closed tab', () => { RUNTIME("openLast"); });
-
-// Move Tab Left/Right w/ one press
-map('>', '>>');
-map('<', '<<');
-
-// Tab Next/Prev
-// map('<Alt-j>', 'R');
-map('<Alt-k>', 'E');
-
-// --- Misc ---
-// Yank URL w/ one press (disables other yx binds)
-map('y', 'yy');
-
-// Change focused frame
-map('gf', 'w');
-
-// ---- Unmap -----
-// Proxy Stuff
-unmap('spa');
-unmap('spb');
-unmap('spc');
-unmap('spd');
-unmap('sps');
-unmap('cp');
-unmap(';cp');
-unmap(';ap');
-unmap('gs')
-
-// Emoji
-iunmap(":");
-
-// Misc
-unmap(';t');
-unmap('si');
-unmap('ga');
-unmap('gc');
-unmap('gn');
-unmap('gr');
-unmap('ob');
-unmap('og');
-unmap('od');
-unmap('oy');
-unmap('e')
-
-// ---- Search Engines -----
+// =============================================================================
+// === Search Engines ===
+// =============================================================================
 removeSearchAlias('b', 's');
 removeSearchAlias('d', 's');
 removeSearchAlias('g', 's');
@@ -188,68 +123,93 @@ addSearchAlias('st', 'steam', 'https://store.steampowered.com/search/?term=', 's
 addSearchAlias('wiki', 'wikipedia', 'https://en.wikipedia.org/wiki/Special:Search/', 's');
 addSearchAlias('y', 'yt', 'https://invidious.snopyta.org/search?q=', 's');
 
-/** ---------- scroll tweaks ---------- */
-unmap('^');
-mapkey('^', '#scroll-leftmost', 'Normal.scroll("leftmost")', {repeatIgnore: true});
-mapkey('$', '#scroll-rightmost', 'Normal.scroll("rightmost")', {repeatIgnore: true});
-/* ---- Scroll with U / D ---- */
-unmap('u');                                 // frees the key – you still have d for close tab
-unmap('d');
+// =============================================================================
+// === Unmappings ===
+// =============================================================================
+// --- Default overrides ---
+unmap('R');          // drop old history-forward override for remapping
+unmap('ge');         // drop default “Go Extension” shortcut
+unmap('^');          // drop default scroll-leftmost for remapping
+unmap('e');          // edit url
+// --- Proxy ---
+unmap('spa');
+unmap('spb');
+unmap('spc');
+unmap('spd');
+unmap('sps');
+unmap('cp');
+unmap(';cp');
+unmap(';ap');
+// --- Misc ---
+unmap('gs');
+unmap(';t');
+unmap('si');
+unmap('ga');
+unmap('gc');
+unmap('gn');
+unmap('gr');
+unmap('ob');
+unmap('og');
+unmap('od');
+unmap('oy');
+// --- Emoji ---
+iunmap(":");
+
+// =============================================================================
+// === Mappings ===
+// =============================================================================
+// --- Hints ---
+map('F', 'C');          // Open Hint in new tab
+map('<Alt-f>', 'cf');   // Open Multiple Links
+map('<Alt-y>', 'ya');   // Yank Link URL
+map('<Alt-u>', 'ya');   // Yank Link URL (alt)
+
+// --- Navigation & Scrolling ---
+map('H', 'S');          // History Back
+map('L', 'D');          // History Forward (was R)
+map('R', 'L');          // R now inherits the *default* regional-hints
+map('K', ']]');         // Next Page
+map('J', '[[');         // Prev Page (Vim-style)
+
 mapkey('d', 'Scroll page down', () => Normal.scroll("pageDown"));
 mapkey('u', 'Scroll page up',   () => Normal.scroll("pageUp"));
+mapkey("<Ctrl-d>", "Scroll down", () => { Normal.scroll("pageDown"); });
+mapkey("<Ctrl-u>", "Scroll up", () => { Normal.scroll("pageUp"); });
+map('<Ctrl-b>', 'U');   // scroll full page up
+mapkey('^', '#scroll-leftmost', 'Normal.scroll("leftmost")', {repeatIgnore: true});
 
-/* ---- “ge”-style edit URL ---- */
-unmap('ge');          // drop default “Go Extension” shortcut
-map('ge', ';U');
+// --- URL / OmniBar ---
+map('o', 'go');         // Open a URL in current tab
+map('O', ';U');         // Edit current URL, and open in same tab
+map('ge', ';U');        // Edit current URL, and open in same tab (g-e style)
+map('T', ';u');         // Edit current URL, and open in new tab
+mapkey('p', "Open clipboard URL in current tab", () => { Clipboard.read(res => window.location.href = res.data); });
+map('P', 'cc');         // Open clipboard URL in new tab
 
-/* ───── conditional T / t mappings (Safari vs others) ───── */
-const isSafari = /Safari/.test(navigator.userAgent) &&
-                 !/Chrome|Chromium|Edg/i.test(navigator.userAgent);
+// --- Tabs ---
+map('b', 'T');          // Choose a buffer/tab
+map('D', 'x');          // Close current tab
+map('>', '>>');         // Move Tab Right
+map('<', '<<');         // Move Tab Left
+map('<Alt-k>', 'E');    // Tab Next/Prev (Prev is default Alt-j)
 
-if (isSafari) {
-    // Safari → keep built-in “T” (SurfingKeys default), only change `t`
-    unmap('t');
-    mapkey('t', 'New tab → DuckDuckGo',
-           () => open('https://duckduckgo.com'));
-} else {
-    // Other browsers → `T` = tab-picker, `t` = DuckDuckGo
-    unmap('t'); unmap('T');
-    mapkey('T', 'Choose a tab (fuzzy finder)',
-           () => Front.openOmnibar({ type: 'Tabs' }));
-    mapkey('t', 'New tab → DuckDuckGo',
-           () => open('https://duckduckgo.com'));
-}
+// --- Misc ---
+map('y', 'yy');         // Yank URL w/ one press
+map('gf', 'w');         // Change focused frame
+mapkey('gF', '#12Open Chrome Flags', () => { tabOpenLink("chrome://flags/"); });
 
-mapkey('<Space>gpm', 'Jump to GitHub repo', () => {
-    open('https://github.com/MyMOC/mymoc/pulls');          // change URL as needed
-});
+// =============================================================================
+// === Global Shortcuts (using Leader key) ===
+// =============================================================================
+mapkey(`${L}G`, '🐙 Go to GitHub', () => window.open('https://github.com', '_self'));
+mapkey(`${L}I`, '🚀 Jump to Shortcut', () => window.open('https://app.shortcut.com/mymoc/iterations', '_self'));
+mapkey(`${L}S`, '🛍 Shopify admin', () => window.open('https://admin.shopify.com/', '_self'));
 
+// =============================================================================
+// === Helper Functions for Site-Specific Mappings ===
+// =============================================================================
 
-// s-admin
-mapkey('gsu', 's-admin users', () => open('https://s-admin.mocingbird.com/admin/users'));
-mapkey('gsl', 's-admin licenses', () => open('https://s-admin.mocingbird.com/admin/state_licenses'));
-mapkey('gsr', 's-admin roles', () => open('https://s-admin.mocingbird.com/admin/roles'));
-mapkey('gso', 's-admin orgs',  () => open('https://s-admin.mocingbird.com/admin/organizations'));
-
-// main
-mapkey('gmu', 'main users',   () => open('https://admin.mocingbird.com/admin/users'));
-mapkey('gml', 'main licenses',() => open('https://admin.mocingbird.com/admin/state_licenses'));
-mapkey('gmr', 'main roles',   () => open('https://admin.mocingbird.com/admin/roles'));
-mapkey('gmo', 'main orgs',    () => open('https://admin.mocingbird.com/admin/organizations'));
-
-// local dev
-mapkey('glu', 'dev users',    () => open('http://d-admin.mocingbird.com:3000/admin/users'));
-mapkey('gll', 'dev licenses', () => open('http://d-admin.mocingbird.com:3000/admin/state_licenses'));
-mapkey('glr', 'dev roles',    () => open('http://d-admin.mocingbird.com:3000/admin/roles'));
-mapkey('glo', 'dev orgs',     () => open('http://d-admin.mocingbird.com:3000/admin/organizations'));
-
-// --- leader key (space) ---
-const L = '<Space>';
-
-// 1) Global: jump to GitHub home
-mapkey(`${L}G`, 'Go to GitHub', () => window.open('https://github.com', '_blank'));
-
-// 2) GitHub-only helpers for the current repo
+/* 1. GitHub helpers */
 function repoRoot() {
   const m = location.href.match(/^https:\/\/github\.com\/[^\/]+\/[^\/]+/);
   return m ? m[0] : null;
@@ -259,40 +219,18 @@ function openSection(section = '') {
   if (base) window.open(`${base}${section && '/' + section}`, '_self');
 }
 
-mapkey(`${L}c`, 'Code tab',      () => openSection(),            {domain: /github\.com/});
-mapkey(`${L}p`, 'Pull requests', () => openSection('pulls'),     {domain: /github\.com/});
-mapkey(`${L}w`, 'Wiki',          () => openSection('wiki'),      {domain: /github\.com/});
-mapkey(`${L}s`, 'Stars',         () => openSection('stargazers'),{domain: /github\.com/});
-
-/* ----------  Shopify ---------- */
-// Global: jump to Shopify admin root
-mapkey(`${L}S`, 'Shopify admin', () =>
-  window.open('https://admin.shopify.com/', '_blank'));
-
-// Helper for shop-specific links (fill in the real paths)
+/* 2. Shopify helpers */
 function goShopify(path) {
-  window.open(path, '_self');        // path like 'https://admin.shopify.com/store/your-shop/…'
+  window.open(path, '_self');
 }
 
-// Shopify-only shortcuts
-const SHOPIFY = {domain: /admin\.shopify\.com/};
-
-// mapkey(`${L}R`, 'Rental pages', () => goShopify('RENTAL_URL'),       SHOPIFY);
-// mapkey(`${L}I`, 'Izzy Rent',    () => goShopify('IZZY_RENT_URL'),    SHOPIFY);
-mapkey(`${L}B`, 'Bookings',     () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/apps/izyrent/bookings'),     SHOPIFY);
-// mapkey(`${L}P`, 'Products',     () => goShopify('PRODUCTS_URL'),     SHOPIFY);
-// mapkey(`${L}C`, 'Customers',    () => goShopify('CUSTOMERS_URL'),    SHOPIFY);
-
-
-/* ----------  Shortcut Git-Helpers copy v3  ---------- */
+/* 3. Shortcut Git-Helpers (v3) */
 const SHORTCUT = { url: /https:\/\/app\.shortcut\.com\/mymoc\/story\// };
-
 const OPENER  = 'button[data-on-click="openGitHelpers"]';
 const POPUP   = '#git-branch-dialog, .git-branch-dialog';
-const FIELD_BRANCH  = '.git-branch';           // the readonly <input> or <code>
-const FIELD_CMD     = '.git-branch-command';   // same for checkout cmd
+const FIELD_BRANCH  = '.git-branch';
+const FIELD_CMD     = '.git-branch-command';
 
-/* wait for element helper */
 function waitFor(sel, t = 2500, step = 50) {
   return new Promise(res => {
     const s = performance.now();
@@ -304,7 +242,6 @@ function waitFor(sel, t = 2500, step = 50) {
   });
 }
 
-/* open popup if needed, then copy text inside target field */
 async function copyText(fieldSel, toast) {
   let popup = document.querySelector(POPUP);
   if (!popup) {
@@ -314,70 +251,100 @@ async function copyText(fieldSel, toast) {
     popup = await waitFor(POPUP);
     if (!popup)    return Front.showPopup('❗ Git popup failed');
   }
-
   const field = await waitFor(fieldSel);
   if (!field)      return Front.showPopup('❗ Field not found');
-
   const text = 'value' in field ? field.value : field.textContent.trim();
   Clipboard.write(text);
   Front.showPopup(toast);
 }
 
-/* ␣B → copy branch name */
-mapkey(`${L}B`, 'Copy branch name',
-       () => copyText(FIELD_BRANCH,  'Branch name copied!'), SHORTCUT);
+// =============================================================================
+// === Site-Specific Mappings ===
+// =============================================================================
 
-/* ␣C → copy checkout command */
-mapkey(`${L}C`, 'Copy checkout cmd',
-       () => copyText(FIELD_CMD,     'Checkout cmd copied!'), SHORTCUT);
-
-
-settings.theme += `
-/* ─── keystroke popup polish ───────────────────────────────────────── */
-
-#sk_keystroke {
-  /* container */
-  background : rgba(20,20,20,.92) !important;   /* softer black  */
-  color      : #E6F2FF            !important;   /* light-cyan text */
-  border     : 1px solid #3A3A3A  !important;
-  border-radius: 8px              !important;
-  padding    : 14px 18px          !important;
-  font-family: "SF Mono", Menlo, monospace !important;
-  line-height: 1.35;
-  box-shadow : 0 4px 14px rgba(0,0,0,.45) !important;
+/* ───── Browser-specific: Safari vs others ───── */
+const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.test(navigator.userAgent);
+if (isSafari) {
+    // Safari → keep built-in “T” (SurfingKeys default), only change `t`
+    unmap('t');
+    mapkey('t', 'New tab → DuckDuckGo', () => open('https://duckduckgo.com'));
+} else {
+    // Other browsers → `T` = tab-picker, `t` = DuckDuckGo
+    unmap('t'); unmap('T');
+    mapkey('T', 'Choose a tab (fuzzy finder)', () => Front.openOmnibar({ type: 'Tabs' }));
+    mapkey('t', 'New tab → DuckDuckGo', () => open('https://duckduckgo.com'));
 }
 
-/* every <kbd> tag (the key blocks) */
-#sk_keystroke kbd {
-  background : #111               !important;
-  color      : #FF5555            !important;   /* red key label */
-  border     : 1px solid #555     !important;
-  border-radius: 4px              !important;
-  padding    : 2px 6px            !important;
-  font-size  : 24px               !important;
-  margin-right: 8px               !important;
+/* ───── app.shortcut.com ───── */
+if (/^app\.shortcut\.com$/.test(location.hostname) && location.pathname.startsWith('/mymoc/')) {
+  mapkey(`${L}B`, '🌿 Copy branch name', () => copyText(FIELD_BRANCH,  'Branch name copied!'));
+  mapkey(`${L}C`, '⌘ Copy checkout cmd', () => copyText(FIELD_CMD,     'Checkout cmd copied!'));
 }
 
-/* description text after each key */
-#sk_keystroke .annotation {
-  display    : flex;
-  align-items: center;
-  margin     : 0 0 6px 0;
+/* ───── Mocingbird Admin ───── */
+const adminHost = location.hostname;
+const ADMIN_RE  = /^(s-admin|admin|d-admin)\.mocingbird\.com$/;
+if (ADMIN_RE.test(adminHost)) {
+  const PORT = adminHost.startsWith('d-admin') ? ':3000' : '';
+  const BASE = adminHost.includes('d-admin') ? `http://${adminHost}${PORT}` : `https://${adminHost}`;
+  function g(path){ window.open(`${BASE}/admin/${path}`, '_self'); }
+
+  mapkey(`${L}u`, '👥  Admin → Users',         () => g('users'));
+  mapkey(`${L}l`, '📄  Admin → Licenses',      () => g('state_licenses'));
+  mapkey(`${L}r`, '🛠  Admin → Roles',         () => g('roles'));
+  mapkey(`${L}o`, '🏢  Admin → Organizations', () => g('organizations'));
+
+  if (location.pathname === '/admin/users') {
+    mapkey(`${L}f`, '🔎  Admin → Filter User', () => {
+      Front.showPrompt('Username', (username) => {
+        const url = new URL(location.href);
+        url.searchParams.set('q[username_cont]', username);
+        url.searchParams.set('commit', 'Filter');
+        url.searchParams.set('order', 'id_desc');
+        window.open(url.toString(), '_self');
+      });
+    });
+  }
 }
 
-/* last item: trim bottom gap */
-#sk_keystroke .annotation:last-child { margin-bottom: 0; }
-`;
+/* ───── github.com ───── */
+const GITHUB = {domain: /github\.com/};
+mapkey(`${L}c`, 'Code tab',      () => openSection(),      GITHUB);
+mapkey(`${L}p`, 'Pull requests', () => openSection('pulls'), GITHUB);
+mapkey(`${L}w`, 'Wiki',          () => openSection('wiki'),  GITHUB);
+mapkey(`${L}s`, 'Stars',         () => openSection('stargazers'), GITHUB);
 
-settings.theme += `
-/* ─── enlarge kbd capsule so text fits ────────────────────────────── */
-#sk_keystroke kbd{
-  display:inline-block;      /* let padding widen the box            */
-  white-space:pre;           /* keep "<Space>" as one chunk           */
-  padding:4px 10px 5px;      /* ↑ extra vertical + horizontal room    */
-  line-height:1.1 !important;/* tighten baseline, avoid clipping      */
+/* ───── admin.shopify.com ───── */
+const SHOPIFY = {domain: /admin\.shopify\.com/};
+mapkey(`${L}B`, 'Bookings', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/apps/izyrent/bookings'), SHOPIFY);
+// mapkey(`${L}R`, 'Rental pages', () => goShopify('RENTAL_URL'),       SHOPIFY);
+// mapkey(`${L}I`, 'Izzy Rent',    () => goShopify('IZZY_RENT_URL'),    SHOPIFY);
+// mapkey(`${L}P`, 'Products',     () => goShopify('PRODUCTS_URL'),     SHOPIFY);
+// mapkey(`${L}C`, 'Customers',    () => goShopify('CUSTOMERS_URL'),    SHOPIFY);
+
+/* ───── youtube.com ───── */
+if (/\.youtube\.com$/.test(location.hostname)) {
+  const vid = () => document.querySelector('video');
+  mapkey(`${L}p`, 'YT ▶/⏸ play-pause', () => { const v = vid(); if (v) v[v.paused ? 'play' : 'pause'](); });
+  mapkey(`${L}+`, 'YT 🔊 volume +', () => { const v = vid(); if (v) v.volume = Math.min(1, v.volume + 0.05); });
+  mapkey(`${L}-`, 'YT 🔉 volume –', () => { const v = vid(); if (v) v.volume = Math.max(0, v.volume - 0.05); });
+  mapkey(`${L}f`, 'YT ⛶ full-screen', () => document.querySelector('.ytp-fullscreen-button')?.click());
 }
 
-/* optional: if keys feel too tall after the change, nudge the font   */
-#sk_keystroke kbd{ font-size:22px !important; }   /* or 20 / 24 px    */
-`;
+/* ───── meet.google.com ───── */
+if (/\.meet\.google\.com$/.test(location.hostname)) {
+  const press = txt => document.querySelector(`[aria-label*="${txt}"]`)?.click();
+  mapkey(`${L}n`, 'Meet 🎤 mic toggle',    () => press('microphone'));
+  mapkey(`${L}v`, 'Meet 📷 camera toggle', () => press('camera'));
+  mapkey(`${L}x`, 'Meet 🚪 leave call',    () => press('Leave call'));
+}
+
+/* ───── ChatGpt  ───── */
+maps["chatgpt.com"] = [
+  {
+    alias: "i",
+    leader: "",
+    description: "Focus input",
+    callback: () => setTimeout(() => Hints.dispatchMouseClick(document.querySelector("#prompt-textarea")), 0),
+  },
+]

@@ -13,13 +13,16 @@ rctrl - f : yabai -m window --toggle firefox || open  -a Firefox
 rctrl - a : yabai -m window --toggle music || open  -a Music
 rctrl - t : yabai -m window --toggle throwaway || open -a Alacritty
 rctrl - h : yabai -m window --toggle home || open -a Home
-rctrl - p : yabai -m window --toggle phone || open -a 'iPhone Mirroring'
+rctrl + shift - p : yabai -m window --toggle phone || open -a 'iPhone Mirroring'
 rctrl - w : yabai -m window --toggle safari || open -a Safari
+rctrl - p : yabai -m window --toggle postman || open -a Postman
 rctrl - i : yabai -m window --toggle iphone || open -a Simulator
 rctrl - s : yabai -m window --toggle slack || open -a Slack
 rctrl - m : yabai -m window --toggle messages || open -a Messages
 rctrl - d : yabai -m window --toggle stream_deck || open -a Elgato\ Stream\ Deck
 rctrl + shift - s : yabai -m window --toggle shortcut || open -a Shortcut
+rctrl - v : yabai -m window --toggle whatsapp || open -a WhatsApp
+
 
 rctrl + shift - c : yabai -m window --toggle chat || open -a ChatGPTChrome
 rctrl - c : yabai -m window --toggle chatgpt || open -a ChatGPT
