@@ -10,4 +10,4 @@ windows:
   - lazy_git:
       - lazygit
   - side_kiq: nvim +":term start_worker"
-  - gemini: nvim + ":term gemini"
+  - gemini: nvim +":term gemini"
