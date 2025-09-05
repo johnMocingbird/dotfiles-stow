@@ -204,6 +204,9 @@ mapkey('gF', '#12Open Chrome Flags', () => { tabOpenLink("chrome://flags/"); });
 mapkey(`${L}G`, '🐙 Go to GitHub', () => window.open('https://github.com', '_self'));
 mapkey(`${L}I`, '🚀 Jump to Shortcut', () => window.open('https://app.shortcut.com/mymoc/iterations', '_self'));
 mapkey(`${L}S`, '🛍 Shopify admin', () => window.open('https://admin.shopify.com/', '_self'));
+mapkey(`${L}Ap`, 'Mocingbird Admin (Production)', () => window.open('https://admin.mocingbird.com/', '_self'));
+mapkey(`${L}Ad`, 'Mocingbird Admin (Development)', () => window.open('http://d-admin.mocingbird.com:3000/', '_self'));
+mapkey(`${L}As`, 'Mocingbird Admin (Staging)', () => window.open('https://s-admin.mocingbird.com/', '_self'));
 
 // =============================================================================
 // === Helper Functions for Site-Specific Mappings ===
@@ -267,12 +270,12 @@ const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.t
 if (isSafari) {
     // Safari → keep built-in “T” (SurfingKeys default), only change `t`
     unmap('t');
-    mapkey('t', 'New tab → DuckDuckGo', () => open('https://duckduckgo.com'));
+    mapkey('t', 'Open dashboard', () => tabOpenLink('https://esthing64.github.io/my_dashboard/'));
 } else {
-    // Other browsers → `T` = tab-picker, `t` = DuckDuckGo
+    // Other browsers → `T` = tab-picker, `t` = dashboard
     unmap('t'); unmap('T');
     mapkey('T', 'Choose a tab (fuzzy finder)', () => Front.openOmnibar({ type: 'Tabs' }));
-    mapkey('t', 'New tab → DuckDuckGo', () => open('https://duckduckgo.com'));
+    mapkey('t', 'Open dashboard', () => tabOpenLink('https://esthing64.github.io/my_dashboard/'));
 }
 
 /* ───── app.shortcut.com ───── */
