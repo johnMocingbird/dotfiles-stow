@@ -1,0 +1,31 @@
+# /Users/john/dotfiles-stow/tmuxinator/.config/tmuxinator/frontend-dev.yml
+
+name: frontend-dev
+root: ~/
+on_project_start:
+  - mkdir -p /tmp/frontend-dev-logs
+  - rm -f /tmp/frontend-dev-logs/*.log
+  - touch /tmp/frontend-dev-logs/console.log
+  - touch /tmp/frontend-dev-logs/post-request-response.log
+  - touch /tmp/frontend-dev-logs/post-request-body.log
+  - touch /tmp/frontend-dev-logs/put-request-response.log
+  - touch /tmp/frontend-dev-logs/put-request-body.log
+  - touch /tmp/frontend-dev-logs/get-request-response.log
+
+windows:
+  - mitm:
+      panes:
+        - nvim -c "term mitmproxy --listen-host 0.0.0.0 --map-remote '|http://127.0.0.1.nip.io:4200|http://localhost:4200' --map-remote '|http://127.0.0.1.nip.io:3000|http://localhost:3000' -s /Users/john/dotfiles-stow/mac-tmux-scripts/scripts/mitmproxy_script.py --set 'view_filter=localhost'"
+          # - mitmweb --web-host 0.0.0.0 --listen-host 0.0.0.0 --map-remote '|http://127.0.0.1.nip.io:4200|http://localhost:4200' --map-remote '|http://127.0.0.1.nip.io:3000|http://localhost:3000' -s /Users/john/dotfiles-stow/mac-tmux-scripts/scripts/mitmproxy_script.py
+  - post-inspector:
+      panes:
+        - nvim -c "vsp | term tail -f /tmp/frontend-dev-logs/post-request-body.log" -c "sp | term tail -f /tmp/frontend-dev-logs/post-request-response.log"
+  - put-inspector:
+      panes:
+        - nvim -c "vsp | term tail -f /tmp/frontend-dev-logs/put-request-body.log" -c "sp | term tail -f /tmp/frontend-dev-logs/put-request-response.log"
+  - get-inspector:
+      panes:
+        - nvim -c "term tail -f /tmp/frontend-dev-logs/get-request-response.log"
+  - console-logs:
+      panes:
+        - nvim -c "term tail -f /tmp/frontend-dev-logs/console.log"
