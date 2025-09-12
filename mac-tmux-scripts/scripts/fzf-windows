@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+WINDOWS=$(tmux list-windows -F '#W')
+WINDOW=$(echo "$WINDOWS" | fzf --prompt="Select window: ")
+[ -z "$WINDOW" ] && exit 0
+
+tmux select-window -t "$WINDOW"
