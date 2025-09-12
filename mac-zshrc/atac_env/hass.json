@@ -1,0 +1,162 @@
+{
+  "name": "hass",
+  "requests": [
+    {
+      "name": "session",
+      "url": "{{MYMOC_HOST}}/api/v1/sessions",
+      "method": "POST",
+      "params": [],
+      "headers": [
+        {
+          "enabled": true,
+          "data": [
+            "cache-control",
+            "no-cache"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "user-agent",
+            "ATAC/v0.18.2"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "accept",
+            "*/*"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "accept-encoding",
+            "gzip, deflate, br"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "connection",
+            "keep-alive"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "content-type",
+            "application/json"
+          ]
+        }
+      ],
+      "body": {
+        "json": "{\n\t\"username\": \"john-s-pa\",\n\t\"password\":\"asdfasdf\"\n}"
+      },
+      "auth": "no_auth",
+      "scripts": {
+        "pre_request_script": null,
+        "post_request_script": "console.log(\"Response received:\");\n// pretty_print(response.content);\n res = JSON.parse(response.content) \n new_env = {TOKEN: res.token}     \nconsole.log(new_env)\nconsole.log(new_env.TOKEN)\n env = {...env, ...new_env}  \n\nconsole.log(env)"
+      },
+      "settings": {
+        "use_config_proxy": true,
+        "allow_redirects": true,
+        "store_received_cookies": true,
+        "pretty_print_response_content": true,
+        "accept_invalid_certs": false,
+        "accept_invalid_hostnames": false
+      }
+    },
+    {
+      "name": "/api/states",
+      "url": "http://192.168.50.170:8123/api/states",
+      "method": "GET",
+      "params": [],
+      "headers": [
+        {
+          "enabled": true,
+          "data": [
+            "cache-control",
+            "no-cache"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "cache-control",
+            "no-cache"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "cache-control",
+            "no-cache"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "cache-control",
+            "no-cache"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "user-agent",
+            "ATAC/v0.18.2"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "accept",
+            "*/*"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "accept-encoding",
+            "gzip, deflate, br"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "connection",
+            "keep-alive"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "content-type",
+            "application/json"
+          ]
+        }
+      ],
+      "body": {
+        "json": "{\n  \"title\": \"yes\"\n}"
+      },
+      "auth": {
+        "bearer_token": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI2OTBjY2NmYzU2MzY0NzhiYWE5NDZhOWEwOWY1ZTMwMyIsImlhdCI6MTc0NDczMTExNywiZXhwIjoyMDYwMDkxMTE3fQ.vjxjRIth3rAtjUiAv35abYSSDlqkpF2Xq-mB_kpB18A"
+        }
+      },
+      "scripts": {
+        "pre_request_script": null,
+        "post_request_script": null
+      },
+      "settings": {
+        "use_config_proxy": true,
+        "allow_redirects": true,
+        "store_received_cookies": true,
+        "pretty_print_response_content": true,
+        "accept_invalid_certs": false,
+        "accept_invalid_hostnames": false
+      }
+    }
+  ]
+}

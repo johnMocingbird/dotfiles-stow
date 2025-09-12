@@ -1,0 +1,14 @@
+[2m2025-09-04T13:55:14.146313Z[0m [33m WARN[0m [2matac::app::files::theme[0m[2m:[0m No theme file found, using default
+[2m2025-09-04T13:55:16.122667Z[0m [34mDEBUG[0m [2matac::tui::events[0m[2m:[0m Key pressed: j
+[2m2025-09-04T13:55:16.239454Z[0m [34mDEBUG[0m [2matac::tui::events[0m[2m:[0m Key pressed: j
+[2m2025-09-04T13:55:16.474950Z[0m [34mDEBUG[0m [2matac::tui::events[0m[2m:[0m Key pressed: j
+[2m2025-09-04T13:55:16.953553Z[0m [34mDEBUG[0m [2matac::tui::events[0m[2m:[0m Key pressed: Enter
+[2m2025-09-04T13:55:17.522843Z[0m [34mDEBUG[0m [2matac::tui::events[0m[2m:[0m Key pressed: j
+[2m2025-09-04T13:55:17.773888Z[0m [34mDEBUG[0m [2matac::tui::events[0m[2m:[0m Key pressed: Enter
+[2m2025-09-04T13:55:18.984052Z[0m [34mDEBUG[0m [2matac::tui::events[0m[2m:[0m Key pressed: Space
+[2m2025-09-04T13:55:18.984075Z[0m [32m INFO[0m [2matac::app::business_logic::request::send[0m[2m:[0m Sending request
+[2m2025-09-04T13:55:18.985588Z[0m [34mDEBUG[0m [1mHTTP request[0m[1m{[0m[3mhttp.request.method[0m[2m=[0mPOST [3murl.scheme[0m[2m=[0mhttp [3mserver.address[0m[2m=[0mlocalhost [3mserver.port[0m[2m=[0m3000 [3muser_agent.original[0m[2m=[0mATAC/v0.19.0 [3motel.kind[0m[2m=[0m"client" [3motel.name[0m[2m=[0mOrg Task[1m}[0m[2m:[0m [2mreqwest::connect[0m[2m:[0m starting new connection: http://localhost:3000/    
+[2m2025-09-04T13:55:18.986398Z[0m [34mDEBUG[0m [1mHTTP request[0m[1m{[0m[3mhttp.request.method[0m[2m=[0mPOST [3murl.scheme[0m[2m=[0mhttp [3mserver.address[0m[2m=[0mlocalhost [3mserver.port[0m[2m=[0m3000 [3muser_agent.original[0m[2m=[0mATAC/v0.19.0 [3motel.kind[0m[2m=[0m"client" [3motel.name[0m[2m=[0mOrg Task[1m}[0m[2m:[0m [2mhyper_util::client::legacy::connect::http[0m[2m:[0m connecting to [::1]:3000
+[2m2025-09-04T13:55:18.986645Z[0m [34mDEBUG[0m [1mHTTP request[0m[1m{[0m[3mhttp.request.method[0m[2m=[0mPOST [3murl.scheme[0m[2m=[0mhttp [3mserver.address[0m[2m=[0mlocalhost [3mserver.port[0m[2m=[0m3000 [3muser_agent.original[0m[2m=[0mATAC/v0.19.0 [3motel.kind[0m[2m=[0m"client" [3motel.name[0m[2m=[0mOrg Task[1m}[0m[2m:[0m [2mhyper_util::client::legacy::connect::http[0m[2m:[0m connected to [::1]:3000
+[2m2025-09-04T13:55:24.430590Z[0m [34mDEBUG[0m [1mHTTP request[0m[1m{[0m[3mhttp.request.method[0m[2m=[0mPOST [3murl.scheme[0m[2m=[0mhttp [3mserver.address[0m[2m=[0mlocalhost [3mserver.port[0m[2m=[0m3000 [3muser_agent.original[0m[2m=[0mATAC/v0.19.0 [3motel.kind[0m[2m=[0m"client" [3motel.name[0m[2m=[0mOrg Task[1m}[0m[2m:[0m [2mhyper_util::client::legacy::pool[0m[2m:[0m pooling idle connection for ("http", localhost:3000)
+[2m2025-09-05T16:08:02.713641Z[0m [34mDEBUG[0m [2matac::tui::events[0m[2m:[0m Key pressed: Ctrl-c

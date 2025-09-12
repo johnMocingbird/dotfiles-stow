@@ -1,0 +1,156 @@
+{
+  "name": "mymoc",
+  "requests": [
+    {
+      "name": "session",
+      "url": "{{MYMOC_HOST}}/api/v1/sessions",
+      "method": "POST",
+      "params": [
+        {
+          "enabled": true,
+          "data": [
+            "param",
+            "value"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "param",
+            "value"
+          ]
+        }
+      ],
+      "headers": [
+        {
+          "enabled": true,
+          "data": [
+            "cache-control",
+            "no-cache"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "user-agent",
+            "ATAC/v0.18.2"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "accept",
+            "*/*"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "accept-encoding",
+            "gzip, deflate, br"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "connection",
+            "keep-alive"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "content-type",
+            "application/json"
+          ]
+        }
+      ],
+      "body": {
+        "json": "{\n\t\"username\": \"john-s-pa\",\n\t\"password\":\"asdfasdf\"\n}"
+      },
+      "auth": "no_auth",
+      "scripts": {
+        "pre_request_script": null,
+        "post_request_script": "console.log(\"Response received:\");\n// pretty_print(response.content);\n res = JSON.parse(response.content) \n new_env = {TOKEN: res.token}     \nconsole.log(new_env)\nconsole.log(new_env.TOKEN)\n env = {...env, ...new_env}  \n\nconsole.log(env)"
+      },
+      "settings": {
+        "use_config_proxy": true,
+        "allow_redirects": true,
+        "store_received_cookies": true,
+        "pretty_print_response_content": true,
+        "accept_invalid_certs": false,
+        "accept_invalid_hostnames": false
+      }
+    },
+    {
+      "name": "subcategory/parse",
+      "url": "{{MYMOC_HOST}}/api/v1/subcategories/parse_subcategories",
+      "method": "POST",
+      "params": [],
+      "headers": [
+        {
+          "enabled": true,
+          "data": [
+            "cache-control",
+            "no-cache"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "user-agent",
+            "ATAC/v0.18.2"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "accept",
+            "*/*"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "accept-encoding",
+            "gzip, deflate, br"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "connection",
+            "keep-alive"
+          ]
+        },
+        {
+          "enabled": true,
+          "data": [
+            "content-type",
+            "application/json"
+          ]
+        }
+      ],
+      "body": {
+        "json": "{\n  \"title\": \"yes\"\n}"
+      },
+      "auth": {
+        "bearer_token": {
+          "token": "{{TOKEN}}"
+        }
+      },
+      "scripts": {
+        "pre_request_script": null,
+        "post_request_script": null
+      },
+      "settings": {
+        "use_config_proxy": true,
+        "allow_redirects": true,
+        "store_received_cookies": true,
+        "pretty_print_response_content": true,
+        "accept_invalid_certs": false,
+        "accept_invalid_hostnames": false
+      }
+    }
+  ]
+}
