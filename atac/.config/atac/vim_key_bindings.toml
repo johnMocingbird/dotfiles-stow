@@ -1,8 +1,10 @@
 # Please avoid using Ctrl-v, it will paste your clipboard and trigger many unwanted event
-# Please avoid using Ctrl-v, it will paste your clipboard and trigger many unwanted event
 
 [keybindings.main_menu]
-exit = "q" # ctrl-c is implemented by default
+exit = "q"                    # ctrl-c is implemented by default
+display_env_editor = "ctrl-e"
+display_cookies = "c"
+display_logs = "l"
 
 unselect_request = "Left"
 expand_collection = "Right"
@@ -11,7 +13,6 @@ move_request_up = "Ctrl-Up"
 move_request_down = "Ctrl-Down"
 
 next_environment = "e"
-display_cookies = "c"
 
 [keybindings.generic]
 display_help = "Ctrl-h" # Take care to not overlap other inputs, the help can be triggered from anywhere

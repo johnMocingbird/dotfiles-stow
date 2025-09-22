@@ -87,7 +87,7 @@ return {
 		},
 	},
 	{
-		"jcdickinson/codeium.nvim",
+		"Exafunction/windsurf.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"MunifTanjim/nui.nvim",

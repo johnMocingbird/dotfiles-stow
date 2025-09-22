@@ -14,6 +14,7 @@ rctrl - a : yabai -m window --toggle music || open  -a Music
 rctrl - t : yabai -m window --toggle throwaway || open -a Alacritty
 rctrl - h : yabai -m window --toggle home || open -a Home
 rctrl + shift - p : yabai -m window --toggle phone || open -a 'iPhone Mirroring'
+alt - p : yabai -m window --toggle passwords || open -a Passwords
 rctrl - w : yabai -m window --toggle safari || open -a Safari
 rctrl - p : yabai -m window --toggle postman || open -a Postman
 rctrl - i : yabai -m window --toggle iphone || open -a Simulator
@@ -22,14 +23,30 @@ rctrl - m : yabai -m window --toggle messages || open -a Messages
 rctrl - d : yabai -m window --toggle stream_deck || open -a Elgato\ Stream\ Deck
 rctrl + shift - s : yabai -m window --toggle shortcut || open -a Shortcut
 rctrl - v : yabai -m window --toggle whatsapp || open -a WhatsApp
+rctrl + shift - v : ~/dotfiles-stow/mac-tmux-scripts/scripts/vim-anywhere.sh
 
 
 rctrl + shift - c : yabai -m window --toggle chat || open -a ChatGPTChrome
 rctrl - c : yabai -m window --toggle chatgpt || open -a ChatGPT
 
+fn - f : yabai -m window --toggle firefox || open  -a Firefox
+fn - a : yabai -m window --toggle music || open  -a Music
+fn - t : yabai -m window --toggle throwaway || open -a Alacritty
+fn - h : yabai -m window --toggle home || open -a Home
+fn + shift - p : yabai -m window --toggle phone || open -a 'iPhone Mirroring'
+fn - w : yabai -m window --toggle safari || open -a Safari
+fn - p : yabai -m window --toggle postman || open -a Postman
+fn - i : yabai -m window --toggle iphone || open -a Simulator
+fn - s : yabai -m window --toggle slack || open -a Slack
+fn - m : yabai -m window --toggle messages || open -a Messages
+fn - d : yabai -m window --toggle stream_deck || open -a Elgato\ Stream\ Deck
+fn + shift - s : yabai -m window --toggle shortcut || open -a Shortcut
+fn - v : yabai -m window --toggle whatsapp || open -a WhatsApp
+fn + shift - c : yabai -m window --toggle chat || open -a ChatGPTChrome
+fn - c : yabai -m window --toggle chatgpt || open -a ChatGPT
 
 
-# Space Navigation (four spaces per display): lalt - {1, 2, 3, 4}
+
 lalt - 1 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[1] ]] && yabai -m space --focus $SPACES[1]
 lalt - 2 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[2] ]] && yabai -m space --focus $SPACES[2]
 lalt - 3 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[3] ]] && yabai -m space --focus $SPACES[3]

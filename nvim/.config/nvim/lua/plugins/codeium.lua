@@ -1,5 +1,5 @@
 return {
-  "zbirenbaum/codeium.nvim",
+  "Exafunction/windsurf.nvim",
   opts = {
     virtual_text = {
       key_bindings = {

@@ -43,6 +43,7 @@ yabai -m rule --add app="^(Family|LuLu|Calculator|Software Update|Dictionary|VLC
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add app="Arc" title="John" manage=off
+yabai -m rule --add app="^alacritty$" title="^clipboard-edit$" manage=off
 yabai -m rule --add app="Arc" title=" " manage=off
 yabai -m rule --add app="Skitch" manage=off
 yabai -m rule --add app="Arc" title="Đăng nhập - Tài khoản Google" manage=off
@@ -70,6 +71,7 @@ yabai -m rule --add app="Slack" scratchpad=slack grid=20:20:2:1:16:18
 yabai -m rule --add app="Messages" scratchpad=messages grid=20:20:2:1:16:18
 yabai -m rule --add app="^Home$" scratchpad=home grid=20:20:2:1:16:18
 yabai -m rule --add app="^iPhone Mirroring$" scratchpad=phone grid=12:12:4:1:4:10
+yabai -m rule --add app="^Passwords$" scratchpad=passwords grid=12:12:4:1:4:10
 yabai -m rule --add app="^Postman$" scratchpad=postman grid=20:20:2:1:16:18
 yabai -m rule --add app="^Simulator$" scratchpad=iphone grid=12:12:4:1:4:10
 yabai -m rule --add app="^Alacritty$" scratchpad=throwaway grid=12:12:9:1:3:8

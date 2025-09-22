@@ -152,6 +152,7 @@ unmap('ob');
 unmap('og');
 unmap('od');
 unmap('oy');
+unmap('m'); // marks TODO: do i want this
 // --- Emoji ---
 iunmap(":");
 
@@ -198,15 +199,6 @@ map('y', 'yy');         // Yank URL w/ one press
 map('gf', 'w');         // Change focused frame
 mapkey('gF', '#12Open Chrome Flags', () => { tabOpenLink("chrome://flags/"); });
 
-// =============================================================================
-// === Global Shortcuts (using Leader key) ===
-// =============================================================================
-mapkey(`${L}G`, '🐙 Go to GitHub', () => window.open('https://github.com', '_self'));
-mapkey(`${L}I`, '🚀 Jump to Shortcut', () => window.open('https://app.shortcut.com/mymoc/iterations', '_self'));
-mapkey(`${L}S`, '🛍 Shopify admin', () => window.open('https://admin.shopify.com/', '_self'));
-mapkey(`${L}Ap`, 'Mocingbird Admin (Production)', () => window.open('https://admin.mocingbird.com/', '_self'));
-mapkey(`${L}Ad`, 'Mocingbird Admin (Development)', () => window.open('http://d-admin.mocingbird.com:3000/', '_self'));
-mapkey(`${L}As`, 'Mocingbird Admin (Staging)', () => window.open('https://s-admin.mocingbird.com/', '_self'));
 
 // =============================================================================
 // === Helper Functions for Site-Specific Mappings ===
@@ -351,3 +343,19 @@ maps["chatgpt.com"] = [
     callback: () => setTimeout(() => Hints.dispatchMouseClick(document.querySelector("#prompt-textarea")), 0),
   },
 ]
+
+// =============================================================================
+// === Global Shortcuts (using Leader key) ===
+// =============================================================================
+mapkey(`${L}G`, '🐙 Go to GitHub', () => window.open('https://github.com', '_self'));
+mapkey(`${L}I`, '🚀 Jump to Shortcut', () => window.open('https://app.shortcut.com/mymoc/iterations', '_self'));
+mapkey(`${L}S`, '🛍 Shopify admin', () => window.open('https://admin.shopify.com/', '_self'));
+// 
+mapkey(`${L}W`, 'whatsapp', () => window.open('https://web.whatsapp.com/', '_self'));
+mapkey(`ap`, 'Mocingbird Admin (Production)', () => window.open('https://admin.mocingbird.com/', '_self'));
+mapkey(`ad`, 'Mocingbird Admin (Development)', () => window.open('http://d-admin.mocingbird.com:3000/', '_self'));
+mapkey(`as`, 'Mocingbird Admin (Staging)', () => window.open('https://s-admin.mocingbird.com/', '_self'));
+
+mapkey(`mp`, 'Mocingbird Admin (Production)', () => window.open('https://app.mocingbird.com/', '_self'));
+mapkey(`md`, 'Mocingbird Admin (Development)', () => window.open('http://127.0.0.1.nip.io:4200/', '_self'));
+mapkey(`ms`, 'Mocingbird Admin (Staging)', () => window.open('https://s-app.mocingbird.com//', '_self'));
