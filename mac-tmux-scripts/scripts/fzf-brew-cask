@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# fzf-cask-install (offline): list/search all Homebrew casks; install selection(s)
+
+set -euo pipefail
+
+command -v brew >/dev/null 2>&1 || {
+	echo "homebrew not found"
+	exit 1
+}
+command -v fzf >/dev/null 2>&1 || {
+	echo "fzf not found"
+	exit 1
+}
+
+# Make sure core cask taps exist
+brew tap homebrew/cask >/dev/null 2>&1 || true
+brew tap homebrew/cask-drivers >/dev/null 2>&1 || true
+brew tap homebrew/cask-fonts >/dev/null 2>&1 || true
+brew tap homebrew/cask-versions >/dev/null 2>&1 || true
+
+installed="$(brew list --cask 2>/dev/null || true)"
+
+# Build list by scanning tapped cask repos (no network). Output: "✓ <token>" or "  <token>"
+list_tokens() {
+	for tap in homebrew/cask homebrew/cask-drivers homebrew/cask-fonts homebrew/cask-versions; do
+		d="$(brew --repo "$tap" 2>/dev/null || true)"
+		[[ -n "$d" && -d "$d/Casks" ]] || continue
+		find "$d/Casks" -type f -name '*.rb' -maxdepth 2 -print0
+	done |
+		xargs -0 -n1 basename |
+		sed 's/\.rb$//' |
+		sort -u
+}
+
+awk -v ins="$installed" '
+  BEGIN { n=split(ins,a,"\n"); for(i=1;i<=n;i++) m[a[i]]=1 }
+  {
+    mark=(m[$0]? "✓":" ")
+    printf("%s\t%s\n", mark, $0)
+  }
+' < <(list_tokens) |
+	fzf --ansi --multi --no-hscroll --delimiter='\t' \
+		--with-nth=2 --prompt='cask> ' \
+		--header='⏎ install, TAB multi-select' \
+		--preview 'brew info --cask {2} 2>/dev/null | sed -n "1,120p"' \
+		--preview-window=right,70% |
+	cut -f2 |
+	awk "NF" |
+	xargs -r -n1 bash -lc 'echo "==> brew install --cask \"$0\""; brew install --cask "$0"'

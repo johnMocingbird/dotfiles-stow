@@ -1,8 +1,32 @@
 #!/bin/bash
 get_mic_index() {
-	ffmpeg -f avfoundation -list_devices true -i "" 2>&1 |
-		grep -i 'Studio Display Microphone' |
-		sed -E 's/.*\[([0-9]+)\].*/\1/'
+	# Priority order: Elgato XLR Dock -> MacBook Air Microphone
+	local mic_index
+
+	# Try Elgato XLR Dock first (your XLR mic)
+	mic_index=$(ffmpeg -f avfoundation -list_devices true -i "" 2>&1 |
+		grep -i 'Elgato XLR Dock' |
+		sed -E 's/.*\[([0-9]+)\].*/\1/' | head -1)
+
+	if [[ -n "$mic_index" ]]; then
+		echo "🎤 Using Elgato XLR Dock microphone (index: $mic_index)" >&2
+		echo "$mic_index"
+		return
+	fi
+
+	# Fallback to MacBook Air Microphone
+	mic_index=$(ffmpeg -f avfoundation -list_devices true -i "" 2>&1 |
+		grep -i 'MacBook Air Microphone' |
+		sed -E 's/.*\[([0-9]+)\].*/\1/' | head -1)
+
+	if [[ -n "$mic_index" ]]; then
+		echo "🎤 Using MacBook Air Microphone (index: $mic_index)" >&2
+		echo "$mic_index"
+		return
+	fi
+
+	# If none found, return empty
+	echo ""
 }
 
 RECORD_FILE="/tmp/voice_input.wav"
@@ -14,7 +38,7 @@ echo "🎙️  Recording... (press ENTER to finish, or Q/Ctrl-C to cancel)"
 # Start recording
 MIC_INDEX=$(get_mic_index)
 if [[ -z "$MIC_INDEX" ]]; then
-	echo "❌ Could not find Studio Display Microphone. Exiting."
+	echo "❌ Could not find any supported microphone (Elgato XLR Dock or MacBook Air Microphone). Exiting."
 	exit 1
 fi
 

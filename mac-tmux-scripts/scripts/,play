@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Tokyo Night theme colors
+BACKGROUND='\033[48;2;26;27;38m'    # #1a1b26
+FOREGROUND='\033[38;2;192;202;245m' # #c0caf5
+RED='\033[38;2;247;118;142m'        # #f7768e
+GREEN='\033[38;2;158;206;106m'      # #9ece6a
+YELLOW='\033[38;2;224;175;104m'     # #e0af68
+BLUE='\033[38;2;125;207;255m'       # #7dcfff
+PURPLE='\033[38;2;187;154;247m'     # #bb9af7
+CYAN='\033[38;2;125;207;255m'       # #7dcfff
+ORANGE='\033[38;2;255;158;100m'     # #ff9e64
+GRAY='\033[38;2;86;95;137m'         # #565f89
+NC='\033[0m' # No Color
+
+MOVIES_DIR="/Users/john/Movies"
+
+echo -e "${PURPLE}▶️  Open Last Saved Video${NC}"
+
+# Check if Movies directory exists
+if [ ! -d "$MOVIES_DIR" ]; then
+    echo -e "${RED}❌ Movies directory not found: $MOVIES_DIR${NC}"
+    exit 1
+fi
+
+echo -e "${CYAN}🔍 Searching for the latest video...${NC}"
+
+# Find the most recent video file
+LATEST_VIDEO=$(find "$MOVIES_DIR" -type f \( \
+    -iname "*.mp4" -o \
+    -iname "*.mov" -o \
+    -iname "*.avi" -o \
+    -iname "*.mkv" -o \
+    -iname "*.m4v" -o \
+    -iname "*.wmv" -o \
+    -iname "*.flv" -o \
+    -iname "*.webm" -o \
+    -iname "*.ts" -o \
+    -iname "*.mts" \
+    \) -exec ls -lt {} + 2>/dev/null | head -1 | awk '{print $NF}')
+
+# Check if any video was found
+if [ -z "$LATEST_VIDEO" ]; then
+    echo -e "${RED}❌ No video files found in $MOVIES_DIR${NC}"
+    exit 1
+fi
+
+# Get file info
+FILE_SIZE=$(du -h "$LATEST_VIDEO" | cut -f1)
+FILE_DATE=$(stat -f "%Sm" -t "%Y-%m-%d %H:%M:%S" "$LATEST_VIDEO")
+FILE_NAME=$(basename "$LATEST_VIDEO")
+
+echo -e "${GREEN}📹 Found latest video:${NC}"
+echo -e "${GRAY}   📁 File: $FILE_NAME${NC}"
+echo -e "${GRAY}   📊 Size: $FILE_SIZE${NC}"
+echo -e "${GRAY}   📅 Date: $FILE_DATE${NC}"
+echo
+
+echo -e "${YELLOW}🚀 Opening video...${NC}"
+
+# Open the video with default application
+if open "$LATEST_VIDEO"; then
+    echo -e "${GREEN}✅ Video opened successfully!${NC}"
+else
+    echo -e "${RED}❌ Failed to open video.${NC}"
+    exit 1
+fi

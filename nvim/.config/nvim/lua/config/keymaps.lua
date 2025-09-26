@@ -81,6 +81,9 @@ map(
 	{ noremap = true, desc = "reload luasnippets" }
 )
 
+-- Reload entire Neovim config
+map("n", "<leader>R", "<cmd>luafile ~/.config/nvim/init.lua<CR>", { noremap = true, desc = "Reload Neovim config" })
+
 map("n", "<leader>fm", "<cmd>lua require('mymoc.telescope_grep').grep_menu()<CR>", { noremap = true, silent = true })
 harpoon.setup()
 
@@ -332,6 +335,538 @@ end, { desc = "Toggle Buffer Line" })
 
 map("n", "<leader>N", ":NnnPicker<CR>", { noremap = true, desc = "nnn picker" })
 map("n", "<leader>e", ":NnnExplorer<CR>", { noremap = true, desc = "nnn Explorer" })
+
+-- AI Terminal Focus/Start function with toggle
+function FocusOrStartAI()
+	local ai_buf = FindAITerminal()
+
+	if ai_buf then
+		-- Check if AI terminal is currently visible in a window
+		local win = vim.fn.bufwinid(ai_buf)
+		if win ~= -1 then
+			-- Terminal is visible, close it (toggle off)
+			vim.api.nvim_win_close(win, false)
+			return
+		else
+			-- Terminal exists but not visible, show it in popup
+			Snacks.terminal(nil, { buf = ai_buf })
+			return
+		end
+	end
+
+	-- No AI terminal found, prompt user to start one
+	vim.ui.select({ "claude", "gemini" }, { prompt = "No AI terminal found. Start:" }, function(choice)
+		if choice then
+			StartAITerminal(choice)
+		end
+	end)
+end
+
+-- Function to start AI terminal with custom naming and icon
+function StartAITerminal(ai_name)
+	-- Icons for different AIs
+	local icons = {
+		claude = "🤖",
+		gemini = "✨",
+	}
+	local icon = icons[ai_name] or "🤖"
+	local display_name = icon .. " " .. ai_name:gsub("^%l", string.upper)
+
+	-- Use Snacks terminal with custom options to try to set title
+	local opts = {
+		cwd = LazyVim.root(),
+		-- Try to set terminal title (this might work depending on terminal)
+		env = {
+			TERM_TITLE = display_name,
+		},
+	}
+
+	local term = Snacks.terminal(ai_name, opts)
+
+	-- Alternative approach: use autocmd to rename buffer after creation
+	vim.defer_fn(function()
+		local buf = vim.api.nvim_get_current_buf()
+		if vim.api.nvim_buf_get_option(buf, "buftype") == "terminal" then
+			-- Set buffer variable for identification first
+			vim.api.nvim_buf_set_var(buf, "ai_terminal", ai_name)
+			vim.api.nvim_buf_set_var(buf, "ai_display_name", display_name)
+
+			-- Try multiple approaches to set buffer name
+			local success = false
+
+			-- Method 1: Direct buffer rename
+			local current_name = vim.api.nvim_buf_get_name(buf)
+			if current_name and current_name ~= "" then
+				local new_name = vim.fn.fnamemodify(current_name, ":h") .. "/" .. display_name
+				pcall(function()
+					vim.api.nvim_buf_set_name(buf, new_name)
+					success = true
+				end)
+			end
+
+			-- Method 2: If that fails, try setting just the filename part
+			if not success then
+				pcall(function()
+					vim.api.nvim_buf_set_name(buf, display_name)
+					success = true
+				end)
+			end
+
+			-- Method 3: Use buffer-local title variable (for plugins that support it)
+			vim.api.nvim_buf_set_var(buf, "term_title", display_name)
+
+			-- Try to send escape sequence to set terminal title
+			pcall(function()
+				local job_id = vim.api.nvim_buf_get_var(buf, "terminal_job_id")
+				if job_id then
+					local escape_seq = string.format("\027]0;%s\007", display_name)
+					vim.api.nvim_chan_send(job_id, escape_seq)
+				end
+			end)
+		end
+	end, 200)
+end
+
+-- Enhanced AI detection that also checks buffer variables
+function FindAITerminal()
+	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+		if vim.api.nvim_buf_is_loaded(buf) then
+			local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+			if buftype == "terminal" then
+				-- Check if this is marked as an AI terminal
+				local ok, ai_name = pcall(vim.api.nvim_buf_get_var, buf, "ai_terminal")
+				if ok and ai_name then
+					return buf
+				end
+
+				-- Fallback: check terminal content
+				local lines = vim.api.nvim_buf_get_lines(buf, -50, -1, false)
+				for _, line in ipairs(lines) do
+					if string.find(line, "claude") or string.find(line, "gemini") then
+						return buf
+					end
+				end
+			end
+		end
+	end
+	return nil
+end
+
+map("n", "<leader>ai", ":lua FocusOrStartAI()<CR>", { noremap = true, desc = "Focus/Start AI Terminal" })
+
+-- Function to get tmux sessions
+function GetTmuxSessions()
+	local handle = io.popen("tmux list-sessions -F '#{session_name}' 2>/dev/null")
+	if not handle then
+		return {}
+	end
+
+	local sessions = {}
+	for line in handle:lines() do
+		table.insert(sessions, line)
+	end
+	handle:close()
+	return sessions
+end
+
+-- Function to send text to tmux ai_cli window
+function SendToTmuxAI()
+	local selected_text = ""
+
+	-- Check if we're being called from visual mode
+	local start_pos = vim.fn.getpos("'<")
+	local end_pos = vim.fn.getpos("'>")
+
+	-- If visual marks exist and are different, we have a selection
+	if start_pos[2] ~= 0 and end_pos[2] ~= 0 and (start_pos[2] ~= end_pos[2] or start_pos[3] ~= end_pos[3]) then
+		-- Get visually selected text
+		local lines = vim.fn.getline(start_pos[2], end_pos[2])
+		if #lines == 1 then
+			-- Single line selection
+			selected_text = string.sub(lines[1], start_pos[3], end_pos[3])
+		else
+			-- Multi-line selection
+			lines[1] = string.sub(lines[1], start_pos[3])
+			lines[#lines] = string.sub(lines[#lines], 1, end_pos[3])
+			selected_text = table.concat(lines, "\n")
+		end
+	else
+		-- No selection, get current line
+		selected_text = vim.api.nvim_get_current_line()
+	end
+
+	if selected_text == "" then
+		vim.notify("No text selected", vim.log.levels.WARN)
+		return
+	end
+
+	-- Get tmux sessions
+	local sessions = GetTmuxSessions()
+	if #sessions == 0 then
+		vim.notify("No tmux sessions found", vim.log.levels.ERROR)
+		return
+	end
+
+	-- Let user select session
+	vim.ui.select(sessions, { prompt = "Select tmux session:" }, function(session)
+		if session then
+			SendTextToSession(session, selected_text)
+		end
+	end)
+end
+
+-- Function to send text to specific tmux session ai_cli window
+function SendTextToSession(session, text)
+	-- Check if ai_cli window exists in session
+	local check_cmd =
+		string.format("tmux list-windows -t %s -F '#{window_name}' 2>/dev/null | grep -q '^ai_cli$'", session)
+	local check_result = os.execute(check_cmd)
+
+	if check_result ~= 0 then
+		vim.notify(string.format("No 'ai_cli' window found in session '%s'", session), vim.log.levels.ERROR)
+		return
+	end
+
+	-- Escape special characters for tmux
+	text = text:gsub("'", "'\"'\"'")
+	text = text:gsub("\n", " ")
+
+	-- Send text to ai_cli window
+	local send_cmd = string.format("tmux send-keys -t %s:ai_cli '%s' Enter", session, text)
+	local result = os.execute(send_cmd)
+
+	if result == 0 then
+		vim.notify(string.format("Text sent to %s:ai_cli", session), vim.log.levels.INFO)
+	else
+		vim.notify("Failed to send text to tmux", vim.log.levels.ERROR)
+	end
+end
+
+-- Function to send text to current session's ai_cli window
+function SendToCurrentSessionAI()
+	local selected_text = ""
+
+	-- Check if we're being called from visual mode (same logic as SendToTmuxAI)
+	local start_pos = vim.fn.getpos("'<")
+	local end_pos = vim.fn.getpos("'>")
+
+	if start_pos[2] ~= 0 and end_pos[2] ~= 0 and (start_pos[2] ~= end_pos[2] or start_pos[3] ~= end_pos[3]) then
+		-- Get visually selected text
+		local lines = vim.fn.getline(start_pos[2], end_pos[2])
+		if #lines == 1 then
+			-- Single line selection
+			selected_text = string.sub(lines[1], start_pos[3], end_pos[3])
+		else
+			-- Multi-line selection
+			lines[1] = string.sub(lines[1], start_pos[3])
+			lines[#lines] = string.sub(lines[#lines], 1, end_pos[3])
+			selected_text = table.concat(lines, "\n")
+		end
+	else
+		-- No selection, get current line
+		selected_text = vim.api.nvim_get_current_line()
+	end
+
+	if selected_text == "" then
+		vim.notify("No text selected", vim.log.levels.WARN)
+		return
+	end
+
+	-- Get current tmux session
+	local current_session = vim.fn.system("tmux display-message -p '#S' 2>/dev/null"):gsub("\n", "")
+	if current_session == "" then
+		vim.notify("Not in a tmux session", vim.log.levels.ERROR)
+		return
+	end
+
+	-- Send directly to current session
+	SendTextToSession(current_session, selected_text)
+end
+
+
+map(
+	"v",
+	"<leader>as",
+	":lua SendToCurrentSessionAI()<CR>",
+	{ noremap = true, desc = "Send selection to current session AI" }
+)
+map(
+	"n",
+	"<leader>as",
+	":lua SendToCurrentSessionAI()<CR>",
+	{ noremap = true, desc = "Send line to current session AI" }
+)
+map(
+	"v",
+	"<leader>aS",
+	":lua SendToTmuxAI()<CR>",
+	{ noremap = true, desc = "Send selection to tmux AI (choose session)" }
+)
+map("n", "<leader>aS", ":lua SendToTmuxAI()<CR>", { noremap = true, desc = "Send line to tmux AI (choose session)" })
+
+-- Manual command to rename current terminal buffer to AI name
+function RenameCurrentTerminalToAI()
+	local buf = vim.api.nvim_get_current_buf()
+	if vim.api.nvim_buf_get_option(buf, "buftype") ~= "terminal" then
+		vim.notify("Current buffer is not a terminal", vim.log.levels.WARN)
+		return
+	end
+
+	vim.ui.select({ "claude", "gemini" }, { prompt = "Which AI is running in this terminal?" }, function(choice)
+		if choice then
+			local icons = { claude = "🤖", gemini = "✨" }
+			local icon = icons[choice] or "🤖"
+			local display_name = icon .. " " .. choice:gsub("^%l", string.upper)
+
+			-- Set buffer variables
+			vim.api.nvim_buf_set_var(buf, "ai_terminal", choice)
+			vim.api.nvim_buf_set_var(buf, "ai_display_name", display_name)
+
+			-- Try to rename buffer
+			pcall(function()
+				vim.api.nvim_buf_set_name(buf, display_name)
+			end)
+
+			vim.notify(string.format("Terminal marked as %s", display_name), vim.log.levels.INFO)
+		end
+	end)
+end
+
+map("n", "<leader>ar", ":lua RenameCurrentTerminalToAI()<CR>", { noremap = true, desc = "Mark terminal as AI" })
+
+-- Function to switch to ai_cli window in current tmux session
+function SwitchToAIWindow()
+	local current_session = vim.fn.system("tmux display-message -p '#S' 2>/dev/null"):gsub("\n", "")
+	if current_session == "" then
+		vim.notify("Not in a tmux session", vim.log.levels.ERROR)
+		return
+	end
+
+	-- Check if ai_cli window exists
+	local check_cmd = string.format("tmux list-windows -t %s -F '#{window_name}' 2>/dev/null | grep -q '^ai_cli$'", current_session)
+	local has_ai_cli = os.execute(check_cmd) == 0
+
+	if not has_ai_cli then
+		-- Create ai_cli window if it doesn't exist - prompt for AI choice
+		vim.ui.select({ "claude", "gemini" }, { prompt = "Which AI to run in ai_cli window:" }, function(choice)
+			if choice then
+				local create_cmd = string.format("tmux new-window -t %s -n ai_cli %s", current_session, choice)
+				local create_result = os.execute(create_cmd)
+
+				if create_result == 0 then
+					vim.notify(string.format("Created ai_cli window with %s in session '%s'", choice, current_session), vim.log.levels.INFO)
+				else
+					vim.notify("Failed to create ai_cli window", vim.log.levels.ERROR)
+				end
+			end
+		end)
+		return
+	end
+
+	-- Switch to ai_cli window
+	local switch_cmd = string.format("tmux select-window -t %s:ai_cli", current_session)
+	local result = os.execute(switch_cmd)
+
+	if result == 0 then
+		vim.notify("Switched to ai_cli window", vim.log.levels.INFO)
+	else
+		vim.notify("Failed to switch to ai_cli window", vim.log.levels.ERROR)
+	end
+end
+
+map("n", "<leader>aw", ":lua SwitchToAIWindow()<CR>", { noremap = true, desc = "Switch to ai_cli window" })
+
+-- Tmux window switching with leader w prefix
+map("n", "<leader>we", function()
+	vim.fn.system("tmux select-window -t nvim 2>/dev/null || tmux select-window -t neovim")
+	vim.notify("Switched to neovim window", vim.log.levels.INFO)
+end, { desc = "Switch to neovim window", noremap = true })
+
+map("n", "<leader>wg", function()
+	vim.fn.system("tmux select-window -t lazy_git")
+	vim.notify("Switched to lazy_git window", vim.log.levels.INFO)
+end, { desc = "Switch to lazy_git window", noremap = true })
+
+map("n", "<leader>wa", function()
+	vim.fn.system("tmux select-window -t ai_cli")
+	vim.notify("Switched to ai_cli window", vim.log.levels.INFO)
+end, { desc = "Switch to ai_cli window", noremap = true })
+
+map("n", "<leader>wc", function()
+	vim.fn.system("tmux select-window -t rails_console")
+	vim.notify("Switched to rails_console window", vim.log.levels.INFO)
+end, { desc = "Switch to rails_console window", noremap = true })
+
+map("n", "<leader>ws", function()
+	vim.fn.system("tmux select-window -t server")
+	vim.notify("Switched to server window", vim.log.levels.INFO)
+end, { desc = "Switch to server window", noremap = true })
+
+-- Also add tmux window switching to Ctrl+w prefix (LazyVim window operations)
+map("n", "<C-w>e", function()
+	vim.fn.system("tmux select-window -t nvim 2>/dev/null || tmux select-window -t neovim")
+	vim.notify("Switched to neovim window", vim.log.levels.INFO)
+end, { desc = "Switch to neovim window", noremap = true })
+
+map("n", "<C-w>g", function()
+	vim.fn.system("tmux select-window -t lazy_git")
+	vim.notify("Switched to lazy_git window", vim.log.levels.INFO)
+end, { desc = "Switch to lazy_git window", noremap = true })
+
+map("n", "<C-w>a", function()
+	vim.fn.system("tmux select-window -t ai_cli")
+	vim.notify("Switched to ai_cli window", vim.log.levels.INFO)
+end, { desc = "Switch to ai_cli window", noremap = true })
+
+map("n", "<C-w>c", function()
+	vim.fn.system("tmux select-window -t rails_console")
+	vim.notify("Switched to rails_console window", vim.log.levels.INFO)
+end, { desc = "Switch to rails_console window", noremap = true })
+
+map("n", "<C-w>s", function()
+	vim.fn.system("tmux select-window -t server")
+	vim.notify("Switched to server window", vim.log.levels.INFO)
+end, { desc = "Switch to server window", noremap = true })
+
+-- Function to manage Rails server in the server window's Neovim
+function ManageRailsServer()
+	local current_session = vim.fn.system("tmux display-message -p '#S' 2>/dev/null"):gsub("\n", "")
+	if current_session == "" then
+		vim.notify("Not in a tmux session", vim.log.levels.ERROR)
+		return
+	end
+
+	-- Check if server window exists in tmux, create if not
+	local check_server_cmd = string.format("tmux list-windows -t %s -F '#{window_name}' 2>/dev/null | grep -q '^server$'", current_session)
+	local has_server = os.execute(check_server_cmd) == 0
+
+	if not has_server then
+		-- Create server window in tmux
+		local create_cmd = string.format("tmux new-window -t %s -n server", current_session)
+		os.execute(create_cmd)
+		vim.notify("Created server window", vim.log.levels.INFO)
+	end
+
+	-- Don't switch to server window, just manage it in background
+
+	-- Check if rails server is already running in server window
+	local check_rails_cmd = string.format("tmux capture-pane -t %s:server -p | grep -q 'bin/rails s\\|rails server\\|Listening on'", current_session)
+	local rails_running = os.execute(check_rails_cmd) == 0
+
+	if rails_running then
+		-- Rails is running, restart it
+		vim.notify("Restarting Rails server...", vim.log.levels.INFO)
+
+		-- First, kill any existing Rails server process
+		local kill_cmd = "pkill -f 'bin/rails s' 2>/dev/null || true"
+		os.execute(kill_cmd)
+
+		-- Also send Ctrl+C to stop current server in the server window
+		local stop_cmd = string.format("tmux send-keys -t %s:server C-c", current_session)
+		os.execute(stop_cmd)
+
+		-- Send escape to exit any terminal mode, then close the buffer
+		vim.defer_fn(function()
+			local escape_cmd = string.format("tmux send-keys -t %s:server Escape", current_session)
+			os.execute(escape_cmd)
+
+			-- Close the terminal buffer
+			local close_cmd = string.format("tmux send-keys -t %s:server ':bd!' Enter", current_session)
+			os.execute(close_cmd)
+
+			-- Wait a moment then start fresh terminal
+			vim.defer_fn(function()
+				local term_cmd = string.format("tmux send-keys -t %s:server ':term bin/rails s' Enter", current_session)
+				os.execute(term_cmd)
+
+				-- Check for common errors after a delay
+				vim.defer_fn(function()
+					CheckRailsServerStatusInTmux(current_session)
+				end, 3000)
+			end, 500)
+		end, 1000)
+	else
+		-- Rails not running, start it in server window's Neovim
+		vim.notify("Starting Rails server...", vim.log.levels.INFO)
+
+		-- Send the terminal command to server window's Neovim
+		local term_cmd = string.format("tmux send-keys -t %s:server ':term bin/rails s' Enter", current_session)
+		os.execute(term_cmd)
+
+		-- Check for common errors after a delay
+		vim.defer_fn(function()
+			CheckRailsServerStatusInTmux(current_session)
+		end, 3000)
+	end
+end
+
+-- Function to check Rails server status in tmux server window
+function CheckRailsServerStatusInTmux(session)
+	-- Capture the output from server window
+	local capture_cmd = string.format("tmux capture-pane -t %s:server -p", session)
+	local handle = io.popen(capture_cmd)
+	if not handle then
+		return
+	end
+
+	local output = handle:read("*a")
+	handle:close()
+
+	-- Check for common error patterns
+	if output:match("bundle install") or output:match("Gemfile") then
+		vim.notify("❌ Rails server failed: Run 'bundle install'", vim.log.levels.WARN)
+	elseif output:match("syntax error") or output:match("SyntaxError") then
+		vim.notify("❌ Rails server failed: Syntax error in code", vim.log.levels.ERROR)
+	elseif output:match("pending migration") or output:match("run.*db:migrate") then
+		vim.notify("❌ Rails server failed: Run 'rails db:migrate'", vim.log.levels.WARN)
+	elseif output:match("Listening on") or output:match("Use Ctrl-C to stop") then
+		vim.notify("✅ Rails server started successfully", vim.log.levels.INFO)
+	elseif output:match("Address already in use") or output:match("port.*already") then
+		vim.notify("❌ Rails server failed: Port already in use", vim.log.levels.ERROR)
+	elseif output:match("Could not find") and output:match("gem") then
+		vim.notify("❌ Rails server failed: Missing gem - run 'bundle install'", vim.log.levels.WARN)
+	end
+end
+
+map("n", "<leader>rs", ":lua ManageRailsServer()<CR>", { noremap = true, desc = "Manage Rails server" })
+
+-- Function to create ai_cli window in current tmux session
+function CreateAICliWindow()
+	local current_session = vim.fn.system("tmux display-message -p '#S' 2>/dev/null"):gsub("\n", "")
+	if current_session == "" then
+		vim.notify("Not in a tmux session", vim.log.levels.ERROR)
+		return
+	end
+
+	-- Check if ai_cli window already exists
+	local check_cmd = string.format("tmux list-windows -t %s -F '#{window_name}' 2>/dev/null | grep -q '^ai_cli$'", current_session)
+	local has_ai_cli = os.execute(check_cmd) == 0
+
+	if has_ai_cli then
+		vim.notify(string.format("ai_cli window already exists in session '%s'", current_session), vim.log.levels.WARN)
+		return
+	end
+
+	-- Prompt for AI choice
+	vim.ui.select(
+		{"claude", "gemini"},
+		{prompt = string.format("Create ai_cli window in '%s' with:", current_session)},
+		function(choice)
+			if choice then
+				local create_cmd = string.format("tmux new-window -t %s -n ai_cli %s", current_session, choice)
+				local result = os.execute(create_cmd)
+
+				if result == 0 then
+					vim.notify(string.format("Created ai_cli window with %s in session '%s'", choice, current_session), vim.log.levels.INFO)
+				else
+					vim.notify("Failed to create ai_cli window", vim.log.levels.ERROR)
+				end
+			end
+		end
+	)
+end
+
+
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
 
@@ -378,57 +913,6 @@ map("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 map("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
-local wk = require("which-key")
-wk.register({
-	g = {
-		name = "+Git",
-		p = {
-			name = "+Pull Request",
-			c = { "<cmd>GHClosePR<cr>", "Close" },
-			d = { "<cmd>GHPRDetails<cr>", "Details" },
-			e = { "<cmd>GHExpandPR<cr>", "Expand" },
-			o = { "<cmd>GHOpenPR<cr>", "Open" },
-			p = { "<cmd>GHPopOutPR<cr>", "PopOut" },
-			r = { "<cmd>GHRefreshPR<cr>", "Refresh" },
-			t = { "<cmd>GHOpenToPR<cr>", "Open To" },
-			z = { "<cmd>GHCollapsePR<cr>", "Collapse" },
-		},
-		h = {
-			name = "+Github",
-			c = {
-				name = "+Commits",
-				c = { "<cmd>GHCloseCommit<cr>", "Close" },
-				e = { "<cmd>GHExpandCommit<cr>", "Expand" },
-				o = { "<cmd>GHOpenToCommit<cr>", "Open To" },
-				p = { "<cmd>GHPopOutCommit<cr>", "Pop Out" },
-				z = { "<cmd>GHCollapseCommit<cr>", "Collapse" },
-			},
-			i = {
-				name = "+Issues",
-				p = { "<cmd>GHPreviewIssue<cr>", "Preview" },
-			},
-			l = {
-				name = "+Litee",
-				t = { "<cmd>LTPanel<cr>", "Toggle Panel" },
-			},
-			r = {
-				name = "+Review",
-				b = { "<cmd>GHStartReview<cr>", "Begin" },
-				c = { "<cmd>GHCloseReview<cr>", "Close" },
-				d = { "<cmd>GHDeleteReview<cr>", "Delete" },
-				e = { "<cmd>GHExpandReview<cr>", "Expand" },
-				s = { "<cmd>GHSubmitReview<cr>", "Submit" },
-				z = { "<cmd>GHCollapseReview<cr>", "Collapse" },
-			},
-			t = {
-				name = "+Threads",
-				c = { "<cmd>GHCreateThread<cr>", "Create" },
-				n = { "<cmd>GHNextThread<cr>", "Next" },
-				t = { "<cmd>GHToggleThread<cr>", "Toggle" },
-			},
-		},
-	},
-}, { prefix = "<leader>" })
 
 map("n", "<leader>dD", [[:lua CalculateDateDifference()<CR>]], { noremap = true, desc = "Difference" })
 

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Tokyo Night theme colors
+BACKGROUND='\033[48;2;26;27;38m'    # #1a1b26
+FOREGROUND='\033[38;2;192;202;245m' # #c0caf5
+RED='\033[38;2;247;118;142m'        # #f7768e
+GREEN='\033[38;2;158;206;106m'      # #9ece6a
+YELLOW='\033[38;2;224;175;104m'     # #e0af68
+BLUE='\033[38;2;125;207;255m'       # #7dcfff
+PURPLE='\033[38;2;187;154;247m'     # #bb9af7
+CYAN='\033[38;2;125;207;255m'       # #7dcfff
+ORANGE='\033[38;2;255;158;100m'     # #ff9e64
+GRAY='\033[38;2;86;95;137m'         # #565f89
+NC='\033[0m' # No Color
+
+MOVIES_DIR="/Users/john/Movies"
+
+echo -e "${PURPLE}🎬 Opening Movies Directory${NC}"
+
+# Check if Movies directory exists
+if [ ! -d "$MOVIES_DIR" ]; then
+    echo -e "${RED}❌ Movies directory not found: $MOVIES_DIR${NC}"
+    exit 1
+fi
+
+# Check if nnn is installed
+if ! command -v nnn &> /dev/null; then
+    echo -e "${RED}❌ nnn is not installed. Please install it first.${NC}"
+    echo -e "${YELLOW}💡 Install with: brew install nnn${NC}"
+    exit 1
+fi
+
+echo -e "${CYAN}📁 Opening ${MOVIES_DIR} in nnn...${NC}"
+
+# Open Movies directory in nnn
+cd "$MOVIES_DIR" && nnn

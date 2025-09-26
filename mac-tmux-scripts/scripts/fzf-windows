@@ -1,7 +1,55 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-WINDOWS=$(tmux list-windows -F '#W')
-WINDOW=$(echo "$WINDOWS" | fzf --prompt="Select window: ")
-[ -z "$WINDOW" ] && exit 0
+# Function to get icon for window name
+get_icon() {
+    local window_name=$(echo "$1" | tr '[:upper:]' '[:lower:]')
 
-tmux select-window -t "$WINDOW"
+    case "$window_name" in
+        *neovim*|*nvim*) echo ":neovim:" ;;
+        *vim*) echo ":vim:" ;;
+        *code*) echo ":code:" ;;
+        *cursor*) echo ":cursor:" ;;
+        *zed*) echo ":zed:" ;;
+        *lazy_git*|*lazygit*|*git*) echo ":git_hub:" ;;
+        *terminal*) echo ":terminal:" ;;
+        *kitty*) echo ":kitty:" ;;
+        *iterm*) echo ":iterm:" ;;
+        *alacritty*) echo ":alacritty:" ;;
+        *wezterm*) echo ":wezterm:" ;;
+        *chrome*) echo ":google_chrome:" ;;
+        *firefox*) echo ":firefox:" ;;
+        *safari*) echo ":safari:" ;;
+        *arc*) echo ":arc:" ;;
+        *brave*) echo ":brave_browser:" ;;
+        *spotify*) echo ":spotify:" ;;
+        *music*) echo ":music:" ;;
+        *discord*) echo ":discord:" ;;
+        *slack*) echo ":slack:" ;;
+        *telegram*) echo ":telegram:" ;;
+        *messages*) echo ":messages:" ;;
+        *whatsapp*) echo ":whats_app:" ;;
+        *finder*) echo ":finder:" ;;
+        *) echo ":default:" ;;
+    esac
+}
+
+# Get windows with icons
+WINDOWS_RAW=$(tmux list-windows -F '#I:#W')
+WINDOWS_WITH_ICONS=""
+
+while IFS= read -r line; do
+    window_index=$(echo "$line" | cut -d: -f1)
+    window_name=$(echo "$line" | cut -d: -f2)
+    icon=$(get_icon "$window_name")
+    WINDOWS_WITH_ICONS+="$icon $window_name ($window_index)"$'\n'
+done <<< "$WINDOWS_RAW"
+
+# Use fzf to select window
+SELECTION=$(echo -e "$WINDOWS_WITH_ICONS" | fzf --prompt="Select window: " --ansi)
+[ -z "$SELECTION" ] && exit 0
+
+# Extract window name from selection (remove icon and index)
+WINDOW_INDEX=$(echo "$SELECTION" | grep -o '([0-9]*)' | tr -d '()')
+[ -z "$WINDOW_INDEX" ] && exit 0
+
+tmux select-window -t "$WINDOW_INDEX"

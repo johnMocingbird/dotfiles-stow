@@ -26,7 +26,8 @@ return {
 			-- Luckily, the only things that those plugins need are the custom queries, which we make available
 			-- during startup.
 			require("lazy.core.loader").add_to_rtp(plugin)
-			require("nvim-treesitter.query_predicates")
+			-- Note: nvim-treesitter.query_predicates has been removed in recent versions
+			pcall(require, "nvim-treesitter.query_predicates")
 		end,
 		cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
 		keys = {
@@ -103,7 +104,13 @@ return {
 			if type(opts.ensure_installed) == "table" then
 				opts.ensure_installed = LazyVim.dedup(opts.ensure_installed)
 			end
-			require("nvim-treesitter.configs").setup(opts)
+			-- Handle both old and new nvim-treesitter API
+			local ok, configs = pcall(require, "nvim-treesitter.configs")
+			if ok then
+				configs.setup(opts)
+			else
+				require("nvim-treesitter").setup(opts)
+			end
 		end,
 	},
 
@@ -115,13 +122,23 @@ return {
 			-- If treesitter is already loaded, we need to run config again for textobjects
 			if LazyVim.is_loaded("nvim-treesitter") then
 				local opts = LazyVim.opts("nvim-treesitter")
-				require("nvim-treesitter.configs").setup({ textobjects = opts.textobjects })
+				-- Handle both old and new nvim-treesitter API
+				local ok, configs = pcall(require, "nvim-treesitter.configs")
+				if ok then
+					configs.setup({ textobjects = opts.textobjects })
+				else
+					require("nvim-treesitter").setup({ textobjects = opts.textobjects })
+				end
 			end
 
 			-- When in diff mode, we want to use the default
 			-- vim text objects c & C instead of the treesitter ones.
-			local move = require("nvim-treesitter.textobjects.move") ---@type table<string,fun(...)>
-			local configs = require("nvim-treesitter.configs")
+			local move_ok, move = pcall(require, "nvim-treesitter.textobjects.move")
+			if not move_ok then return end
+
+			local configs_ok, configs = pcall(require, "nvim-treesitter.configs")
+			if not configs_ok then return end
+
 			for name, fn in pairs(move) do
 				if name:find("goto") == 1 then
 					move[name] = function(q, ...)

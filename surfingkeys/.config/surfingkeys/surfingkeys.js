@@ -308,6 +308,9 @@ mapkey(`${L}c`, 'Code tab',      () => openSection(),      GITHUB);
 mapkey(`${L}p`, 'Pull requests', () => openSection('pulls'), GITHUB);
 mapkey(`${L}w`, 'Wiki',          () => openSection('wiki'),  GITHUB);
 mapkey(`${L}s`, 'Stars',         () => openSection('stargazers'), GITHUB);
+mapkey(`${L}f`, 'Go to Front-end repo', () => window.open('https://github.com/MyMOC/front-end', '_self'), GITHUB);
+mapkey(`${L}b`, 'Go to Backend repo', () => window.open('https://github.com/MyMOC/backend', '_self'), GITHUB);
+mapkey(`${L}m`, 'Go to Mobile repo', () => window.open('https://github.com/MyMOC/mobilemoc', '_self'), GITHUB);
 
 /* ───── admin.shopify.com ───── */
 const SHOPIFY = {domain: /admin\.shopify\.com/};
@@ -333,16 +336,6 @@ if (/\.meet\.google\.com$/.test(location.hostname)) {
   mapkey(`${L}v`, 'Meet 📷 camera toggle', () => press('camera'));
   mapkey(`${L}x`, 'Meet 🚪 leave call',    () => press('Leave call'));
 }
-
-/* ───── ChatGpt  ───── */
-maps["chatgpt.com"] = [
-  {
-    alias: "i",
-    leader: "",
-    description: "Focus input",
-    callback: () => setTimeout(() => Hints.dispatchMouseClick(document.querySelector("#prompt-textarea")), 0),
-  },
-]
 
 // =============================================================================
 // === Global Shortcuts (using Leader key) ===

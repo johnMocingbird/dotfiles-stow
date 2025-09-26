@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# Tokyo Night theme colors
+BACKGROUND='\033[48;2;26;27;38m'    # #1a1b26
+FOREGROUND='\033[38;2;192;202;245m' # #c0caf5
+RED='\033[38;2;247;118;142m'        # #f7768e
+GREEN='\033[38;2;158;206;106m'      # #9ece6a
+YELLOW='\033[38;2;224;175;104m'     # #e0af68
+BLUE='\033[38;2;125;207;255m'       # #7dcfff
+PURPLE='\033[38;2;187;154;247m'     # #bb9af7
+CYAN='\033[38;2;125;207;255m'       # #7dcfff
+ORANGE='\033[38;2;255;158;100m'     # #ff9e64
+GRAY='\033[38;2;86;95;137m'         # #565f89
+NC='\033[0m' # No Color
+
+echo -e "${PURPLE}🔊 Clipboard Text-to-Speech${NC}"
+
+# Get clipboard content
+CLIPBOARD_TEXT=$(pbpaste)
+
+# Check if clipboard is empty
+if [ -z "$CLIPBOARD_TEXT" ]; then
+    echo -e "${RED}❌ Clipboard is empty. Copy some text first.${NC}"
+    exit 1
+fi
+
+# Show preview of text to be spoken
+echo -e "${CYAN}📋 Clipboard content:${NC}"
+echo -e "${GRAY}$(echo "$CLIPBOARD_TEXT" | head -c 100)$(if [ ${#CLIPBOARD_TEXT} -gt 100 ]; then echo "..."; fi)${NC}"
+echo
+
+# Voice selection with fzf
+echo -e "${YELLOW}🎤 Select voice:${NC}"
+
+VOICE=$(say -v ? | awk '{print $1}' | \
+    fzf --height=40% \
+        --border=rounded \
+        --header="🎭 Available Voices" \
+        --header-first \
+        --prompt="🎵 " \
+        --pointer="▶" \
+        --marker="✓" \
+        --preview="echo 'Hello, this is a preview of {}' | say -v {} --preview" \
+        --preview-window="hidden" \
+        --color="bg:#1a1b26,fg:#c0caf5,header:#bb9af7,prompt:#9ece6a,pointer:#e0af68,marker:#7dcfff,border:#565f89" \
+        --bind="ctrl-p:toggle-preview" \
+        --bind="ctrl-c:abort" \
+        --exit-0)
+
+# Check if user quit without selecting
+if [ -z "$VOICE" ]; then
+    echo -e "${YELLOW}⚠️  No voice selected. Operation cancelled.${NC}"
+    exit 0
+fi
+
+# Rate selection
+echo -e "${ORANGE}⚡ Select speech rate:${NC}"
+
+RATE=$(echo -e "Normal (200)\nSlow (150)\nFast (250)\nVery Fast (300)\nCustom" | \
+    fzf --height=30% \
+        --border=rounded \
+        --header="🏃 Speech Rate" \
+        --header-first \
+        --prompt="📊 " \
+        --pointer="▶" \
+        --marker="✓" \
+        --color="bg:#1a1b26,fg:#c0caf5,header:#bb9af7,prompt:#9ece6a,pointer:#e0af68,marker:#7dcfff,border:#565f89" \
+        --bind="ctrl-c:abort" \
+        --exit-0)
+
+# Check if user quit without selecting
+if [ -z "$RATE" ]; then
+    echo -e "${YELLOW}⚠️  No rate selected. Operation cancelled.${NC}"
+    exit 0
+fi
+
+# Extract rate number or ask for custom
+if [[ "$RATE" == "Custom" ]]; then
+    echo -e "${CYAN}Enter custom rate (50-500):${NC}"
+    read -r RATE_NUM
+    if ! [[ "$RATE_NUM" =~ ^[0-9]+$ ]] || [ "$RATE_NUM" -lt 50 ] || [ "$RATE_NUM" -gt 500 ]; then
+        echo -e "${RED}❌ Invalid rate. Using default (200).${NC}"
+        RATE_NUM=200
+    fi
+else
+    RATE_NUM=$(echo "$RATE" | grep -o '[0-9]\+')
+fi
+
+# Start speaking
+echo -e "${GREEN}🗣️  Speaking with voice '${VOICE}' at rate ${RATE_NUM}...${NC}"
+echo -e "${GRAY}Press Ctrl+C to stop${NC}"
+
+# Use say command to speak the clipboard content
+if say -v "$VOICE" -r "$RATE_NUM" "$CLIPBOARD_TEXT"; then
+    echo -e "${GREEN}✅ Text-to-speech completed successfully!${NC}"
+else
+    echo -e "${RED}❌ Text-to-speech failed.${NC}"
+    exit 1
+fi

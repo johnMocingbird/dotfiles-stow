@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Exit if no selection is made
+set -e
+
+# Tokyo Night theme colors
+BACKGROUND='\033[48;2;26;27;38m'    # #1a1b26
+FOREGROUND='\033[38;2;192;202;245m' # #c0caf5
+RED='\033[38;2;247;118;142m'        # #f7768e
+GREEN='\033[38;2;158;206;106m'      # #9ece6a
+YELLOW='\033[38;2;224;175;104m'     # #e0af68
+BLUE='\033[38;2;125;207;255m'       # #7dcfff
+PURPLE='\033[38;2;187;154;247m'     # #bb9af7
+CYAN='\033[38;2;125;207;255m'       # #7dcfff
+ORANGE='\033[38;2;255;158;100m'     # #ff9e64
+GRAY='\033[38;2;86;95;137m'         # #565f89
+NC='\033[0m' # No Color
+
+# Custom header for fzf
+HEADER="🌿 Git Branch Checkout"
+
+echo -e "${PURPLE}🔍 Fetching branches...${NC}"
+
+# Get the selected branch with improved fzf styling
+SELECTED_BRANCH=$(git branch --color=always | \
+    fzf --ansi \
+        --height=40% \
+        --border=rounded \
+        --header="$HEADER" \
+        --header-first \
+        --prompt="🔀 " \
+        --pointer="▶" \
+        --marker="✓" \
+        --preview="git log --oneline --color=always -10 {}" \
+        --preview-window="right:50%:wrap" \
+        --color="bg:#1a1b26,fg:#c0caf5,header:#bb9af7,prompt:#9ece6a,pointer:#e0af68,marker:#7dcfff,border:#565f89" \
+        --bind="ctrl-c:abort" \
+        --exit-0)
+
+# Check if user quit without selecting
+if [ -z "$SELECTED_BRANCH" ]; then
+    echo -e "${YELLOW}⚠️  No branch selected. Operation cancelled.${NC}"
+    exit 0
+fi
+
+# Clean the branch name (remove leading spaces and asterisk)
+BRANCH_NAME=$(echo "$SELECTED_BRANCH" | sed 's/^[* ] *//')
+
+# Attempt checkout
+echo -e "${CYAN}🔀 Switching to branch: ${GREEN}$BRANCH_NAME${NC}"
+
+if git checkout "$BRANCH_NAME"; then
+    echo -e "${GREEN}✅ Successfully switched to branch: $BRANCH_NAME${NC}"
+else
+    echo -e "${RED}❌ Failed to checkout branch: $BRANCH_NAME${NC}"
+    exit 1
+fi
