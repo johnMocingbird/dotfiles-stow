@@ -314,11 +314,13 @@ mapkey(`${L}m`, 'Go to Mobile repo', () => window.open('https://github.com/MyMOC
 
 /* ───── admin.shopify.com ───── */
 const SHOPIFY = {domain: /admin\.shopify\.com/};
-mapkey(`${L}B`, 'Bookings', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/apps/izyrent/bookings'), SHOPIFY);
-// mapkey(`${L}R`, 'Rental pages', () => goShopify('RENTAL_URL'),       SHOPIFY);
-// mapkey(`${L}I`, 'Izzy Rent',    () => goShopify('IZZY_RENT_URL'),    SHOPIFY);
-// mapkey(`${L}P`, 'Products',     () => goShopify('PRODUCTS_URL'),     SHOPIFY);
-// mapkey(`${L}C`, 'Customers',    () => goShopify('CUSTOMERS_URL'),    SHOPIFY);
+mapkey(`${L}b`, 'Bookings', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/apps/izyrent/bookings'), SHOPIFY);
+mapkey(`${L}nb`, 'New Booking', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/apps/izyrent/bookings'), SHOPIFY);
+mapkey(`${L}c`, 'Customers', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/customers'), SHOPIFY);
+mapkey(`${L}o`, 'Orders', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/orders'), SHOPIFY);
+mapkey(`${L}d`, 'Draft Orders', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/draft_orders?selectedView=all'), SHOPIFY);
+mapkey(`${L}no`, 'New Orders', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/orders?status=open'), SHOPIFY);
+mapkey(`${L}i`, 'Izzy Rent', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/apps/izyrent'), SHOPIFY);
 
 /* ───── youtube.com ───── */
 if (/\.youtube\.com$/.test(location.hostname)) {
