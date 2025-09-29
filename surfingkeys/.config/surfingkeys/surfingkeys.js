@@ -344,6 +344,7 @@ if (/\.meet\.google\.com$/.test(location.hostname)) {
 // =============================================================================
 mapkey(`${L}G`, '🐙 Go to GitHub', () => window.open('https://github.com', '_self'));
 mapkey(`${L}I`, '🚀 Jump to Shortcut', () => window.open('https://app.shortcut.com/mymoc/iterations', '_self'));
+mapkey(`${L}M`, '📧 Gmail Inbox', () => window.open('https://mail.google.com/mail/u/0/#inbox', '_self'));
 mapkey(`${L}S`, '🛍 Shopify admin', () => window.open('https://admin.shopify.com/', '_self'));
 // 
 mapkey(`${L}W`, 'whatsapp', () => window.open('https://web.whatsapp.com/', '_self'));
