@@ -47,7 +47,7 @@ settings.richHintsForKeystroke = 500;   // keep the popup, just restyled
 // === Theme ===
 // =============================================================================
 settings.theme = `
-/* ─── base theme ───────────────────────────────────────────────────── */
+/* --- base theme --------------------------------------------------------- */
 #sk_keystroke{
   left:50%!important; bottom:50%!important;
   transform:translate(-50%,50%);
@@ -56,7 +56,7 @@ settings.theme = `
 }
 #sk_keystroke kbd{ font-size:24px !important; }
 
-/* ─── keystroke popup polish ───────────────────────────────────────── */
+/* --- keystroke popup polish ------------------------------------------- */
 #sk_keystroke {
   /* container */
   background : rgba(20,20,20,.92) !important;   /* softer black  */
@@ -87,11 +87,11 @@ settings.theme = `
 /* last item: trim bottom gap */
 #sk_keystroke .annotation:last-child { margin-bottom: 0; }
 
-/* ─── enlarge kbd capsule so text fits ────────────────────────────── */
+/* --- enlarge kbd capsule so text fits --------------------------------- */
 #sk_keystroke kbd{
   display:inline-block;      /* let padding widen the box            */
   white-space:pre;           /* keep "<Space>" as one chunk           */
-  padding:4px 10px 5px;      /* ↑ extra vertical + horizontal room    */
+  padding:4px 10px 5px;      /* ^ extra vertical + horizontal room    */
   line-height:1.1 !important;/* tighten baseline, avoid clipping      */
 }
 /* optional: if keys feel too tall after the change, nudge the font   */
@@ -257,7 +257,7 @@ async function copyText(fieldSel, toast) {
 // === Site-Specific Mappings ===
 // =============================================================================
 
-/* ───── Browser-specific: Safari vs others ───── */
+/* ----- Browser-specific: Safari vs others ----- */
 const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.test(navigator.userAgent);
 if (isSafari) {
     // Safari → keep built-in “T” (SurfingKeys default), only change `t`
@@ -270,13 +270,13 @@ if (isSafari) {
     mapkey('t', 'Open dashboard', () => tabOpenLink('https://esthing64.github.io/my_dashboard/'));
 }
 
-/* ───── app.shortcut.com ───── */
+/* ----- app.shortcut.com ----- */
 if (/^app\.shortcut\.com$/.test(location.hostname) && location.pathname.startsWith('/mymoc/')) {
   mapkey(`${L}B`, '🌿 Copy branch name', () => copyText(FIELD_BRANCH,  'Branch name copied!'));
   mapkey(`${L}C`, '⌘ Copy checkout cmd', () => copyText(FIELD_CMD,     'Checkout cmd copied!'));
 }
 
-/* ───── Mocingbird Admin ───── */
+/* ----- Mocingbird Admin ----- */
 const adminHost = location.hostname;
 const ADMIN_RE  = /^(s-admin|admin|d-admin)\.mocingbird\.com$/;
 if (ADMIN_RE.test(adminHost)) {
@@ -302,7 +302,7 @@ if (ADMIN_RE.test(adminHost)) {
   }
 }
 
-/* ───── github.com ───── */
+/* ----- github.com ----- */
 const GITHUB = {domain: /github\.com/};
 mapkey(`${L}c`, 'Code tab',      () => openSection(),      GITHUB);
 mapkey(`${L}p`, 'Pull requests', () => openSection('pulls'), GITHUB);
@@ -312,7 +312,7 @@ mapkey(`${L}f`, 'Go to Front-end repo', () => window.open('https://github.com/My
 mapkey(`${L}b`, 'Go to Backend repo', () => window.open('https://github.com/MyMOC/backend', '_self'), GITHUB);
 mapkey(`${L}m`, 'Go to Mobile repo', () => window.open('https://github.com/MyMOC/mobilemoc', '_self'), GITHUB);
 
-/* ───── admin.shopify.com ───── */
+/* ----- admin.shopify.com ----- */
 const SHOPIFY = {domain: /admin\.shopify\.com/};
 mapkey(`${L}b`, 'Bookings', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/apps/izyrent/bookings'), SHOPIFY);
 mapkey(`${L}nb`, 'New Booking', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/apps/izyrent/bookings'), SHOPIFY);
@@ -322,7 +322,7 @@ mapkey(`${L}d`, 'Draft Orders', () => goShopify('https://admin.shopify.com/store
 mapkey(`${L}no`, 'New Orders', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/orders?status=open'), SHOPIFY);
 mapkey(`${L}i`, 'Izzy Rent', () => goShopify('https://admin.shopify.com/store/k3rgpa-ht/apps/izyrent'), SHOPIFY);
 
-/* ───── youtube.com ───── */
+/* ----- youtube.com ----- */
 if (/\.youtube\.com$/.test(location.hostname)) {
   const vid = () => document.querySelector('video');
   mapkey(`${L}p`, 'YT ▶/⏸ play-pause', () => { const v = vid(); if (v) v[v.paused ? 'play' : 'pause'](); });
@@ -331,7 +331,7 @@ if (/\.youtube\.com$/.test(location.hostname)) {
   mapkey(`${L}f`, 'YT ⛶ full-screen', () => document.querySelector('.ytp-fullscreen-button')?.click());
 }
 
-/* ───── meet.google.com ───── */
+/* ----- meet.google.com ----- */
 if (/\.meet\.google\.com$/.test(location.hostname)) {
   const press = txt => document.querySelector(`[aria-label*="${txt}"]`)?.click();
   mapkey(`${L}n`, 'Meet 🎤 mic toggle',    () => press('microphone'));

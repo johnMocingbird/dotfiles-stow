@@ -20,7 +20,8 @@ function getLocalIP() {
 }
 
 const server = http.createServer((req, res) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    const timestamp = new Date().toISOString();
+    console.log(`${timestamp} - ${req.method} ${req.url} from ${req.connection.remoteAddress}`);
 
     // Handle CORS for browser access
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,12 +38,18 @@ const server = http.createServer((req, res) => {
     if (req.url === '/surfingkeys' || req.url === '/surfingkeys.js') {
         try {
             const config = fs.readFileSync(CONFIG_FILE, 'utf8');
+            console.log(`${timestamp} - Serving config (${config.length} bytes)`);
 
             res.writeHead(200, {
-                'Content-Type': 'application/javascript',
-                'Cache-Control': 'no-cache'  // Always get latest version
+                'Content-Type': 'application/javascript; charset=utf-8',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
             });
-            res.end(config);
+            res.end(config, 'utf8');
         } catch (error) {
             console.error('Error reading SurfingKeys config:', error);
             res.writeHead(404, { 'Content-Type': 'text/plain' });

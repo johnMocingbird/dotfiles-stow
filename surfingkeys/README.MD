@@ -94,3 +94,57 @@ If you later remap/unmap more keys, simply regenerate this file.
 | `X` | Restore closed tab |
 | `gi` | Go to first input |
 
+---
+
+# SurfingKeys Config Server
+
+A simple Node.js server to serve your SurfingKeys configuration to all devices on your local network.
+
+## Quick Start
+
+```bash
+cd surfingkeys
+node server.js
+```
+
+The server will start on port 3030 and show you the URLs to use.
+
+## Usage
+
+1. **Start the server**:
+   ```bash
+   node server.js
+   ```
+
+2. **Configure SurfingKeys**:
+   - Open SurfingKeys settings in your browser
+   - Set "Load settings from" to: `http://192.168.1.X:3030/surfingkeys`
+   - Replace `X` with your actual IP address (shown when server starts)
+
+3. **Access from any device**:
+   - All devices on your local network can use the same URL
+   - Changes to the config file are served immediately (no cache)
+
+## Endpoints
+
+- `/surfingkeys` - Your SurfingKeys configuration
+- `/status` - Server status and setup instructions
+- `/` - Same as status page
+
+## Features
+
+- ✅ Serves to local network (0.0.0.0)
+- ✅ CORS enabled for browser access
+- ✅ No caching (always serves latest config)
+- ✅ Auto-detects your local IP address
+- ✅ Simple status page with instructions
+- ✅ Graceful shutdown with Ctrl+C
+
+## Network Access
+
+The server binds to `0.0.0.0:3030`, making it accessible from:
+- **Localhost**: `http://localhost:3030/surfingkeys`
+- **Local Network**: `http://YOUR_IP:3030/surfingkeys`
+
+Your devices can access the config from anywhere on the same WiFi network.
+
