@@ -1,0 +1,19 @@
+REMINDER for tomorrow (September 24, 2025):
+
+🎬 Setup remaining OBS keyboard shortcuts in kitty
+
+You have these scripts ready to bind:
+1. ,movies - Opens Movies directory in nnn
+2. ,play   - Opens last saved video
+3. ,copy   - Copies last video to clipboard ✅ DONE (Ctrl+Shift+M)
+
+Suggestions for shortcuts:
+- Ctrl+Shift+O → ,movies (open Movies in nnn)
+- Ctrl+Shift+P → ,play (play last video)
+
+Add these lines to your kitty.conf:
+map ctrl+shift+o launch ~/dotfiles-stow/mac-tmux-scripts/scripts/,movies
+map ctrl+shift+p launch ~/dotfiles-stow/mac-tmux-scripts/scripts/,play
+
+Location: /Users/john/dotfiles-stow/kitty/.config/kitty/kitty.conf
+Around line 87 where the other OBS shortcuts are.

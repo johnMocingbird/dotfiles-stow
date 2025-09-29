@@ -1,4 +1,8 @@
-// Compatibility Prefix
+// Compatibility Prefix - SurfingKeys API destructuring
+if (typeof api === 'undefined') {
+    console.error('SurfingKeys API not available');
+}
+
 const {
     Clipboard,
     Front,
@@ -24,7 +28,7 @@ const {
     vunmap
 } = api;
 
-const maps = {}
+const maps = {};
 
 // Leader key for global shortcuts
 const L = '<Space>';
