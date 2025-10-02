@@ -1,0 +1,25 @@
+#!/bin/bash
+# Text-to-speech script using macOS 'say' command
+# Usage:
+#   ,speak "Hello world"
+#   echo "Hello world" | ,speak
+#   ,speak < file.txt
+
+# Default voice (Samantha is clear and natural-sounding)
+VOICE="${TTS_VOICE:-Samantha}"
+
+# Get text from arguments or stdin
+if [ $# -gt 0 ]; then
+    TEXT="$*"
+else
+    TEXT=$(cat)
+fi
+
+# Exit if no text provided
+if [ -z "$TEXT" ]; then
+    echo "Usage: ,speak \"text to speak\" or echo \"text\" | ,speak"
+    exit 1
+fi
+
+# Speak the text
+say -v "$VOICE" "$TEXT"
