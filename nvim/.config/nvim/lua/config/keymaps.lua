@@ -604,6 +604,437 @@ map(
 )
 map("n", "<leader>aS", ":lua SendToTmuxAI()<CR>", { noremap = true, desc = "Send line to tmux AI (choose session)" })
 
+-- Function to poll for AI response completion
+function PollForAIResponse(session, prompt_template, attempt, max_attempts)
+	if attempt > max_attempts then
+		vim.notify("AI response timeout - check ai_cli window manually", vim.log.levels.WARN)
+		return
+	end
+
+	-- Check if AI is still generating or done
+	-- Look at the last 10 lines to detect completion
+	local check_cmd = string.format("tmux capture-pane -t %s:ai_cli -p | tail -10", session)
+	local handle = io.popen(check_cmd)
+	if not handle then
+		return
+	end
+
+	local output = handle:read("*a")
+	handle:close()
+
+	-- Look for signs that AI is done:
+	-- 1. Cursor is back at a prompt (shell prompt with path)
+	-- 2. "What would you like" or similar prompt from AI CLI
+	-- 3. No streaming indicators (no "..." or typing indicators)
+	-- 4. Presence of shell prompt characters or completion markers
+	local is_done = false
+
+	-- Check for shell prompt return (path in prompt)
+	if output:match("~/") or output:match("⎿") or output:match("▕") then
+		is_done = true
+	end
+
+	-- Check for AI CLI completion messages
+	if output:match("What would you like") or output:match("How can I help") or output:match("^>%s*$") then
+		is_done = true
+	end
+
+	-- Check if still streaming (presence of streaming indicators)
+	if output:match("%.%.%.") or output:match("typing") or output:match("generating") then
+		is_done = false
+	end
+
+	if is_done then
+		-- AI is done, send notification
+		vim.defer_fn(function()
+			CheckAIResponse(session, prompt_template)
+		end, 1000)
+	else
+		-- Still generating, check again in 3 seconds
+		vim.defer_fn(function()
+			PollForAIResponse(session, prompt_template, attempt + 1, max_attempts)
+		end, 3000)
+	end
+end
+
+-- Function to check AI response and send to ntfy.sh
+function CheckAIResponse(session, prompt_template)
+	-- Capture the last 200 lines from ai_cli window
+	local capture_cmd = string.format("tmux capture-pane -t %s:ai_cli -p -S -200", session)
+	local handle = io.popen(capture_cmd)
+	if not handle then
+		return
+	end
+
+	local output = handle:read("*a")
+	handle:close()
+
+	-- Get all lines
+	local lines = {}
+	for line in output:gmatch("[^\r\n]+") do
+		table.insert(lines, line)
+	end
+
+	-- Find the last occurrence of the user's prompt to know where AI response starts
+	local prompt_end_idx = 0
+	for i = #lines, 1, -1 do
+		if lines[i]:match("^Please debug") or lines[i]:match("^Please explain")
+			or lines[i]:match("^Please document") or lines[i]:match("^Please refactor")
+			or lines[i]:match("^Please optimize") or lines[i]:match("^Please write") then
+			prompt_end_idx = i
+			break
+		end
+	end
+
+	-- Find AI response text after the prompt, skip code blocks and status lines
+	local response_lines = {}
+	local in_code_block = false
+	local found_response_start = false
+
+	for i = prompt_end_idx + 1, #lines do
+		local line = lines[i]
+
+		-- Detect code block markers (```, ~~~, or indented code)
+		if line:match("^```") or line:match("^~~~") then
+			in_code_block = not in_code_block
+		end
+
+		-- Skip if in code block, empty, or status line
+		if not in_code_block
+			and line:match("%S")
+			and not line:match("TERMINAL")
+			and not line:match("term:")
+			and not line:match("NORMAL")
+			and not line:match("INSERT")
+			and not line:match("Bot %d+:")
+			and not line:match("^%d+:%d+")
+			and not line:match("^>")  -- Skip prompt characters
+			and not line:match("^%s*~/")  -- Skip lines starting with home paths
+			and not line:match("^%s*/")  -- Skip lines starting with absolute paths
+			and not line:match("^%a:")  -- Skip Windows paths (C:, D:, etc.)
+			and not line:match("  main ")  -- Skip git branch indicators
+			and not line:match("  master ")
+			and not line:match("  develop ")
+			and not line:match("!%d+")  -- Skip shell prompts with git status (!4, !2, etc.)
+			and not line:match("▕▎")  -- Skip prompts with special box characters
+			and not line:match("⎿")  -- Skip box drawing characters
+			and not line:match("📁")  -- Skip prompts with folder emoji
+			and not line:match("📂")  -- Skip prompts with folder emoji
+			and not line:match(":heavy_check_mark:")  -- Skip emoji names
+			and not line:match(":black_circle_for_record:")  -- Skip emoji names
+			and not line:match("Zesting")  -- Skip Claude Code status messages
+			and not line:match("esc to interrupt")  -- Skip instruction text
+			and not line:match("ctrl%+t")  -- Skip keyboard shortcuts
+			and not line:match("Next:")  -- Skip todo reminders
+			and not line:match("^%s%s%s%s") then -- Skip heavily indented lines (likely code)
+
+			table.insert(response_lines, line)
+			found_response_start = true
+
+			-- Stop after collecting enough text
+			if #response_lines >= 15 then
+				break
+			end
+		end
+	end
+
+	if #response_lines > 0 then
+		-- Join lines into single paragraph with smart spacing
+		local message = table.concat(response_lines, " ")
+
+		-- Clean up excessive spaces
+		message = message:gsub(" +", " ")
+		message = message:gsub("^ +", ""):gsub(" +$", "") -- Trim
+
+		-- Truncate to fit ntfy.sh inline display (keep it short to avoid attachments)
+		if #message > 400 then
+			message = message:sub(1, 397) .. "..."
+		end
+
+		-- Send to ntfy.sh with title, priority, and tags
+		local title = string.format("AI: %s", prompt_template)
+
+		-- Determine emoji/tag based on prompt type
+		local tag = "robot"
+		if prompt_template:match("debug") or prompt_template:match("error") then
+			tag = "bug"
+		elseif prompt_template:match("explain") then
+			tag = "bulb"
+		elseif prompt_template:match("optimize") then
+			tag = "zap"
+		end
+
+		-- Use markdown formatting for better readability
+		local formatted_message = message
+
+		-- Escape for shell
+		local escaped_title = title:gsub('"', '\\"'):gsub("'", "'\\''")
+		local escaped_message = formatted_message:gsub('"', '\\"'):gsub("'", "'\\''")
+
+		local ntfy_cmd = string.format(
+			"curl -s -d '%s' -H 'Title: %s' -H 'Priority: 4' -H 'Tags: %s' ntfy.sh/claude_ai > /dev/null 2>&1 &",
+			escaped_message,
+			escaped_title,
+			tag
+		)
+		os.execute(ntfy_cmd)
+
+		vim.notify("AI response sent to ntfy.sh", vim.log.levels.INFO)
+	end
+end
+
+-- Function to send code with a preset prompt to current session AI
+function SendWithPromptToAI(prompt_template, target_session)
+	local selected_text = ""
+
+	-- Check if we're being called from visual mode
+	local start_pos = vim.fn.getpos("'<")
+	local end_pos = vim.fn.getpos("'>")
+
+	if start_pos[2] ~= 0 and end_pos[2] ~= 0 and (start_pos[2] ~= end_pos[2] or start_pos[3] ~= end_pos[3]) then
+		-- Get visually selected text
+		local lines = vim.fn.getline(start_pos[2], end_pos[2])
+		if #lines == 1 then
+			selected_text = string.sub(lines[1], start_pos[3], end_pos[3])
+		else
+			lines[1] = string.sub(lines[1], start_pos[3])
+			lines[#lines] = string.sub(lines[#lines], 1, end_pos[3])
+			selected_text = table.concat(lines, "\n")
+		end
+	else
+		-- No selection, get current line
+		selected_text = vim.api.nvim_get_current_line()
+	end
+
+	if selected_text == "" then
+		vim.notify("No text selected", vim.log.levels.WARN)
+		return
+	end
+
+	-- Get tmux session (use target_session if provided, otherwise current session)
+	local current_session
+	if target_session then
+		current_session = target_session
+	else
+		current_session = vim.fn.system("tmux display-message -p '#S' 2>/dev/null"):gsub("\n", "")
+		if current_session == "" then
+			vim.notify("Not in a tmux session", vim.log.levels.ERROR)
+			return
+		end
+	end
+
+	-- Check if ai_cli window exists
+	local check_ai_cmd = string.format("tmux list-windows -t %s -F '#{window_name}' 2>/dev/null | grep -q '^ai_cli$'", current_session)
+	local has_ai_cli = os.execute(check_ai_cmd) == 0
+
+	if not has_ai_cli then
+		vim.notify("❌ No ai_cli window found. Use <leader>aw to create one first.", vim.log.levels.ERROR)
+		return
+	end
+
+	-- Check if Claude is actually running in ai_cli window
+	local check_claude_cmd = string.format("tmux capture-pane -t %s:ai_cli -p | tail -20", current_session)
+	local handle = io.popen(check_claude_cmd)
+	if not handle then
+		vim.notify("❌ Failed to check ai_cli window", vim.log.levels.ERROR)
+		return
+	end
+
+	local ai_output = handle:read("*a")
+	handle:close()
+
+	-- Look for signs that Claude/Gemini is running (shell prompt means it's not)
+	local claude_running = not ai_output:match("^%s*$") -- Not empty
+		and not (ai_output:match("~/") and ai_output:match("zsh")) -- Not just shell prompt
+
+	if not claude_running then
+		vim.notify("❌ Claude/Gemini not running in ai_cli window. Start Claude first with 'claude' or 'gemini'", vim.log.levels.ERROR)
+		return
+	end
+
+	-- Combine prompt template with selected text
+	local full_prompt
+	if prompt_template == "" then
+		full_prompt = selected_text
+	else
+		full_prompt = prompt_template .. ":\n\n" .. selected_text
+	end
+
+	-- Write to a temporary file to handle complex text with newlines
+	local tmpfile = os.tmpname()
+	local f = io.open(tmpfile, "w")
+	if f then
+		f:write(full_prompt)
+		f:close()
+
+		-- Use tmux load-buffer to load the content, then paste it
+		local load_cmd = string.format("tmux load-buffer %s", tmpfile)
+		os.execute(load_cmd)
+
+		local paste_cmd = string.format("tmux paste-buffer -t %s:ai_cli", current_session)
+		os.execute(paste_cmd)
+
+		-- Small delay to ensure paste completes before sending Enter
+		vim.defer_fn(function()
+			local enter_cmd = string.format("tmux send-keys -t %s:ai_cli Enter", current_session)
+			os.execute(enter_cmd)
+
+			-- Ring bell in ai_cli terminal
+			local bell_cmd = string.format("tmux send-keys -t %s:ai_cli 'C-g'", current_session)
+			os.execute(bell_cmd)
+		end, 100)
+
+		-- Clean up temp file
+		os.remove(tmpfile)
+
+		vim.notify(string.format("Sent to AI: %s", prompt_template), vim.log.levels.INFO)
+
+		-- Note: Claude Code Stop hook will automatically send ntfy notification when done
+	else
+		vim.notify("Failed to create temp file", vim.log.levels.ERROR)
+	end
+end
+
+-- Function to send code with a custom prompt (asks user for input)
+function SendWithCustomPrompt()
+	local selected_text = ""
+
+	-- Check if we're being called from visual mode
+	local start_pos = vim.fn.getpos("'<")
+	local end_pos = vim.fn.getpos("'>")
+
+	if start_pos[2] ~= 0 and end_pos[2] ~= 0 and (start_pos[2] ~= end_pos[2] or start_pos[3] ~= end_pos[3]) then
+		-- Get visually selected text
+		local lines = vim.fn.getline(start_pos[2], end_pos[2])
+		if #lines == 1 then
+			selected_text = string.sub(lines[1], start_pos[3], end_pos[3])
+		else
+			lines[1] = string.sub(lines[1], start_pos[3])
+			lines[#lines] = string.sub(lines[#lines], 1, end_pos[3])
+			selected_text = table.concat(lines, "\n")
+		end
+	else
+		-- No selection, get current line
+		selected_text = vim.api.nvim_get_current_line()
+	end
+
+	if selected_text == "" then
+		vim.notify("No text selected", vim.log.levels.WARN)
+		return
+	end
+
+	-- Store selected text in a temporary global to pass to the callback
+	_G.temp_selected_text = selected_text
+
+	-- Ask user for custom prompt
+	vim.ui.input({ prompt = "Enter your prompt: " }, function(custom_prompt)
+		local text = _G.temp_selected_text
+		_G.temp_selected_text = nil -- Clean up
+
+		if not custom_prompt or custom_prompt == "" then
+			vim.notify("No prompt entered", vim.log.levels.WARN)
+			return
+		end
+
+		-- Get current tmux session
+		local current_session = vim.fn.system("tmux display-message -p '#S' 2>/dev/null"):gsub("\n", "")
+		if current_session == "" then
+			vim.notify("Not in a tmux session", vim.log.levels.ERROR)
+			return
+		end
+
+		-- Check if ai_cli window exists
+		local check_ai_cmd = string.format("tmux list-windows -t %s -F '#{window_name}' 2>/dev/null | grep -q '^ai_cli$'", current_session)
+		local has_ai_cli = os.execute(check_ai_cmd) == 0
+
+		if not has_ai_cli then
+			vim.notify("❌ No ai_cli window found. Use <leader>aw to create one first.", vim.log.levels.ERROR)
+			return
+		end
+
+		-- Check if Claude is running (same logic as SendWithPromptToAI)
+		local check_claude_cmd = string.format("tmux capture-pane -t %s:ai_cli -p | tail -20", current_session)
+		local handle = io.popen(check_claude_cmd)
+		if handle then
+			local ai_output = handle:read("*a")
+			handle:close()
+
+			local claude_running = not ai_output:match("^%s*$")
+				and not (ai_output:match("~/") and ai_output:match("zsh"))
+
+			if not claude_running then
+				vim.notify("❌ Claude/Gemini not running in ai_cli window. Start Claude first with 'claude' or 'gemini'", vim.log.levels.ERROR)
+				return
+			end
+		end
+
+		-- Combine custom prompt with selected text
+		local full_prompt = custom_prompt .. ":\n\n" .. text
+
+		-- Write to temp file and send
+		local tmpfile = os.tmpname()
+		local f = io.open(tmpfile, "w")
+		if f then
+			f:write(full_prompt)
+			f:close()
+
+			local load_cmd = string.format("tmux load-buffer %s", tmpfile)
+			os.execute(load_cmd)
+
+			local paste_cmd = string.format("tmux paste-buffer -t %s:ai_cli", current_session)
+			os.execute(paste_cmd)
+
+			-- Small delay to ensure paste completes before sending Enter
+			vim.defer_fn(function()
+				local enter_cmd = string.format("tmux send-keys -t %s:ai_cli Enter", current_session)
+				os.execute(enter_cmd)
+			end, 100)
+
+			os.remove(tmpfile)
+
+			vim.notify(string.format("Sent to AI: %s", custom_prompt), vim.log.levels.INFO)
+		else
+			vim.notify("Failed to create temp file", vim.log.levels.ERROR)
+		end
+	end)
+end
+
+-- Keybinding to send text directly without prompt prefix and execute
+map("v", "<leader>a<Space>", ":lua SendWithPromptToAI('')<CR>", { noremap = true, desc = "AI: Send and execute" })
+map("n", "<leader>a<Space>", ":lua SendWithPromptToAI('')<CR>", { noremap = true, desc = "AI: Send and execute" })
+
+-- Keybinding to send text to dotfiles session ai_cli
+map("v", "<leader>a<CR>", ":lua SendWithPromptToAI('', 'dotfiles')<CR>", { noremap = true, desc = "AI: Send to dotfiles session" })
+map("n", "<leader>a<CR>", ":lua SendWithPromptToAI('', 'dotfiles')<CR>", { noremap = true, desc = "AI: Send to dotfiles session" })
+
+-- Keybinding for "Debug this error"
+map("v", "<leader>ae", ":lua SendWithPromptToAI('Please debug this error')<CR>", { noremap = true, desc = "AI: Debug this error" })
+map("n", "<leader>ae", ":lua SendWithPromptToAI('Please debug this error')<CR>", { noremap = true, desc = "AI: Debug this error" })
+
+-- Keybinding for "Explain this code"
+map("v", "<leader>ax", ":lua SendWithPromptToAI('Please explain this code step by step')<CR>", { noremap = true, desc = "AI: Explain code" })
+map("n", "<leader>ax", ":lua SendWithPromptToAI('Please explain this code step by step')<CR>", { noremap = true, desc = "AI: Explain code" })
+
+-- Keybinding for "Document this"
+map("v", "<leader>ad", ":lua SendWithPromptToAI('Please document this code with comments')<CR>", { noremap = true, desc = "AI: Document code" })
+map("n", "<leader>ad", ":lua SendWithPromptToAI('Please document this code with comments')<CR>", { noremap = true, desc = "AI: Document code" })
+
+-- Keybinding for "Refactor this"
+map("v", "<leader>ar", ":lua SendWithPromptToAI('Please refactor this code to make it cleaner and more idiomatic')<CR>", { noremap = true, desc = "AI: Refactor code" })
+map("n", "<leader>ar", ":lua SendWithPromptToAI('Please refactor this code to make it cleaner and more idiomatic')<CR>", { noremap = true, desc = "AI: Refactor code" })
+
+-- Keybinding for "Optimize this"
+map("v", "<leader>ao", ":lua SendWithPromptToAI('Please optimize this code for performance')<CR>", { noremap = true, desc = "AI: Optimize code" })
+map("n", "<leader>ao", ":lua SendWithPromptToAI('Please optimize this code for performance')<CR>", { noremap = true, desc = "AI: Optimize code" })
+
+-- Keybinding for "Write tests"
+map("v", "<leader>at", ":lua SendWithPromptToAI('Please write tests for this code')<CR>", { noremap = true, desc = "AI: Write tests" })
+map("n", "<leader>at", ":lua SendWithPromptToAI('Please write tests for this code')<CR>", { noremap = true, desc = "AI: Write tests" })
+
+-- Keybinding for custom prompt
+map("v", "<leader>ap", ":lua SendWithCustomPrompt()<CR>", { noremap = true, desc = "AI: Custom prompt" })
+map("n", "<leader>ap", ":lua SendWithCustomPrompt()<CR>", { noremap = true, desc = "AI: Custom prompt" })
+
 -- Manual command to rename current terminal buffer to AI name
 function RenameCurrentTerminalToAI()
 	local buf = vim.api.nvim_get_current_buf()
@@ -647,30 +1078,48 @@ function SwitchToAIWindow()
 	local has_ai_cli = os.execute(check_cmd) == 0
 
 	if not has_ai_cli then
-		-- Create ai_cli window if it doesn't exist - prompt for AI choice
-		vim.ui.select({ "claude", "gemini" }, { prompt = "Which AI to run in ai_cli window:" }, function(choice)
-			if choice then
-				local create_cmd = string.format("tmux new-window -t %s -n ai_cli %s", current_session, choice)
-				local create_result = os.execute(create_cmd)
-
-				if create_result == 0 then
-					vim.notify(string.format("Created ai_cli window with %s in session '%s'", choice, current_session), vim.log.levels.INFO)
-				else
-					vim.notify("Failed to create ai_cli window", vim.log.levels.ERROR)
-				end
-			end
-		end)
-		return
+		-- Create ai_cli window in background (don't switch yet)
+		local create_cmd = string.format("tmux new-window -d -t %s -n ai_cli", current_session)
+		os.execute(create_cmd)
+		vim.notify("Created ai_cli window", vim.log.levels.INFO)
 	end
 
-	-- Switch to ai_cli window
-	local switch_cmd = string.format("tmux select-window -t %s:ai_cli", current_session)
-	local result = os.execute(switch_cmd)
+	-- Check if there's already something running (check for actual process, not just text)
+	local check_pane_cmd = string.format("tmux list-panes -t %s:ai_cli -F '#{pane_current_command}'", current_session)
+	local current_cmd = vim.fn.system(check_pane_cmd):gsub("\n", "")
 
-	if result == 0 then
+	-- If it's just zsh/bash (shell), nothing is running
+	local has_process = current_cmd ~= "zsh" and current_cmd ~= "bash" and current_cmd ~= ""
+
+	if has_process then
+		-- Something is already running, just switch to it
+		local switch_cmd = string.format("tmux select-window -t %s:ai_cli", current_session)
+		os.execute(switch_cmd)
 		vim.notify("Switched to ai_cli window", vim.log.levels.INFO)
 	else
-		vim.notify("Failed to switch to ai_cli window", vim.log.levels.ERROR)
+		-- Nothing running, show popup in current window first
+		vim.ui.select({ "claude", "gemini" }, {
+			prompt = "Which AI to run in ai_cli:"
+		}, function(choice)
+			if not choice then
+				return
+			end
+
+			-- Switch to ai_cli window
+			local switch_cmd = string.format("tmux select-window -t %s:ai_cli", current_session)
+			os.execute(switch_cmd)
+
+			-- Send nvim command to ai_cli window
+			local nvim_cmd = string.format("tmux send-keys -t %s:ai_cli 'nvim .' Enter", current_session)
+			os.execute(nvim_cmd)
+
+			-- Wait for Neovim to start, then send terminal command
+			vim.defer_fn(function()
+				local term_cmd = string.format("tmux send-keys -t %s:ai_cli ':term %s' Enter", current_session, choice)
+				os.execute(term_cmd)
+				vim.notify(string.format("Started Neovim with %s terminal in ai_cli window", choice), vim.log.levels.INFO)
+			end, 2000)
+		end)
 	end
 end
 
@@ -829,6 +1278,113 @@ function CheckRailsServerStatusInTmux(session)
 end
 
 map("n", "<leader>rs", ":lua ManageRailsServer()<CR>", { noremap = true, desc = "Manage Rails server" })
+
+-- Function to manage Angular server in tmux server window
+function ManageAngularServer()
+	local current_session = vim.fn.system("tmux display-message -p '#S' 2>/dev/null"):gsub("\n", "")
+	if current_session == "" then
+		vim.notify("Not in a tmux session", vim.log.levels.ERROR)
+		return
+	end
+
+	-- Check if server window exists in tmux, create if not
+	local check_server_cmd = string.format("tmux list-windows -t %s -F '#{window_name}' 2>/dev/null | grep -q '^server$'", current_session)
+	local has_server = os.execute(check_server_cmd) == 0
+
+	if not has_server then
+		-- Create server window in tmux
+		local create_cmd = string.format("tmux new-window -t %s -n server", current_session)
+		os.execute(create_cmd)
+		vim.notify("Created server window", vim.log.levels.INFO)
+	end
+
+	-- Check if Angular server is already running in server window
+	local check_angular_cmd = string.format("tmux capture-pane -t %s:server -p | grep -q 'npm run start-local\\|Angular Live Development Server\\|webpack compiled\\|Local:'", current_session)
+	local angular_running = os.execute(check_angular_cmd) == 0
+
+	if angular_running then
+		-- Angular is running, restart it
+		vim.notify("Restarting Angular server...", vim.log.levels.INFO)
+
+		-- Send Ctrl+C to stop current server in the server window
+		local stop_cmd = string.format("tmux send-keys -t %s:server C-c", current_session)
+		os.execute(stop_cmd)
+
+		-- Send escape to exit any terminal mode, then close the buffer
+		vim.defer_fn(function()
+			local escape_cmd = string.format("tmux send-keys -t %s:server Escape", current_session)
+			os.execute(escape_cmd)
+
+			-- Close the terminal buffer
+			local close_cmd = string.format("tmux send-keys -t %s:server ':bd!' Enter", current_session)
+			os.execute(close_cmd)
+
+			-- Kill any Node processes on port 4200
+			local kill_port_cmd = "lsof -ti:4200 | xargs kill -9 2>/dev/null || true"
+			os.execute(kill_port_cmd)
+
+			-- Kill any remaining Angular/Node server processes
+			local kill_cmd = "pkill -9 -f 'node.*start-local' 2>/dev/null || true"
+			os.execute(kill_cmd)
+
+			-- Wait longer for processes to fully terminate
+			vim.defer_fn(function()
+				-- Double check and kill any lingering processes on port 4200
+				local final_kill_cmd = "lsof -ti:4200 | xargs kill -9 2>/dev/null || true"
+				os.execute(final_kill_cmd)
+
+				-- Wait a bit more then start fresh terminal
+				vim.defer_fn(function()
+					local term_cmd = string.format("tmux send-keys -t %s:server ':term npm run start-local' Enter", current_session)
+					os.execute(term_cmd)
+
+					-- Check for common errors after a delay
+					vim.defer_fn(function()
+						CheckAngularServerStatusInTmux(current_session)
+					end, 5000)
+				end, 1000)
+			end, 2000)
+		end, 1000)
+	else
+		-- Angular not running, start it in server window's Neovim
+		vim.notify("Starting Angular server...", vim.log.levels.INFO)
+
+		-- Send the terminal command to server window's Neovim
+		local term_cmd = string.format("tmux send-keys -t %s:server ':term npm run start-local' Enter", current_session)
+		os.execute(term_cmd)
+
+		-- Check for common errors after a delay
+		vim.defer_fn(function()
+			CheckAngularServerStatusInTmux(current_session)
+		end, 5000)
+	end
+end
+
+-- Function to check Angular server status in tmux server window
+function CheckAngularServerStatusInTmux(session)
+	-- Capture the output from server window
+	local capture_cmd = string.format("tmux capture-pane -t %s:server -p", session)
+	local handle = io.popen(capture_cmd)
+	if not handle then
+		return
+	end
+
+	local output = handle:read("*a")
+	handle:close()
+
+	-- Check for common error patterns
+	if output:match("EADDRINUSE") or output:match("address already in use") then
+		vim.notify("⚠️ Angular server port conflict - another server may be running", vim.log.levels.WARN)
+	elseif output:match("Cannot find module") or output:match("Module not found") then
+		vim.notify("❌ Angular server failed: Missing dependencies - run 'npm install'", vim.log.levels.WARN)
+	elseif output:match("webpack compiled") or output:match("Local:.*http") then
+		vim.notify("✅ Angular server started successfully", vim.log.levels.INFO)
+	elseif output:match("Error:") or output:match("Failed to") then
+		vim.notify("❌ Angular server failed to start - check the server window for details", vim.log.levels.WARN)
+	end
+end
+
+map("n", "<leader>ns", ":lua ManageAngularServer()<CR>", { noremap = true, desc = "Manage Angular server" })
 
 -- Function to create ai_cli window in current tmux session
 function CreateAICliWindow()
