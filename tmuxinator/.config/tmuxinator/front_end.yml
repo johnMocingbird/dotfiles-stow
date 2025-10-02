@@ -7,6 +7,6 @@ windows:
   - neovim:
       - nvim .
   - server:
-      - nvim +":term npm run start-local"
+      - nvim +":term npm run start-local 2>&1 | tee /tmp/angular-dev-server.log"
   - lazy_git:
       - lazygit

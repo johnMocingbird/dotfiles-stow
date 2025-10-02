@@ -1,0 +1,23 @@
+# Claude Code - Ignore personal/sensitive data
+# Keep: hooks (*.sh), settings.json
+
+# Personal conversation history
+history.jsonl
+
+# Project transcripts and data
+projects/
+
+# File edit history
+file-history/
+
+# Shell command snapshots
+shell-snapshots/
+
+# Personal todos
+todos/
+
+# Analytics
+statsig/
+
+# Plugin cache/data
+plugins/

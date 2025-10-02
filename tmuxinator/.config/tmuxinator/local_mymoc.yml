@@ -5,7 +5,7 @@ root: ~/mymoc
 
 windows:
   - neovim: nvim .
-  - server: nvim +":term  bin/rails s"
+  - server: nvim +":term  bin/rails s 2>&1 | tee /tmp/rails-dev-server.log"
   - rails_console: nvim +":term rails c"
   - lazy_git:
       - lazygit
