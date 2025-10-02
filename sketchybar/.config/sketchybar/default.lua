@@ -4,6 +4,7 @@ local colors = require("colors")
 -- Equivalent to the --default domain
 sbar.default({
   updates = "when_shown",
+  display = 1, -- All items show on display 1 by default
   icon = {
     font = {
       family = settings.font.text,

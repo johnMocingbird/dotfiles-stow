@@ -7,7 +7,7 @@ sbar.add("event", "title_change")
 
 local front_app = sbar.add("item", "front_app", {
 	position = "left",
-	display = "active",
+	display = 1, -- Only show on display 1
 	icon = {
 		background = {
 			drawing = true,
