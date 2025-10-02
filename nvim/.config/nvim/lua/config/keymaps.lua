@@ -333,8 +333,8 @@ map("n", "<leader>bt", function()
 	end
 end, { desc = "Toggle Buffer Line" })
 
-map("n", "<leader>N", ":NnnPicker<CR>", { noremap = true, desc = "nnn picker" })
-map("n", "<leader>e", ":NnnExplorer<CR>", { noremap = true, desc = "nnn Explorer" })
+map("n", "<leader>nn", ":NnnPicker<CR>", { noremap = true, desc = "nnn picker" })
+map("n", "<leader>E", ":NnnExplorer<CR>", { noremap = true, desc = "nnn Explorer" })
 
 -- AI Terminal Focus/Start function with toggle
 function FocusOrStartAI()
