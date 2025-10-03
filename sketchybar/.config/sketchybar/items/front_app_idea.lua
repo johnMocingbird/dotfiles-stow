@@ -29,16 +29,8 @@ local front_app = sbar.add("item", "front_app", {
 local function set_window_title()
 	-- Offloading the "yabai -m query --windows --window" script to an external shell script so that we can determine whether the space has no windows
 	sbar.exec("~/.config/sketchybar/helpers/query_window.sh", function(result)
-		if result ~= "empty" and type(result) == "table" and result.title then
-			local window_title = result.title
-			if #window_title > 50 then
-				window_title = window_title:sub(1, 50) .. "..."
-			end
-			front_app:set({ label = { string = window_title } })
-		else
-			-- Set title to Finder, as empty spaces will not return a window title
-			front_app:set({ label = { string = "Finder" } })
-		end
+		-- Hide window title - only show icon
+		front_app:set({ label = { string = "" } })
 	end)
 end
 

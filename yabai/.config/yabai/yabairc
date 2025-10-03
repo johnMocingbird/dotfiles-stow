@@ -64,24 +64,24 @@ yabai -m rule --add app="^Parallels Desktop" manage=off
 yabai -m config layout bsp
 
 # scratchpad setup
-yabai -m rule --add app="^Music$" scratchpad=music grid=12:12:4:1:4:10
-yabai -m rule --add app="[^[:alnum:]]*WhatsApp" scratchpad=whatsapp grid=12:12:4:1:4:10
-yabai -m rule --add app="^Shortcut$" scratchpad=shortcut grid=12:12:4:1:4:10
-yabai -m rule --add app="Slack" scratchpad=slack grid=20:20:2:1:16:18
-yabai -m rule --add app="Messages" scratchpad=messages grid=20:20:2:1:16:18
-yabai -m rule --add app="^Home$" scratchpad=home grid=20:20:2:1:16:18
-yabai -m rule --add app="^iPhone Mirroring$" scratchpad=phone grid=12:12:4:1:4:10
-yabai -m rule --add app="^Passwords$" scratchpad=passwords grid=12:12:4:1:4:10
-yabai -m rule --add app="^Postman$" scratchpad=postman grid=20:20:2:1:16:18
-yabai -m rule --add app="^Simulator$" scratchpad=iphone grid=12:12:4:1:4:10
-yabai -m rule --add app="^Alacritty$" scratchpad=throwaway grid=12:12:9:1:3:8
-yabai -m rule --add app="^Safari$" scratchpad=safari grid=20:20:2:1:16:18
-yabai -m rule --add app="^Firefox$" scratchpad=firefox grid=20:20:2:1:16:18
+yabai -m rule --add app="^Music$" scratchpad=music display=1 grid=12:12:4:1:4:10
+yabai -m rule --add app="[^[:alnum:]]*WhatsApp" scratchpad=whatsapp display=1 grid=12:12:4:1:4:10
+yabai -m rule --add app="^Shortcut$" scratchpad=shortcut display=1 grid=12:12:4:1:4:10
+yabai -m rule --add app="Slack" scratchpad=slack display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="Messages" scratchpad=messages display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="^Home$" scratchpad=home display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="^iPhone Mirroring$" scratchpad=phone display=1 grid=12:12:4:1:4:10
+yabai -m rule --add app="^Passwords$" scratchpad=passwords display=1 grid=12:12:4:1:4:10
+yabai -m rule --add app="^Postman$" scratchpad=postman display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="^Simulator$" scratchpad=iphone display=1 grid=12:12:4:1:4:10
+yabai -m rule --add app="^Alacritty$" scratchpad=throwaway display=1 grid=12:12:9:1:3:8
+yabai -m rule --add app="^Safari$" scratchpad=safari display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="^Firefox$" scratchpad=firefox display=1 grid=20:20:2:1:16:18
 
-yabai -m rule --add app="System Settings" scratchpad=settings grid=20:20:2:1:16:18
-yabai -m rule --add app="Stream Deck" scratchpad=stream_deck grid=12:12:4:1:4:10
-yabai -m rule --add app="ChatGPTChrome" scratchpad=chat grid=12:12:4:1:4:10
-yabai -m rule --add app="ChatGPT" scratchpad=chatgpt grid=20:20:2:1:16:18
+yabai -m rule --add app="System Settings" scratchpad=settings display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="Stream Deck" scratchpad=stream_deck display=1 grid=12:12:4:1:4:10
+yabai -m rule --add app="ChatGPTChrome" scratchpad=chat display=1 grid=12:12:4:1:4:10
+yabai -m rule --add app="ChatGPT" scratchpad=chatgpt display=1 grid=20:20:2:1:16:18
 # yabai -m rule --add app="^Calcure$" scratchpad=safari grid=12:12:4:1:4:10
 # eabai -m rule --add app="^Systems Setings$" scratchpad=safari grid=12:12:4:1:4:10
 
@@ -91,6 +91,9 @@ borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &
 ### Space one
 yabai -m rule --add app="^kitty$" space=^1
 yabai -m rule --add app="^OBS Studio$" space=^2
+
+# Claude stats window - assign to second monitor (display 2)
+yabai -m rule --add app="^kitty$" title="^claude-stats$" display=2 manage=on
 
 # 32:9 resolution should constrain managed area to middle third (or so)
 # if yabai -m query --displays --display 1 | jq -e '.frame | (.w)/(.h) | round == 4' >/dev/null; then

@@ -51,7 +51,8 @@ window_management < cmd + alt + ctrl - l ; leader
  
 lalt + shift - z : float_center.sh
 ## Misc
-cmd + alt + ctrl + shift - s : start.sh
+# cmd + alt + ctrl + shift - s : start.sh
+# cmd + alt + ctrl + shift - s : /Applications/kitty.app/Contents/MacOS/kitty --title=claude-stats --directory=/Users/john/dotfiles-stow -e claude
 
 shift + lalt - w : open "/Applications/Safari.app"
 lalt - w : open "/Applications/Google Chrome.app/"

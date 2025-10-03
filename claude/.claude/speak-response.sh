@@ -12,74 +12,76 @@ if [ -z "$TRANSCRIPT_PATH" ]; then
     exit 0
 fi
 
-# Find the most recent assistant message with text content
-ASSISTANT_UUID=$(tac "$TRANSCRIPT_PATH" | while IFS= read -r line; do
-    if echo "$line" | grep -q '"role":"assistant"'; then
-        TEXT=$(echo "$line" | jq -r '(.message.content[] | select(.type == "text") | .text) // empty' 2>/dev/null | head -1)
-        if [ -n "$TEXT" ] && [ "$TEXT" != "null" ]; then
-            echo "$line" | jq -r '.uuid'
+# Small delay to ensure transcript is written to disk
+# Longer delay for some projects which need it
+if echo "$TRANSCRIPT_PATH" | grep -q "dotfiles\|front-end"; then
+    sleep 2.5
+else
+    sleep 0.3
+fi
+
+# Find the most recent user message with #TTS
+USER_WITH_TTS=$(tac "$TRANSCRIPT_PATH" | while IFS= read -r line; do
+    if echo "$line" | grep -q '"role":"user"'; then
+        TEXT=$(echo "$line" | jq -r '
+            if .message.content | type == "string" then
+                .message.content
+            elif .message.content | type == "array" then
+                (.message.content[] | select(.type == "text") | .text) // empty
+            else
+                empty
+            end
+        ' 2>/dev/null)
+
+        if echo "$TEXT" | grep -q "#TTS"; then
+            UUID=$(echo "$line" | jq -r '.uuid')
+            echo "DEBUG: Found user with #TTS: $UUID" >> /tmp/tts_debug.log
+            echo "DEBUG: User message: ${TEXT:0:100}" >> /tmp/tts_debug.log
+            echo "$UUID"
             break
         fi
     fi
 done)
 
+if [ -z "$USER_WITH_TTS" ]; then
+    echo "DEBUG: No user message with #TTS found" >> /tmp/tts_debug.log
+    exit 0
+fi
+
+# Now find the FIRST assistant message that comes AFTER this user message (chronologically)
+# Read the file in order and find the first assistant after our user message
+FOUND_USER=false
+ASSISTANT_UUID=$(cat "$TRANSCRIPT_PATH" | while IFS= read -r line; do
+    UUID=$(echo "$line" | jq -r '.uuid // empty' 2>/dev/null)
+
+    # Check if this is our user message
+    if [ "$UUID" = "$USER_WITH_TTS" ]; then
+        FOUND_USER=true
+        continue
+    fi
+
+    # After finding the user message, look for the next assistant message
+    if [ "$FOUND_USER" = true ]; then
+        ROLE=$(echo "$line" | jq -r '.message.role // empty' 2>/dev/null)
+        if [ "$ROLE" = "assistant" ]; then
+            TEXT=$(echo "$line" | jq -r '(.message.content[] | select(.type == "text") | .text) // empty' 2>/dev/null | head -1)
+            if [ -n "$TEXT" ] && [ "$TEXT" != "null" ]; then
+                echo "DEBUG: Found assistant response: $UUID" >> /tmp/tts_debug.log
+                echo "DEBUG: Response preview: ${TEXT:0:50}" >> /tmp/tts_debug.log
+                echo "$UUID"
+                break
+            fi
+        fi
+    fi
+done)
+
 if [ -z "$ASSISTANT_UUID" ]; then
-    exit 0
-fi
-
-# Traverse up the parent chain to find the user message
-CURRENT_UUID="$ASSISTANT_UUID"
-USER_UUID=""
-MAX_DEPTH=10
-DEPTH=0
-
-while [ $DEPTH -lt $MAX_DEPTH ]; do
-    # Get the message with current UUID
-    LINE=$(grep "\"uuid\":\"$CURRENT_UUID\"" "$TRANSCRIPT_PATH" | head -1)
-
-    if [ -z "$LINE" ]; then
-        break
-    fi
-
-    # Check if this is a user message
-    ROLE=$(echo "$LINE" | jq -r '.message.role // empty')
-    if [ "$ROLE" = "user" ]; then
-        USER_UUID="$CURRENT_UUID"
-        break
-    fi
-
-    # Get parent UUID
-    PARENT_UUID=$(echo "$LINE" | jq -r '.parentUuid // empty')
-    if [ -z "$PARENT_UUID" ]; then
-        break
-    fi
-
-    CURRENT_UUID="$PARENT_UUID"
-    DEPTH=$((DEPTH + 1))
-done
-
-if [ -z "$USER_UUID" ]; then
-    exit 0
-fi
-
-# Get the user message content and check for #TTS
-USER_MESSAGE=$(grep "\"uuid\":\"$USER_UUID\"" "$TRANSCRIPT_PATH" | jq -r '
-    if .message.content | type == "string" then
-        .message.content
-    elif .message.content | type == "array" then
-        (.message.content[] | select(.type == "text") | .text) // empty
-    else
-        empty
-    end
-' 2>/dev/null)
-
-if ! echo "$USER_MESSAGE" | grep -q "#TTS"; then
-    # No #TTS tag found, exit without speaking
+    echo "DEBUG: No assistant response found for user message" >> /tmp/tts_debug.log
     exit 0
 fi
 
 # Get the assistant response text
-RESPONSE=$(grep "\"uuid\":\"$ASSISTANT_UUID\"" "$TRANSCRIPT_PATH" | jq -r '(.message.content[] | select(.type == "text") | .text) // empty' 2>/dev/null | head -1)
+RESPONSE=$(grep "\"uuid\":\"$ASSISTANT_UUID\"" "$TRANSCRIPT_PATH" | jq -r '(.message.content[] | select(.type == "text") | .text) // empty' 2>/dev/null)
 
 if [ -z "$RESPONSE" ]; then
     exit 0

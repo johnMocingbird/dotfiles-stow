@@ -12,6 +12,14 @@ if [ -z "$TRANSCRIPT_PATH" ]; then
     exit 0
 fi
 
+# Small delay to ensure transcript is written to disk
+# Longer delay for some projects which need it
+if echo "$TRANSCRIPT_PATH" | grep -q "dotfiles\|front-end"; then
+    sleep 2.5
+else
+    sleep 0.3
+fi
+
 # Read the last assistant message from the JSONL transcript
 # Each line is a JSON object, we want the last one with role: assistant
 RESPONSE=$(tac "$TRANSCRIPT_PATH" | grep -m1 '"role":"assistant"' | jq -r '.message.content[0].text // empty' 2>/dev/null)

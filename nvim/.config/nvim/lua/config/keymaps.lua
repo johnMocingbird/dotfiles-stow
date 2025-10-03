@@ -1084,30 +1084,80 @@ function SwitchToAIWindow()
 		vim.notify("Created ai_cli window", vim.log.levels.INFO)
 	end
 
-	-- Check if there's already something running (check for actual process, not just text)
+	-- Check current window name to see if we're already in ai_cli
+	local current_window = vim.fn.system("tmux display-message -p '#W' 2>/dev/null"):gsub("\n", "")
+	local already_in_ai_cli = current_window == "ai_cli"
+
+	-- Check what's running in the pane (BEFORE switching)
 	local check_pane_cmd = string.format("tmux list-panes -t %s:ai_cli -F '#{pane_current_command}'", current_session)
 	local current_cmd = vim.fn.system(check_pane_cmd):gsub("\n", "")
 
-	-- If it's just zsh/bash (shell), nothing is running
-	local has_process = current_cmd ~= "zsh" and current_cmd ~= "bash" and current_cmd ~= ""
+	-- Check if Claude or Gemini is actually running by looking at the pane content
+	local capture_cmd = string.format("tmux capture-pane -t %s:ai_cli -p | tail -20", current_session)
+	local pane_output = vim.fn.system(capture_cmd)
 
-	if has_process then
-		-- Something is already running, just switch to it
+	-- Check if Claude or Gemini is actively running (look for their prompts/output)
+	local claude_running = pane_output:match("term:.*claude")  -- Neovim terminal buffer with claude
+		or pane_output:match("^>%s*$")  -- Claude's > prompt
+		or (pane_output:match("^>") and pane_output:match("─────"))  -- Claude prompt with separator lines
+
+	local gemini_running = pane_output:match("term:.*gemini")  -- Neovim terminal buffer with gemini
+		or pane_output:match("gemini>")
+
+	local ai_is_active = claude_running or gemini_running
+
+	-- If not in ai_cli and AI is running, just switch
+	if not already_in_ai_cli and ai_is_active then
 		local switch_cmd = string.format("tmux select-window -t %s:ai_cli", current_session)
 		os.execute(switch_cmd)
 		vim.notify("Switched to ai_cli window", vim.log.levels.INFO)
-	else
-		-- Nothing running, show popup in current window first
-		vim.ui.select({ "claude", "gemini" }, {
-			prompt = "Which AI to run in ai_cli:"
-		}, function(choice)
-			if not choice then
-				return
-			end
+		return
+	end
 
-			-- Switch to ai_cli window
+	-- If already in ai_cli and AI is running, nothing to do
+	if already_in_ai_cli and ai_is_active then
+		vim.notify("Already in ai_cli window with AI running", vim.log.levels.INFO)
+		return
+	end
+
+	-- AI needs to be started - determine popup message
+	local nvim_running = current_cmd == "nvim"
+	local popup_message = "Which AI to run in ai_cli:"
+	if nvim_running and not ai_is_active then
+		popup_message = "AI tool has exited. Restart with:"
+	end
+
+	-- Show popup in CURRENT window, then switch to ai_cli after selection
+	vim.ui.select({ "claude", "gemini" }, {
+		prompt = popup_message
+	}, function(choice)
+		if not choice then
+			return
+		end
+
+		-- Switch to ai_cli window NOW (after user made selection)
+		if not already_in_ai_cli then
 			local switch_cmd = string.format("tmux select-window -t %s:ai_cli", current_session)
 			os.execute(switch_cmd)
+		end
+
+		if nvim_running then
+			-- Neovim is already running, just open a new terminal
+			-- First, close any existing terminal buffer
+			local close_term_cmd = string.format("tmux send-keys -t %s:ai_cli Escape ':bd!' Enter", current_session)
+			os.execute(close_term_cmd)
+
+			-- Small delay, then open new terminal with chosen AI
+			vim.defer_fn(function()
+				local term_cmd = string.format("tmux send-keys -t %s:ai_cli ':term %s' Enter", current_session, choice)
+				os.execute(term_cmd)
+				vim.notify(string.format("Restarted %s in existing Neovim", choice), vim.log.levels.INFO)
+			end, 500)
+		else
+			-- Need to start fresh with Neovim
+			-- Clear any existing content first
+			local clear_cmd = string.format("tmux send-keys -t %s:ai_cli 'C-c' 'C-u' 'clear' Enter", current_session)
+			os.execute(clear_cmd)
 
 			-- Send nvim command to ai_cli window
 			local nvim_cmd = string.format("tmux send-keys -t %s:ai_cli 'nvim .' Enter", current_session)
@@ -1119,8 +1169,8 @@ function SwitchToAIWindow()
 				os.execute(term_cmd)
 				vim.notify(string.format("Started Neovim with %s terminal in ai_cli window", choice), vim.log.levels.INFO)
 			end, 2000)
-		end)
-	end
+		end
+	end)
 end
 
 map("n", "<leader>aw", ":lua SwitchToAIWindow()<CR>", { noremap = true, desc = "Switch to ai_cli window" })
@@ -1225,7 +1275,7 @@ function ManageRailsServer()
 
 			-- Wait a moment then start fresh terminal
 			vim.defer_fn(function()
-				local term_cmd = string.format("tmux send-keys -t %s:server ':term bin/rails s' Enter", current_session)
+				local term_cmd = string.format("tmux send-keys -t %s:server ':term bin/rails s 2>&1 | tee /tmp/rails-dev-server.log' Enter", current_session)
 				os.execute(term_cmd)
 
 				-- Check for common errors after a delay
@@ -1239,7 +1289,7 @@ function ManageRailsServer()
 		vim.notify("Starting Rails server...", vim.log.levels.INFO)
 
 		-- Send the terminal command to server window's Neovim
-		local term_cmd = string.format("tmux send-keys -t %s:server ':term bin/rails s' Enter", current_session)
+		local term_cmd = string.format("tmux send-keys -t %s:server ':term bin/rails s 2>&1 | tee /tmp/rails-dev-server.log' Enter", current_session)
 		os.execute(term_cmd)
 
 		-- Check for common errors after a delay
@@ -1335,7 +1385,7 @@ function ManageAngularServer()
 
 				-- Wait a bit more then start fresh terminal
 				vim.defer_fn(function()
-					local term_cmd = string.format("tmux send-keys -t %s:server ':term npm run start-local' Enter", current_session)
+					local term_cmd = string.format("tmux send-keys -t %s:server ':term npm run start-local 2>&1 | tee /tmp/angular-dev-server.log' Enter", current_session)
 					os.execute(term_cmd)
 
 					-- Check for common errors after a delay
@@ -1350,7 +1400,7 @@ function ManageAngularServer()
 		vim.notify("Starting Angular server...", vim.log.levels.INFO)
 
 		-- Send the terminal command to server window's Neovim
-		local term_cmd = string.format("tmux send-keys -t %s:server ':term npm run start-local' Enter", current_session)
+		local term_cmd = string.format("tmux send-keys -t %s:server ':term npm run start-local 2>&1 | tee /tmp/angular-dev-server.log' Enter", current_session)
 		os.execute(term_cmd)
 
 		-- Check for common errors after a delay
@@ -1384,7 +1434,7 @@ function CheckAngularServerStatusInTmux(session)
 	end
 end
 
-map("n", "<leader>ns", ":lua ManageAngularServer()<CR>", { noremap = true, desc = "Manage Angular server" })
+map("n", "<leader>ng", ":lua ManageAngularServer()<CR>", { noremap = true, desc = "Manage Angular server" })
 
 -- Function to create ai_cli window in current tmux session
 function CreateAICliWindow()
@@ -1487,3 +1537,84 @@ function CalculateDateDifference()
 
 	print(result)
 end
+
+-- Track notification history ourselves
+_G.notification_history = _G.notification_history or {}
+
+-- Override vim.notify to capture notifications after all plugins load
+vim.api.nvim_create_autocmd("VimEnter", {
+	callback = function()
+		-- Wait a bit for plugins to fully load
+		vim.defer_fn(function()
+			local original_notify = vim.notify
+			vim.notify = function(msg, level, opts)
+				-- Store in our history (keep last 100)
+				table.insert(_G.notification_history, {
+					message = msg,
+					level = level or vim.log.levels.INFO,
+					time = os.time(),
+				})
+
+				-- Keep only last 100 notifications
+				if #_G.notification_history > 100 then
+					table.remove(_G.notification_history, 1)
+				end
+
+				-- Call original notify
+				return original_notify(msg, level, opts)
+			end
+		end, 100)
+	end,
+})
+
+-- Debug: Check notification history
+function CheckNotificationHistory()
+	print("Total notifications captured: " .. #_G.notification_history)
+	for i = math.max(1, #_G.notification_history - 5), #_G.notification_history do
+		local n = _G.notification_history[i]
+		print(string.format("%d. Level=%s Msg=%s", i, n.level, n.message:sub(1, 50)))
+	end
+end
+
+-- Function to copy last notification of specific level to clipboard
+function CopyLastNotification(level)
+	-- Map level names to vim.log.levels
+	local level_map = {
+		error = vim.log.levels.ERROR,
+		warning = vim.log.levels.WARN,
+		warn = vim.log.levels.WARN,
+		info = vim.log.levels.INFO,
+		debug = vim.log.levels.DEBUG,
+	}
+
+	local target_level = level_map[level:lower()]
+	if not target_level then
+		vim.notify("Invalid notification level: " .. level, vim.log.levels.ERROR)
+		return
+	end
+
+	-- Find last notification of specified level
+	local last_msg = nil
+	for i = #_G.notification_history, 1, -1 do
+		local notification = _G.notification_history[i]
+		if notification.level == target_level then
+			last_msg = notification.message
+			break
+		end
+	end
+
+	if not last_msg then
+		vim.notify("No " .. level .. " notifications found", vim.log.levels.WARN)
+		return
+	end
+
+	-- Copy to clipboard
+	vim.fn.setreg("+", last_msg)
+	vim.notify("Copied last " .. level .. " notification", vim.log.levels.INFO)
+end
+
+-- Keybindings to copy last notification of each type
+map("n", "<leader>yle", ":lua CopyLastNotification('error')<CR>", { noremap = true, desc = "Yank Last Error" })
+map("n", "<leader>ylw", ":lua CopyLastNotification('warning')<CR>", { noremap = true, desc = "Yank Last Warning" })
+map("n", "<leader>yli", ":lua CopyLastNotification('info')<CR>", { noremap = true, desc = "Yank Last Info" })
+map("n", "<leader>yld", ":lua CopyLastNotification('debug')<CR>", { noremap = true, desc = "Yank Last Debug" })

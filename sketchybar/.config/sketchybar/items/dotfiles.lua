@@ -1,20 +1,20 @@
 local colors = require("colors")
 local icons = require("icons")
 
--- Add custom event for Angular server updates
-sbar.add("event", "angular_update")
+-- Add custom event for dotfiles updates
+sbar.add("event", "dotfiles_update")
 
--- Angular icon
-local angular = sbar.add("item", "angular_server", {
+-- Dotfiles gear icon
+local dotfiles = sbar.add("item", "dotfiles", {
 	position = "center",
 	display = 1,
 	icon = {
-		string = "󰚿",
+		string = icons.gear,
 		font = {
-			family = "Hack Nerd Font",
+			family = "SF Pro",
 			size = 16.0,
 		},
-		color = colors.green,
+		color = colors.blue,
 		padding_left = 8,
 		padding_right = 4,
 	},
@@ -31,8 +31,8 @@ local angular = sbar.add("item", "angular_server", {
 	updates = true,
 })
 
--- Claude status dot for Angular project
-local angular_claude = sbar.add("item", "angular_claude_dot", {
+-- Claude status dot for dotfiles project
+local dotfiles_claude = sbar.add("item", "dotfiles_claude_dot", {
 	position = "center",
 	display = 1,
 	icon = {
@@ -59,9 +59,9 @@ local angular_claude = sbar.add("item", "angular_claude_dot", {
 })
 
 -- Bracket to group icon + dot with single border
-local angular_bracket = sbar.add("bracket", "angular_bracket", {
-	angular.name,
-	angular_claude.name,
+local dotfiles_bracket = sbar.add("bracket", "dotfiles_bracket", {
+	dotfiles.name,
+	dotfiles_claude.name,
 }, {
 	background = {
 		color = 0xff24283b,
@@ -71,35 +71,11 @@ local angular_bracket = sbar.add("bracket", "angular_bracket", {
 	},
 })
 
--- Spacer AFTER the bracket
-sbar.add("item", "angular_spacer_after", {
-	position = "center",
-	display = 1,
-	width = 10,
-	background = { drawing = false },
-})
-
 -- Track previous status to avoid flickering
-local prev_status = "stopped"
 local prev_claude_status = "finished"
 
-angular:subscribe("angular_update", function(env)
-	local status = env.STATUS or "stopped"
+dotfiles:subscribe("dotfiles_update", function(env)
 	local claude_status = env.CLAUDE_STATUS or "finished"
-
-	-- Update server icon color based on status
-	if status ~= prev_status then
-		if status == "stopped" then
-			angular:set({ icon = { color = colors.grey } })
-		elseif status == "starting" or status == "building" then
-			angular:set({ icon = { color = colors.orange } })
-		elseif status == "ready" then
-			angular:set({ icon = { color = colors.green } })
-		elseif status == "error" then
-			angular:set({ icon = { color = colors.red } })
-		end
-		prev_status = status
-	end
 
 	-- Only update Claude dot color if it changed
 	if claude_status ~= prev_claude_status then
@@ -111,11 +87,11 @@ angular:subscribe("angular_update", function(env)
 		else
 			color = colors.red
 		end
-		angular_claude:set({ icon = { color = color } })
+		dotfiles_claude:set({ icon = { color = color } })
 		prev_claude_status = claude_status
 	end
 end)
 
-angular:subscribe("routine", function()
-	sbar.exec("~/.config/sketchybar/plugins/angular_status.sh")
+dotfiles:subscribe("routine", function()
+	sbar.exec("~/.config/sketchybar/plugins/dotfiles_status.sh")
 end)

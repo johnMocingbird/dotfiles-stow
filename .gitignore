@@ -1,2 +1,10 @@
 ./sketchybar/.config/.DS_Store
 nvim/.config/nvim/lazy-lock.json
+.mcp.json
+
+# Gemini secrets
+claude/.gemini/
+.gemini-clipboard/
+
+# Claude Code Usage Monitor
+Claude-Code-Usage-Monitor/

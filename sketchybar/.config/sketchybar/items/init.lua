@@ -9,5 +9,6 @@ require("items.media")
 require("items.meeting_bar")
 require("items.angular_server")
 require("items.rails_server")
+require("items.dotfiles")
 -- sketchybar --add alias MeetingBar left
 -- https://github.com/FelixKratz/SketchyBar/discussions/12
