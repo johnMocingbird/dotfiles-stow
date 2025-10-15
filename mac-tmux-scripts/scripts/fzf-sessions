@@ -1,5 +1,25 @@
 #!/usr/bin/env bash
 
+# Function to get icon for session name
+get_icon() {
+	local session="$1"
+	case "$session" in
+		dotfiles) echo "⚙️  " ;;
+		local_mymoc) echo "🖥️  " ;;
+		mymoc) echo "💎 " ;;
+		mymoc_worktree) echo "💎 " ;;
+		frontend-dev|front_end) echo "🅰️  " ;;
+		weechat) echo "💬 " ;;
+		specs) echo "📋 " ;;
+		obsidian) echo "📝 " ;;
+		music) echo "🎵 " ;;
+		mobile) echo "📱 " ;;
+		gemini) echo "🤖 " ;;
+		hass-pi) echo "🏠 " ;;
+		*) echo "   " ;;
+	esac
+}
+
 MUX_SESSIONS=$(tmuxinator list | tail -n +2 | tr -s '[:space:]' '\n')
 TMUX_EXISTING=$(tmux list-sessions -F '#S' 2>/dev/null)
 SESSIONS=$( (
@@ -7,8 +27,65 @@ SESSIONS=$( (
 	echo "$MUX_SESSIONS"
 ) | sort -u)
 
-SESSION=$(echo "$SESSIONS" | fzf --prompt="Select session: ")
-[ -z "$SESSION" ] && exit 0
+# Add icons to sessions for display
+SESSIONS_WITH_ICONS=""
+while IFS= read -r session; do
+	[ -z "$session" ] && continue
+	icon=$(get_icon "$session")
+
+	# Check if session is running
+	if echo "$TMUX_EXISTING" | grep -q "^$session$"; then
+		indicator="● "  # Running indicator (green dot)
+	else
+		indicator="○ "  # Not running indicator (empty circle)
+	fi
+
+	SESSIONS_WITH_ICONS+="${indicator}${icon}${session}"$'\n'
+done <<< "$SESSIONS"
+
+# Use fzf to select, then strip the icon to get the actual session name
+SELECTED=$(echo "$SESSIONS_WITH_ICONS" | fzf \
+	--prompt="Select session: " \
+	--ansi \
+	--header="Enter: switch | Alt-Backspace: kill session" \
+	--bind "alt-bspace:execute-silent(
+		session=\$(echo {} | sed -E 's/^[[:space:]]*[^[:space:]]+[[:space:]]*[^[:space:]]+[[:space:]]*//');
+		if tmux list-sessions -F '#S' 2>/dev/null | grep -q \"^\$session\$\"; then
+			tmux kill-session -t \"\$session\";
+		fi
+	)+reload(
+		MUX_SESSIONS=\$(tmuxinator list | tail -n +2 | tr -s '[:space:]' '\\\n');
+		TMUX_EXISTING=\$(tmux list-sessions -F '#S' 2>/dev/null);
+		SESSIONS=\$(echo \"\$TMUX_EXISTING\"; echo \"\$MUX_SESSIONS\" | sort -u);
+		while IFS= read -r session; do
+			[ -z \"\$session\" ] && continue;
+			case \"\$session\" in
+				dotfiles) icon=\"⚙️  \";;
+				local_mymoc) icon=\"🖥️  \";;
+				mymoc) icon=\"💎 \";;
+				mymoc_worktree) icon=\"💎 \";;
+				frontend-dev|front_end) icon=\"🅰️  \";;
+				weechat) icon=\"💬 \";;
+				specs) icon=\"📋 \";;
+				obsidian) icon=\"📝 \";;
+				music) icon=\"🎵 \";;
+				mobile) icon=\"📱 \";;
+				gemini) icon=\"🤖 \";;
+				hass-pi) icon=\"🏠 \";;
+				*) icon=\"   \";;
+			esac;
+			if echo \"\$TMUX_EXISTING\" | grep -q \"^\$session\$\"; then
+				indicator=\"● \";
+			else
+				indicator=\"○ \";
+			fi;
+			echo \"\${indicator}\${icon}\${session}\";
+		done <<< \"\$SESSIONS\"
+	)")
+[ -z "$SELECTED" ] && exit 0
+
+# Strip indicator and icon to get session name
+SESSION=$(echo "$SELECTED" | sed -E 's/^[[:space:]]*[^[:space:]]+[[:space:]]*[^[:space:]]+[[:space:]]*//')
 
 if echo "$TMUX_EXISTING" | grep -q "^$SESSION$"; then
 	# Session already exists, just switch to it
