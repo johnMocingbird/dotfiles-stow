@@ -4,9 +4,10 @@ local mymoc_utils = require("mymoc.utils")
 
 vim.g.mapleader = " "
 
-map({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
-map({ "n", "v" }, "<leader>aa", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
-map("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
+-- DISABLED - codecompanion.nvim keybindings
+-- map({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+-- map({ "n", "v" }, "<leader>aa", "<cmd>CodeCompanionChat Toggle<cr>", { noremap = true, silent = true })
+-- map("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
 map("n", "<leader>T", ":term<CR>", { noremap = true, desc = "Terminal Buffer" })
 
 -- map("n", "<C-n>", ":Neotree filesystem reveal left<CR>", {})
@@ -16,6 +17,13 @@ vim.keymap.del("n", "<C-Down>") -- Removes the resize keybinding in normal mode
 
 map("n", "<leader>gd", ":DiffviewOpen origin/master... --imply-local<CR>", { noremap = true, desc = "Git Diff Master" })
 map("n", "<leader>C", ":ChatGPT<CR>", { noremap = true, desc = "ChatGpt" })
+
+-- Git conflict resolution
+map("n", "<leader>co", "<cmd>diffget //2<CR>", { noremap = true, desc = "Choose Ours (HEAD)" })
+map("n", "<leader>ct", "<cmd>diffget //3<CR>", { noremap = true, desc = "Choose Theirs (incoming)" })
+map("n", "<leader>cb", "<cmd>diffget //2 | diffget //3<CR>", { noremap = true, desc = "Choose Both" })
+map("n", "<leader>cn", "<cmd>Gitsigns next_hunk<CR>", { noremap = true, desc = "Next Conflict" })
+map("n", "<leader>cp", "<cmd>Gitsigns prev_hunk<CR>", { noremap = true, desc = "Prev Conflict" })
 
 if vim.loop.os_uname().sysname == "Darwin" then
 	map("n", "<leader>oo", ":ObsidianSearch<CR>", { noremap = true, desc = "ObsidianSearch" })
@@ -1175,6 +1183,93 @@ end
 
 map("n", "<leader>aw", ":lua SwitchToAIWindow()<CR>", { noremap = true, desc = "Switch to ai_cli window" })
 
+-- Cross-session Claude picker - send to any Claude instance
+function PickClaudeSession(text_to_send)
+	-- Get all tmux sessions
+	local sessions = vim.fn.system("tmux list-sessions -F '#S' 2>/dev/null")
+	if sessions == "" then
+		vim.notify("No tmux sessions found", vim.log.levels.WARN)
+		return
+	end
+
+	-- Find sessions with ai_cli window that have Claude running
+	local claude_sessions = {}
+	for session in sessions:gmatch("[^\r\n]+") do
+		-- Check if session has ai_cli window
+		local has_ai_cli = os.execute(string.format("tmux list-windows -t %s -F '#W' 2>/dev/null | grep -q '^ai_cli$'", session))
+
+		if has_ai_cli then
+			-- Check if Claude is running in that window
+			local capture_cmd = string.format("tmux capture-pane -t %s:ai_cli -p | tail -20 2>/dev/null", session)
+			local pane_output = vim.fn.system(capture_cmd)
+
+			local claude_running = pane_output:match("term:.*claude")
+				or pane_output:match("^>%s*$")
+				or (pane_output:match("^>") and pane_output:match("─────"))
+
+			if claude_running then
+				table.insert(claude_sessions, session)
+			end
+		end
+	end
+
+	if #claude_sessions == 0 then
+		vim.notify("No Claude sessions found", vim.log.levels.WARN)
+		return
+	end
+
+	-- If only one Claude session, use it directly
+	if #claude_sessions == 1 then
+		local target = claude_sessions[1]
+		if text_to_send then
+			-- Send text to Claude
+			local escaped = text_to_send:gsub("'", "'\\''")
+			local send_cmd = string.format("tmux send-keys -t %s:ai_cli -l '%s'", target, escaped)
+			os.execute(send_cmd)
+			os.execute(string.format("tmux send-keys -t %s:ai_cli Enter", target))
+			vim.notify(string.format("Sent to Claude in '%s' session", target), vim.log.levels.INFO)
+		else
+			vim.notify(string.format("Only found Claude in '%s' session", target), vim.log.levels.INFO)
+		end
+		return
+	end
+
+	-- Multiple sessions - show picker
+	vim.ui.select(claude_sessions, {
+		prompt = "Send to which Claude session:",
+	}, function(choice)
+		if not choice then return end
+
+		if text_to_send then
+			-- Send text to selected Claude
+			local escaped = text_to_send:gsub("'", "'\\''")
+			local send_cmd = string.format("tmux send-keys -t %s:ai_cli -l '%s'", choice, escaped)
+			os.execute(send_cmd)
+			os.execute(string.format("tmux send-keys -t %s:ai_cli Enter", choice))
+			vim.notify(string.format("Sent to Claude in '%s' session", choice), vim.log.levels.INFO)
+		else
+			vim.notify(string.format("Selected '%s' session", choice), vim.log.levels.INFO)
+		end
+	end)
+end
+
+-- Keybinding to pick Claude session and send visual selection
+map("v", "<leader>Ap", function()
+	-- Get visual selection
+	vim.cmd('noau normal! "vy"')
+	local text = vim.fn.getreg('v')
+	PickClaudeSession(text)
+end, { noremap = true, desc = "Pick Claude session (send selection)" })
+
+-- Keybinding to pick Claude session and send from input
+map("n", "<leader>Ap", function()
+	vim.ui.input({ prompt = "Prompt to send: " }, function(input)
+		if input and input ~= "" then
+			PickClaudeSession(input)
+		end
+	end)
+end, { noremap = true, desc = "Pick Claude session (send prompt)" })
+
 -- Tmux window switching with leader w prefix
 map("n", "<leader>we", function()
 	vim.fn.system("tmux select-window -t nvim 2>/dev/null || tmux select-window -t neovim")
@@ -1507,7 +1602,7 @@ map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 map("n", "<leader>w", "<c-w>", { desc = "Windows", remap = true })
 map("n", "<leader>-", "<C-W>s", { desc = "Split Window Below", remap = true })
 map("n", "<leader>|", "<C-W>v", { desc = "Split Window Right", remap = true })
-map("n", "<leader>wd", "<C-W>c", { desc = "Delete Window", remap = true })
+map("n", "<leader>wd", "<C-W>c", { desc = "Delete Window", remap = false, nowait = true })
 -- LazyVim.ui.maximize():map("<leader>wm")
 
 -- tabs
@@ -1618,3 +1713,137 @@ map("n", "<leader>yle", ":lua CopyLastNotification('error')<CR>", { noremap = tr
 map("n", "<leader>ylw", ":lua CopyLastNotification('warning')<CR>", { noremap = true, desc = "Yank Last Warning" })
 map("n", "<leader>yli", ":lua CopyLastNotification('info')<CR>", { noremap = true, desc = "Yank Last Info" })
 map("n", "<leader>yld", ":lua CopyLastNotification('debug')<CR>", { noremap = true, desc = "Yank Last Debug" })
+
+-- AI CLI Live Preview
+local ai_preview_timer = nil
+local ai_preview_buf = nil
+local ai_preview_win = nil
+
+function ShowAIPreview()
+	-- Get current tmux session
+	local current_session = vim.fn.system("tmux display-message -p '#S' 2>/dev/null"):gsub("\n", "")
+	if current_session == "" then
+		vim.notify("Not in a tmux session", vim.log.levels.WARN)
+		return
+	end
+
+	-- Check if ai_cli window exists
+	local check_window = string.format("tmux list-windows -t %s -F '#W' 2>/dev/null | grep -q '^ai_cli$'", current_session)
+	local window_exists = os.execute(check_window)
+	if not window_exists then
+		vim.notify("No ai_cli window in current session", vim.log.levels.WARN)
+		return
+	end
+
+	-- Create floating window
+	local width = math.floor(vim.o.columns * 0.8)
+	local height = math.floor(vim.o.lines * 0.8)
+	local row = math.floor((vim.o.lines - height) / 2)
+	local col = math.floor((vim.o.columns - width) / 2)
+
+	-- Create buffer if it doesn't exist
+	if not ai_preview_buf or not vim.api.nvim_buf_is_valid(ai_preview_buf) then
+		ai_preview_buf = vim.api.nvim_create_buf(false, true)
+		vim.api.nvim_buf_set_option(ai_preview_buf, "bufhidden", "wipe")
+		vim.api.nvim_buf_set_option(ai_preview_buf, "filetype", "markdown")
+	end
+
+	-- Create window
+	ai_preview_win = vim.api.nvim_open_win(ai_preview_buf, true, {
+		relative = "editor",
+		width = width,
+		height = height,
+		row = row,
+		col = col,
+		style = "minimal",
+		border = "rounded",
+		title = " AI CLI Preview (" .. current_session .. ") ",
+		title_pos = "center",
+	})
+
+	-- Set buffer options
+	vim.api.nvim_buf_set_option(ai_preview_buf, "modifiable", false)
+	vim.api.nvim_buf_set_option(ai_preview_buf, "readonly", true)
+
+	-- Keybindings to close
+	vim.api.nvim_buf_set_keymap(ai_preview_buf, "n", "q", ":lua CloseAIPreview()<CR>", { noremap = true, silent = true })
+	vim.api.nvim_buf_set_keymap(ai_preview_buf, "n", "<Esc>", ":lua CloseAIPreview()<CR>", { noremap = true, silent = true })
+
+	-- Start auto-refresh
+	local function update_preview()
+		if not ai_preview_buf or not vim.api.nvim_buf_is_valid(ai_preview_buf) then
+			if ai_preview_timer then
+				vim.fn.timer_stop(ai_preview_timer)
+				ai_preview_timer = nil
+			end
+			return
+		end
+
+		-- Capture tmux pane with ANSI escape codes
+		local capture_cmd = string.format("tmux capture-pane -t %s:ai_cli -p -e -S -50", current_session)
+		local content = vim.fn.system(capture_cmd)
+
+		if content and content ~= "" then
+			local lines = vim.split(content, "\n")
+
+			-- Check if user is at the bottom before update
+			local at_bottom = false
+			if ai_preview_win and vim.api.nvim_win_is_valid(ai_preview_win) then
+				local cursor = vim.api.nvim_win_get_cursor(ai_preview_win)
+				local buf_lines = vim.api.nvim_buf_line_count(ai_preview_buf)
+				-- Consider "at bottom" if within 3 lines of the end
+				at_bottom = (buf_lines - cursor[1]) <= 3
+			end
+
+			-- Make buffer modifiable temporarily
+			vim.api.nvim_buf_set_option(ai_preview_buf, "modifiable", true)
+			vim.api.nvim_buf_set_option(ai_preview_buf, "readonly", false)
+
+			-- Update buffer
+			vim.api.nvim_buf_set_lines(ai_preview_buf, 0, -1, false, lines)
+
+			-- Apply AnsiEsc to render colors
+			vim.cmd("silent! AnsiEsc")
+
+			-- Only scroll to bottom if user was already at the bottom
+			if at_bottom and ai_preview_win and vim.api.nvim_win_is_valid(ai_preview_win) then
+				vim.api.nvim_win_set_cursor(ai_preview_win, { #lines, 0 })
+			end
+
+			-- Make buffer read-only again
+			vim.api.nvim_buf_set_option(ai_preview_buf, "modifiable", false)
+			vim.api.nvim_buf_set_option(ai_preview_buf, "readonly", true)
+		end
+	end
+
+	-- Initial update
+	update_preview()
+
+	-- Set up timer for live updates (every 500ms)
+	ai_preview_timer = vim.fn.timer_start(500, function()
+		vim.schedule(update_preview)
+	end, { ["repeat"] = -1 })
+end
+
+function CloseAIPreview()
+	-- Stop timer
+	if ai_preview_timer then
+		vim.fn.timer_stop(ai_preview_timer)
+		ai_preview_timer = nil
+	end
+
+	-- Close window
+	if ai_preview_win and vim.api.nvim_win_is_valid(ai_preview_win) then
+		vim.api.nvim_win_close(ai_preview_win, true)
+		ai_preview_win = nil
+	end
+
+	-- Delete buffer
+	if ai_preview_buf and vim.api.nvim_buf_is_valid(ai_preview_buf) then
+		vim.api.nvim_buf_delete(ai_preview_buf, { force = true })
+		ai_preview_buf = nil
+	end
+end
+
+-- Keybinding for AI preview
+map("n", "<leader>ap", ":lua ShowAIPreview()<CR>", { noremap = true, desc = "AI CLI Preview" })
