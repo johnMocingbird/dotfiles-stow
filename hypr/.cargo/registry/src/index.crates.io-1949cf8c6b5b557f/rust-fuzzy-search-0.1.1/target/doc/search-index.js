@@ -1,0 +1,4 @@
+var searchIndex = JSON.parse('{\
+"rust_fuzzy_search":{"doc":"This crate implements Fuzzy Searching with trigrams","t":[5,5,5,5,5],"n":["fuzzy_compare","fuzzy_search","fuzzy_search_best_n","fuzzy_search_sorted","fuzzy_search_threshold"],"q":["rust_fuzzy_search","","","",""],"d":["Use this function to compare 2 strings.","Use this function to compare a string (<code>&str</code>) with all …","This function is similar to [fuzzy_search_sorted] but …","This function is similar to [fuzzy_search] but sorts the …","This function is similar to [fuzzy_search] but filters …"],"i":[0,0,0,0,0],"f":[[[["str",15]],["f32",15]],[[["str",15]],["vec",3]],[[["str",15],["usize",15]],["vec",3]],[[["str",15]],["vec",3]],[[["str",15],["f32",15]],["vec",3]]],"p":[]}\
+}');
+if (window.initSearch) {window.initSearch(searchIndex)};
