@@ -313,7 +313,7 @@ mapkey(`${L}p`, 'Pull requests', () => openSection('pulls'), GITHUB);
 mapkey(`${L}w`, 'Wiki',          () => openSection('wiki'),  GITHUB);
 mapkey(`${L}s`, 'Stars',         () => openSection('stargazers'), GITHUB);
 mapkey(`${L}f`, 'Go to Front-end repo', () => window.open('https://github.com/MyMOC/front-end', '_self'), GITHUB);
-mapkey(`${L}b`, 'Go to Backend repo', () => window.open('https://github.com/MyMOC/backend', '_self'), GITHUB);
+mapkey(`${L}b`, 'Go to Backend repo', () => window.open('https://github.com/MyMOC/mymoc', '_self'), GITHUB);
 mapkey(`${L}m`, 'Go to Mobile repo', () => window.open('https://github.com/MyMOC/mobilemoc', '_self'), GITHUB);
 
 /* ----- admin.shopify.com ----- */
