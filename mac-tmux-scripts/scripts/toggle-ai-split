@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Get current window name
+current_window=$(tmux display-message -p '#W')
+
+# If we're on the ai_cli window, do nothing
+if [ "$current_window" = "ai_cli" ]; then
+    exit 0
+fi
+
+# Get number of panes in current window
+pane_count=$(tmux display-message -p '#{window_panes}')
+
+# If there are multiple panes, close the split
+if [ "$pane_count" -gt 1 ]; then
+    # Check if ai_cli exists as a separate window
+    if tmux list-windows -F '#W' | grep -q "^ai_cli$"; then
+        # ai_cli exists, so this must be some other split - do nothing
+        exit 0
+    fi
+
+    # ai_cli doesn't exist as a window, so we must have joined it
+    # Break the last pane (which should be the ai_cli pane we joined on the right)
+    last_pane=$(tmux list-panes -F '#{pane_id}' | tail -n 1)
+    tmux select-pane -t "$last_pane"
+    tmux break-pane -d -n ai_cli
+    exit 0
+fi
+
+# If we're here, we have a single pane and we're not on ai_cli
+# Check if ai_cli window exists
+if ! tmux list-windows -F '#W' | grep -q "^ai_cli$"; then
+    # ai_cli window doesn't exist, do nothing
+    exit 0
+fi
+
+# Join the ai_cli window's pane to the current window on the right
+tmux join-pane -h -s ai_cli.0

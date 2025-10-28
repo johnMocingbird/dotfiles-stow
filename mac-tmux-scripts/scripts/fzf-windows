@@ -1,5 +1,50 @@
 #!/bin/bash
 
+# Handle --generate-list flag for fzf reload
+if [ "$1" = "--generate-list" ]; then
+    # Function to get icon for window name
+    get_icon() {
+        local window_name=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+
+        case "$window_name" in
+            *neovim*|*nvim*) echo ":neovim:" ;;
+            *vim*) echo ":vim:" ;;
+            *code*) echo ":code:" ;;
+            *cursor*) echo ":cursor:" ;;
+            *zed*) echo ":zed:" ;;
+            *lazy_git*|*lazygit*|*git*) echo ":git_hub:" ;;
+            *terminal*) echo ":terminal:" ;;
+            *kitty*) echo ":kitty:" ;;
+            *iterm*) echo ":iterm:" ;;
+            *alacritty*) echo ":alacritty:" ;;
+            *wezterm*) echo ":wezterm:" ;;
+            *chrome*) echo ":google_chrome:" ;;
+            *firefox*) echo ":firefox:" ;;
+            *safari*) echo ":safari:" ;;
+            *arc*) echo ":arc:" ;;
+            *brave*) echo ":brave_browser:" ;;
+            *spotify*) echo ":spotify:" ;;
+            *music*) echo ":music:" ;;
+            *discord*) echo ":discord:" ;;
+            *slack*) echo ":slack:" ;;
+            *telegram*) echo ":telegram:" ;;
+            *messages*) echo ":messages:" ;;
+            *whatsapp*) echo ":whats_app:" ;;
+            *finder*) echo ":finder:" ;;
+            *) echo ":default:" ;;
+        esac
+    }
+
+    WINDOWS_RAW=$(tmux list-windows -F '#I:#W')
+    while IFS= read -r line; do
+        window_index=$(echo "$line" | cut -d: -f1)
+        window_name=$(echo "$line" | cut -d: -f2)
+        icon=$(get_icon "$window_name")
+        echo "$icon $window_name ($window_index)"
+    done <<< "$WINDOWS_RAW"
+    exit 0
+fi
+
 # Function to get icon for window name
 get_icon() {
     local window_name=$(echo "$1" | tr '[:upper:]' '[:lower:]')
@@ -33,22 +78,53 @@ get_icon() {
     esac
 }
 
+# Function to generate window list
+generate_window_list() {
+    WINDOWS_RAW=$(tmux list-windows -F '#I:#W')
+    WINDOWS_WITH_ICONS=""
+
+    while IFS= read -r line; do
+        window_index=$(echo "$line" | cut -d: -f1)
+        window_name=$(echo "$line" | cut -d: -f2)
+        icon=$(get_icon "$window_name")
+        WINDOWS_WITH_ICONS+="$icon $window_name ($window_index)"$'\n'
+    done <<< "$WINDOWS_RAW"
+
+    echo -e "$WINDOWS_WITH_ICONS"
+}
+
 # Get windows with icons
-WINDOWS_RAW=$(tmux list-windows -F '#I:#W')
-WINDOWS_WITH_ICONS=""
+WINDOWS_WITH_ICONS=$(generate_window_list)
 
-while IFS= read -r line; do
-    window_index=$(echo "$line" | cut -d: -f1)
-    window_name=$(echo "$line" | cut -d: -f2)
-    icon=$(get_icon "$window_name")
-    WINDOWS_WITH_ICONS+="$icon $window_name ($window_index)"$'\n'
-done <<< "$WINDOWS_RAW"
+# Use fzf to select window (--print-query outputs both query and selection)
+# Alt-Backspace to delete the selected window
+RESULT=$(echo -e "$WINDOWS_WITH_ICONS" | fzf \
+    --prompt="Select window: " \
+    --ansi \
+    --print-query \
+    --bind "alt-bspace:execute-silent(tmux kill-window -t \$(echo {} | grep -o '([0-9]*)' | tr -d '()'))+reload($0 --generate-list)" \
+    --header="Alt-Backspace to delete window")
+[ -z "$RESULT" ] && exit 0
 
-# Use fzf to select window
-SELECTION=$(echo -e "$WINDOWS_WITH_ICONS" | fzf --prompt="Select window: " --ansi)
-[ -z "$SELECTION" ] && exit 0
+# Split result into query and selection
+QUERY=$(echo "$RESULT" | head -n1)
+SELECTION=$(echo "$RESULT" | tail -n1)
 
-# Extract window name from selection (remove icon and index)
+# If query and selection are the same, it means no match was found
+# In this case, create a new window with the typed name
+if [ "$QUERY" = "$SELECTION" ]; then
+    # Check if the typed text doesn't match any existing window format
+    WINDOW_INDEX=$(echo "$SELECTION" | grep -o '([0-9]*)' | tr -d '()')
+    if [ -z "$WINDOW_INDEX" ]; then
+        # Get current pane's directory to start new window there
+        CURRENT_DIR=$(tmux display-message -p -F "#{pane_current_path}")
+        # No match found, create new window with the typed name in current directory
+        tmux new-window -n "$QUERY" -c "$CURRENT_DIR"
+        exit 0
+    fi
+fi
+
+# Extract window index from selection (remove icon and index)
 WINDOW_INDEX=$(echo "$SELECTION" | grep -o '([0-9]*)' | tr -d '()')
 [ -z "$WINDOW_INDEX" ] && exit 0
 
