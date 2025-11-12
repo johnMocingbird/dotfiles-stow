@@ -78,12 +78,19 @@ yabai -m rule --add app="^Alacritty$" scratchpad=throwaway display=1 grid=12:12:
 yabai -m rule --add app="^Safari$" scratchpad=safari display=1 grid=20:20:2:1:16:18
 yabai -m rule --add app="^Firefox$" scratchpad=firefox display=1 grid=20:20:2:1:16:18
 
-yabai -m rule --add app="System Settings" scratchpad=settings display=1 grid=20:20:2:1:16:18
 yabai -m rule --add app="Stream Deck" scratchpad=stream_deck display=1 grid=12:12:4:1:4:10
 yabai -m rule --add app="ChatGPTChrome" scratchpad=chat display=1 grid=12:12:4:1:4:10
 yabai -m rule --add app="ChatGPT" scratchpad=chatgpt display=1 grid=20:20:2:1:16:18
 # yabai -m rule --add app="^Calcure$" scratchpad=safari grid=12:12:4:1:4:10
 # eabai -m rule --add app="^Systems Setings$" scratchpad=safari grid=12:12:4:1:4:10
+yabai -m rule --add app="System Settings" scratchpad=settings display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="Photos" scratchpad=photos display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="Mail" scratchpad=mail display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="Calendar" scratchpad=calendar display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="Numbers" scratchpad=numbers display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="Weather" scratchpad=weather display=1 grid=20:20:2:1:16:18
+yabai -m rule --add app="Siri" scratchpad=siri display=1 grid=20:20:2:1:16:18
+
 
 echo "yabai configuration loaded..."
 borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0 &

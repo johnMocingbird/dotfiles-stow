@@ -2,13 +2,6 @@
 
 
 #scratchpad setup
-cmd + alt - a : yabai -m window --toggle music || open  -a Music
-cmd + alt - t : yabai -m window --toggle throwaway || open -a Alacritty
-cmd + alt - h : yabai -m window --toggle home || open -a Home
-cmd + alt - p : yabai -m window --toggle phone || open -a 'iPhone Mirroring'
-cmd + alt - w : yabai -m window --toggle safari || open -a Safari
-cmd + alt - s : yabai -m window --toggle slack || open -a Slack
-
 rctrl - f : yabai -m window --toggle firefox || open  -a Firefox
 rctrl - a : yabai -m window --toggle music || open  -a Music
 rctrl - t : yabai -m window --toggle throwaway || open -a Alacritty
@@ -45,6 +38,14 @@ fn - v : yabai -m window --toggle whatsapp || open -a WhatsApp
 fn + shift - c : yabai -m window --toggle chat || open -a ChatGPTChrome
 fn - c : yabai -m window --toggle chatgpt || open -a ChatGPT
 
+# Macos apps
+rcmd - p : yabai -m window --toggle photos || open -a Photos
+rcmd - m : yabai -m window --toggle mail || open -a Mail
+# meh - , : yabai -m window --toggle finder || open -a System\ Settings
+rcmd - n : yabai -m window --toggle numbers || open -a Numbers
+rcmd - c : yabai -m window --toggle calendar || open -a Calendar
+rcmd - w : yabai -m window --toggle weather || open -a Weather
+rcmd - s : yabai -m window --toggle siri || open -a Siri
 
 
 lalt - 1 : SPACES=($(yabai -m query --displays --display | jq '.spaces[]')) && [[ -n $SPACES[1] ]] && yabai -m space --focus $SPACES[1]

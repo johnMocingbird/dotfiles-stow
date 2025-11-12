@@ -1,0 +1,18 @@
+# /Users/john/.config/tmuxinator/hass-pi.yml
+
+name: hass-pi
+root: /Users/john/development/homeassistant-mcp
+
+windows:
+  - console:
+      panes:
+        - nvim .
+  - neovim:
+      panes:
+        - ssh orangepi@192.168.1.8
+  - lazy_git:
+      panes:
+        - ssh orangepi@192.168.1.8
+  - ai_cli:
+      panes:
+        - claude --resume
