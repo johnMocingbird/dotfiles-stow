@@ -1,0 +1,18 @@
+stages:
+  - deploy
+
+pages:
+  image: rustdocker/rust:stable
+  stage: deploy
+  #only:
+  #  - master
+  script:
+    - cargo doc
+    - rm -rf public
+    - mkdir public
+    - cp -R target/doc/* public
+  artifacts:
+    paths:
+    - public
+
+

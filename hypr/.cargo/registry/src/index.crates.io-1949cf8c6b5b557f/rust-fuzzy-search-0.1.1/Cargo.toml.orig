@@ -1,0 +1,16 @@
+[package]
+name = "rust-fuzzy-search"
+version = "0.1.1"
+authors = ["EnricoCh <enricochiaramello@gmail.com>"]
+edition = "2018"
+description = "Fuzzy Search with trigrams implemented in Rust"
+documentation = "https://enricoch.gitlab.io/rust-fuzzy-search/rust_fuzzy_search/index.html"
+repository = "https://gitlab.com/EnricoCh/rust-fuzzy-search"
+homepage = "https://gitlab.com/EnricoCh/rust-fuzzy-search"
+keywords = ["fuzzy-search", "compare-strings", "fuzzy", "compare"]
+publish = true
+license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]

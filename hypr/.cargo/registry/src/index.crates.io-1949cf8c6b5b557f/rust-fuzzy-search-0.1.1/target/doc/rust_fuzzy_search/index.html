@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="This crate implements Fuzzy Searching with trigrams"><meta name="keywords" content="rust, rustlang, rust-lang, rust_fuzzy_search"><title>rust_fuzzy_search - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script id="default-settings"></script><script src="../storage.js"></script><script src="../crates.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../rust_fuzzy_search/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><p class="location">Crate rust_fuzzy_search</p><div class="block version"><p>Version 0.1.0</p></div><div class="sidebar-elems"><a id="all-types" href="all.html"><p>See all rust_fuzzy_search's items</p></a><div class="block items"><ul><li><a href="#functions">Functions</a></li></ul></div><p class="location"></p><div id="sidebar-vars" data-name="rust_fuzzy_search" data-ty="mod" data-relpath="../"></div><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="">rust_fuzzy_search</a><button id="copy-path" onclick="copy_path(this)">⎘</button></span><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/rust_fuzzy_search/lib.rs.html#2-330" title="goto source code">[src]</a></span></h1><div class="docblock"><p>This crate implements Fuzzy Searching with trigrams</p>
+<p>Fuzzy searching allows to compare strings by similarity rather then by equality:<br />
+Similar strings will get a high score (close to <code>1.0f32</code>) while dissimilar strings will get a lower score (closer to <code>0.0f32</code>).</p>
+<p>Fuzzy searching tolerates changes in word order:<br />
+ex. <code>&quot;John Dep&quot;</code> and <code>&quot;Dep John&quot;</code> will get a high score.</p>
+<p>The crate exposes 4 main functions:</p>
+<ul>
+<li><a href="fn.fuzzy_compare.html" title="fuzzy_compare">fuzzy_compare</a> will take 2 strings and return a score representing how similar those strings are.</li>
+<li><a href="fn.fuzzy_search.html" title="fuzzy_search">fuzzy_search</a> applies <a href="fn.fuzzy_compare.html" title="fuzzy_compare">fuzzy_compare</a> to a list of strings and returns a list of tuples: (word, score).</li>
+<li><a href="fn.fuzzy_search_sorted.html" title="fuzzy_search_sorted">fuzzy_search_sorted</a> is similar to <a href="fn.fuzzy_search.html" title="fuzzy_search">fuzzy_search</a> but orders the output in descending order.</li>
+<li><a href="fn.fuzzy_search_threshold.html" title="fuzzy_search_threshold">fuzzy_search_threshold</a> will take an additional <code>f32</code> as input and returns only tuples with score greater than the threshold.</li>
+<li><a href="fn.fuzzy_search_best_n.html" title="fuzzy_search_best_n">fuzzy_search_best_n</a> will take an additional <code>usize</code> arguments and returns the first <code>n</code> tuples.</li>
+</ul>
+<p>The Algorithm used is taken from : <a href="https://dev.to/kaleman15/fuzzy-searching-with-postgresql-97o">https://dev.to/kaleman15/fuzzy-searching-with-postgresql-97o</a></p>
+<p>Basic idea:</p>
+<ol>
+<li>
+<p>From both strings extracts all groups of 3 adjacent letters.<br />
+(<code>&quot;House&quot;</code> becomes <code>['  H', ' Ho', 'Hou', 'ous', 'use', 'se ']</code>).<br />
+Note the 2 spaces added to the head of the string and the one on the tail, used to make the algorithm work on zero length words.</p>
+</li>
+<li>
+<p>Then counts the number of trigrams of the first words that are also present on the second word and divide by the number of trigrams of the first word.</p>
+</li>
+</ol>
+<p>Example: Comparing 2 strings</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">fn</span> <span class="ident">test</span> () {
+   <span class="kw">use</span> <span class="ident">rust_fuzzy_search::fuzzy_compare</span>;
+   <span class="kw">let</span> <span class="ident">score</span> : <span class="ident">f32</span> <span class="op">=</span> <span class="ident">fuzzy_compare</span>(<span class="string">&quot;kolbasobulko&quot;</span>, <span class="string">&quot;kolbasobulko&quot;</span>);
+   <span class="macro">println!</span>(<span class="string">&quot;score = {:?}&quot;</span>, <span class="ident">score</span>);
+}</pre><a class="test-arrow" target="_blank" href="https://playground.example.com/?code=%23!%5Ballow(unused)%5D%0Aextern%20crate%20r%23rust_fuzzy_search%3B%0Afn%20main()%20%7B%0Afn%20test%20()%20%7B%0A%20%20%20use%20rust_fuzzy_search%3A%3Afuzzy_compare%3B%0A%20%20%20let%20score%20%3A%20f32%20%3D%20fuzzy_compare(%22kolbasobulko%22%2C%20%22kolbasobulko%22)%3B%0A%20%20%20println!(%22score%20%3D%20%7B%3A%3F%7D%22%2C%20score)%3B%0A%7D%0A%7D&amp;edition=2018">Run</a></div>
+<p>Example: Comparing a string with a list of strings and retrieving only the best matches</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="kw">fn</span> <span class="ident">test</span>() {
+    <span class="kw">use</span> <span class="ident">rust_fuzzy_search::fuzzy_search_best_n</span>;
+    <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;bulko&quot;</span>;
+    <span class="kw">let</span> <span class="ident">list</span> : <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec!</span>[
+        <span class="string">&quot;kolbasobulko&quot;</span>,
+        <span class="string">&quot;sandviĉo&quot;</span>,
+        <span class="string">&quot;ŝatas&quot;</span>,
+        <span class="string">&quot;domo&quot;</span>,
+        <span class="string">&quot;emuo&quot;</span>,
+        <span class="string">&quot;fabo&quot;</span>,
+        <span class="string">&quot;fazano&quot;</span>
+    ];
+    <span class="kw">let</span> <span class="ident">n</span> : <span class="ident">usize</span> <span class="op">=</span> <span class="number">3</span>;
+    <span class="kw">let</span> <span class="ident">res</span> : <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">f32</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">fuzzy_search_best_n</span>(<span class="ident">s</span>,<span class="kw-2">&amp;</span><span class="ident">list</span>, <span class="ident">n</span>);
+    <span class="kw">for</span> (<span class="ident">_word</span>, <span class="ident">score</span>) <span class="kw">in</span> <span class="ident">res</span> {
+        <span class="macro">println!</span>(<span class="string">&quot;{:?}&quot;</span>,<span class="ident">score</span>)
+    }
+}</pre><a class="test-arrow" target="_blank" href="https://playground.example.com/?code=%23!%5Ballow(unused)%5D%0Aextern%20crate%20r%23rust_fuzzy_search%3B%0Afn%20main()%20%7B%0Afn%20test()%20%7B%0A%20%20%20%20use%20rust_fuzzy_search%3A%3Afuzzy_search_best_n%3B%0A%20%20%20%20let%20s%20%3D%20%22bulko%22%3B%0A%20%20%20%20let%20list%20%3A%20Vec%3C%26str%3E%20%3D%20vec!%5B%0A%20%20%20%20%20%20%20%20%22kolbasobulko%22%2C%0A%20%20%20%20%20%20%20%20%22sandvi%C4%89o%22%2C%0A%20%20%20%20%20%20%20%20%22%C5%9Datas%22%2C%0A%20%20%20%20%20%20%20%20%22domo%22%2C%0A%20%20%20%20%20%20%20%20%22emuo%22%2C%0A%20%20%20%20%20%20%20%20%22fabo%22%2C%0A%20%20%20%20%20%20%20%20%22fazano%22%0A%20%20%20%20%5D%3B%0A%20%20%20%20let%20n%20%3A%20usize%20%3D%203%3B%0A%20%20%20%20let%20res%20%3A%20Vec%3C(%26str%2C%20f32)%3E%20%3D%20fuzzy_search_best_n(s%2C%26list%2C%20n)%3B%0A%20%20%20%20for%20(_word%2C%20score)%20in%20res%20%7B%0A%20%20%20%20%20%20%20%20println!(%22%7B%3A%3F%7D%22%2Cscore)%0A%20%20%20%20%7D%0A%7D%0A%7D&amp;edition=2018">Run</a></div>
+</div><h2 id="functions" class="section-header"><a href="#functions">Functions</a></h2>
+<table><tr class="module-item"><td><a class="fn" href="fn.fuzzy_compare.html" title="rust_fuzzy_search::fuzzy_compare fn">fuzzy_compare</a></td><td class="docblock-short"><p>Use this function to compare 2 strings.</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.fuzzy_search.html" title="rust_fuzzy_search::fuzzy_search fn">fuzzy_search</a></td><td class="docblock-short"><p>Use this function to compare a string (<code>&amp;str</code>) with all elements of a list.</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.fuzzy_search_best_n.html" title="rust_fuzzy_search::fuzzy_search_best_n fn">fuzzy_search_best_n</a></td><td class="docblock-short"><p>This function is similar to <a href="fn.fuzzy_search_sorted.html" title="fuzzy_search_sorted">fuzzy_search_sorted</a> but keeps only the <code>n</code> best items, those with a better match.</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.fuzzy_search_sorted.html" title="rust_fuzzy_search::fuzzy_search_sorted fn">fuzzy_search_sorted</a></td><td class="docblock-short"><p>This function is similar to <a href="fn.fuzzy_search.html" title="fuzzy_search">fuzzy_search</a> but sorts the result in descending order (the best matches are placed at the beginning).</p>
+</td></tr><tr class="module-item"><td><a class="fn" href="fn.fuzzy_search_threshold.html" title="rust_fuzzy_search::fuzzy_search_threshold fn">fuzzy_search_threshold</a></td><td class="docblock-short"><p>This function is similar to <a href="fn.fuzzy_search.html" title="fuzzy_search">fuzzy_search</a> but filters out element with a score lower than the specified one.</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../" data-current-crate="rust_fuzzy_search" data-search-index-js="../search-index.js" data-search-js="../search.js"></div>
+    <script src="../main.js"></script></body></html>
