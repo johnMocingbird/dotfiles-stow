@@ -292,14 +292,6 @@ if (ADMIN_RE.test(adminHost)) {
   mapkey(`${L}l`, '📄  Admin → Licenses',      () => g('state_licenses'));
   mapkey(`${L}r`, '🛠  Admin → Roles',         () => g('roles'));
   mapkey(`${L}o`, '🏢  Admin → Organizations', () => g('organizations'));
-  mapkey(`${L}s`, '🔐  Toggle SuperAdmin', () => {
-    const key = 'ngx-webstorage|issuperadmin';
-    const current = localStorage.getItem(key);
-    const newValue = current === '"true"' ? '"false"' : '"true"';
-    localStorage.setItem(key, newValue);
-    const status = newValue === '"true"' ? 'ENABLED' : 'DISABLED';
-    Front.showPopup(`🔐 SuperAdmin: ${status}`);
-  });
 
   if (location.pathname === '/admin/users') {
     mapkey(`${L}f`, '🔎  Admin → Filter User', () => {
@@ -312,6 +304,20 @@ if (ADMIN_RE.test(adminHost)) {
       });
     });
   }
+}
+
+/* ----- Mocingbird App ----- */
+const appHost = location.hostname;
+const APP_RE = /^(localhost|127\.0\.0\.1\.nip\.io|s-app\.mocingbird\.com|app\.mocingbird\.com)$/;
+if (APP_RE.test(appHost)) {
+  mapkey(`${L}s`, '🔐  Toggle SuperAdmin', () => {
+    const key = 'ngx-webstorage|issuperadmin';
+    const current = localStorage.getItem(key);
+    const newValue = current === '"true"' ? '"false"' : '"true"';
+    localStorage.setItem(key, newValue);
+    const status = newValue === '"true"' ? 'ENABLED' : 'DISABLED';
+    Front.showPopup(`🔐 SuperAdmin: ${status}`);
+  });
 }
 
 /* ----- github.com ----- */
