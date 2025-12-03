@@ -8,3 +8,5 @@ windows:
       - nvim .
   - lazy_git:
       - lazygit
+  - ai_cli: claude
+

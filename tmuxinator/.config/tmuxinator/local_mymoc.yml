@@ -11,3 +11,6 @@ windows:
       - lazygit
   - side_kiq: nvim +":term start_worker"
   - gemini: nvim +":term gemini"
+  - ai_cli: nvim +":term claude"
+
+

@@ -1,0 +1,8 @@
+# /Users/john/.config/tmuxinator/ubuntu_mymoc.yml
+
+name: ubuntu_mymoc
+root: ~/mymoc
+
+windows:
+    - ssh ssh.esthing64.dev
+    - tmuxinator start mymoc_local
