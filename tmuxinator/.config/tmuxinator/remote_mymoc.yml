@@ -5,8 +5,8 @@ root: ~/mymoc
 
 windows:
   - remote_mymoc:
-    - ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.1.21
-    - tmuxinator start mymoc_local
+      - ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.1.21
+      - tmuxinator start local_mymoc
 
 
 

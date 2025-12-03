@@ -4,5 +4,6 @@ name: ubuntu_mymoc
 root: ~/mymoc
 
 windows:
-    - ssh ssh.esthing64.dev
-    - tmuxinator start mymoc_local
+  - main:
+      - ssh ssh.esthing64.dev
+      - tmuxinator start local_mymoc
