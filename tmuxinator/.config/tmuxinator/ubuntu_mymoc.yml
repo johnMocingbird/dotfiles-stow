@@ -5,5 +5,5 @@ root: ~/mymoc
 
 windows:
   - main:
-      - ssh ssh.esthing64.dev
+      - ssh -L 3000:localhost:3000 -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.1.21
       - tmuxinator start local_mymoc

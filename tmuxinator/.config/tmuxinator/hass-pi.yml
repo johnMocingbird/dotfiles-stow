@@ -15,4 +15,4 @@ windows:
         - ssh orangepi@192.168.1.8
   - ai_cli:
       panes:
-        - claude --resume
+        - nvim +":term claude"

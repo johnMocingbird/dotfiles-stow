@@ -56,5 +56,12 @@ export EDITOR="$(which nvim)"
 export VISUAL="$(which nvim)"
 export MANPAGER="$(which nvim) +Man!"
 
+# Unbind Ctrl+hjkl in zsh so tmux vim-tmux-navigator can handle them
+# This allows seamless navigation between vim splits and tmux panes
+bindkey -r '^H'  # Remove backward-delete-char
+bindkey -r '^J'  # Remove accept-line (Enter key still works)
+bindkey -r '^K'  # Remove self-insert
+bindkey -r '^L'  # Remove clear-screen (use Ctrl+s L for clear in tmux if needed)
+
 
 

@@ -12,5 +12,5 @@ windows:
       - npm run ios:dev
   - lazy_git:
       - lazygit
-  - ai_cli: claude
+  - ai_cli: nvim +":term claude"
 

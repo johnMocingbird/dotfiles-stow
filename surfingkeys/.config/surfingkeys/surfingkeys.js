@@ -171,10 +171,14 @@ map('<Alt-u>', 'ya');   // Yank Link URL (alt)
 
 // --- Navigation & Scrolling ---
 map('H', 'S');          // History Back
-map('L', 'D');          // History Forward (was R)
-map('R', 'L');          // R now inherits the *default* regional-hints
-map('K', ']]');         // Next Page
-map('J', '[[');         // Prev Page (Vim-style)
+map('R', 'L');          // R inherits the default regional-hints from L
+map('L', 'D');          // History Forward
+
+// --- Tab Switching ---
+unmap('J');
+unmap('K');
+mapkey('J', 'Previous tab (left)', () => RUNTIME('previousTab'));
+mapkey('K', 'Next tab (right)', () => RUNTIME('nextTab'));
 
 mapkey('d', 'Scroll page down', () => Normal.scroll("pageDown"));
 mapkey('u', 'Scroll page up',   () => Normal.scroll("pageUp"));
@@ -264,7 +268,7 @@ async function copyText(fieldSel, toast) {
 /* ----- Browser-specific: Safari vs others ----- */
 const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Edg/i.test(navigator.userAgent);
 if (isSafari) {
-    // Safari → keep built-in “T” (SurfingKeys default), only change `t`
+    // Safari → keep built-in "T" (SurfingKeys default), only change `t`
     unmap('t');
     mapkey('t', 'Open dashboard', () => tabOpenLink('https://esthing64.github.io/my_dashboard/'));
 } else {
@@ -273,6 +277,9 @@ if (isSafari) {
     mapkey('T', 'Choose a tab (fuzzy finder)', () => Front.openOmnibar({ type: 'Tabs' }));
     mapkey('t', 'Open dashboard', () => tabOpenLink('https://esthing64.github.io/my_dashboard/'));
 }
+
+// --- Tab picker with leader key ---
+mapkey(`${L},`, 'Choose a tab (fuzzy finder)', () => Front.openOmnibar({ type: 'Tabs' }));
 
 /* ----- app.shortcut.com ----- */
 if (/^app\.shortcut\.com$/.test(location.hostname) && location.pathname.startsWith('/mymoc/')) {

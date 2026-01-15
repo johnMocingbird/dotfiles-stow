@@ -10,5 +10,5 @@ windows:
       - nvim +":term npm run start-local 2>&1 | tee /tmp/angular-dev-server.log"
   - lazy_git:
       - lazygit
-  - ai_cli: claude
+  - ai_cli: nvim +":term claude"
 

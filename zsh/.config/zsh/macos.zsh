@@ -6,6 +6,8 @@ alias ubuntu='ssh -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.1.21'
 alias ubuntu_server='ssh -L 3000:localhost:3000 -i /Users/john/.ssh/ubuntu_id_rsa john@192.168.1.21'
 
 clean_ios() {
+
+
   cd ~/development/mobile_dev/mobilemoc-ios/
   rm -fr node_modules package-lock.json
   npm cache clean --force

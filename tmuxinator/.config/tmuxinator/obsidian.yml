@@ -46,3 +46,5 @@ root: ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Coding iCloud/
 windows:
   - obsidian:
       - nvim "_Home Page.md"
+  - ai_cli: nvim +":term claude"
+
