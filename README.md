@@ -336,7 +336,9 @@ Reload Configuration
 ### Global Shortcuts
 
 - `t` → Open dashboard (https://esthing64.github.io/my_dashboard/)
-- `T` → Choose a tab (fuzzy finder) - *Not available in Safari*
+- `leader ,` → Choose a tab (fuzzy finder)
+- `J` next tab
+- `K` prev tab
 
 ### Navigation & Scrolling
 
@@ -349,7 +351,7 @@ Reload Configuration
 - `Ctrl+d` → Scroll down
 - `Ctrl+u` → Scroll up
 - `Ctrl+b` → Scroll full page up
-- `^` → Scroll leftmost
+- `0` → Scroll leftmost
 
 ### Hints & Links
 
